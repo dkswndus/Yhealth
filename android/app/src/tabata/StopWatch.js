@@ -49,7 +49,7 @@ const PlayerControl = styled.View`
 
 // privious,일시정지,next 이미지 
 const ImageContainer = styled.View`
-  margin-right: 100px;
+  
 `;
 
 const formatTime = (seconds) => {
@@ -62,7 +62,7 @@ const formatTime = (seconds) => {
 
 const StopWatch = ({ route }) => {
   const exerciseInfoOn = route.params?.exerciseInfoOn || [];
-  const [isPaused, setIsPaused] = useState(true); 
+  const [isPaused, setIsPaused] = useState(true);
   const [isSoundOn, setIsSoundOn] = useState(true);
   const [currentSet, setCurrentSet] = useState(1);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -83,99 +83,99 @@ const StopWatch = ({ route }) => {
 
   const saveDataToStorage = async () => {
     try {
-     
-        const dataToSave = {
-            sets: sets,
-            reps: reps,
-            prepareTime: prepareTime,
-            exerciseTime: exerciseTime,
-            restTime: restTime,
-            date: new Date().toLocaleString(),
-            name: name,
-           
-        };
 
-       
-        await AsyncStorage.setItem('appData', JSON.stringify(dataToSave));
+      const dataToSave = {
+        sets: sets,
+        reps: reps,
+        prepareTime: prepareTime,
+        exerciseTime: exerciseTime,
+        restTime: restTime,
+        date: new Date().toLocaleString(),
+        name: name,
+
+      };
+
+
+      await AsyncStorage.setItem('appData', JSON.stringify(dataToSave));
     } catch (error) {
-        console.error('Error saving data to AsyncStorage:', error);
+      console.error('Error saving data to AsyncStorage:', error);
     }
-};
+  };
 
 
-// 상태가 변경될 때마다 데이터 저장
-useEffect(() => {
+  // 상태가 변경될 때마다 데이터 저장
+  useEffect(() => {
     saveDataToStorage();
-}, [sets, reps, prepareTime, exerciseTime, restTime,name]);
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-useEffect(() => {
-  let intervalId;
+  }, [sets, reps, prepareTime, exerciseTime, restTime, name]);
 
-  const startNextSet = () => {
-    if (currentIndex < exerciseInfoOn.length - 1) {
-      setCurrentIndex((prevIndex) => prevIndex + 1);
-      setPrepareTime(exerciseInfoOn[currentIndex + 1].prepareTime);
-      setSets(exerciseInfoOn[currentIndex + 1].sets);
-      setCurrentSet(1);
-      setExerciseTime(exerciseInfoOn[currentIndex + 1].exerciseTime);
-      setRestTime(exerciseInfoOn[currentIndex + 1].restTime);
-      if (!isPaused) {
-        setIsPaused(true);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  useEffect(() => {
+    let intervalId;
+
+    const startNextSet = () => {
+      if (currentIndex < exerciseInfoOn.length - 1) {
+        setCurrentIndex((prevIndex) => prevIndex + 1);
+        setPrepareTime(exerciseInfoOn[currentIndex + 1].prepareTime);
+        setSets(exerciseInfoOn[currentIndex + 1].sets);
+        setCurrentSet(1);
+        setExerciseTime(exerciseInfoOn[currentIndex + 1].exerciseTime);
+        setRestTime(exerciseInfoOn[currentIndex + 1].restTime);
+        if (!isPaused) {
+          setIsPaused(true);
+        }
+      }
+    };
+
+    if ((prepareTime > 0 || exerciseTime > 0 || restTime > 0) && !isPaused) {
+      intervalId = setInterval(() => {
+        if (prepareTime > 0) {
+          setPrepareTime((prevTime) => prevTime - 1);
+        } else if (exerciseTime > 0) {
+          setExerciseTime((prevTime) => prevTime - 1);
+        } else if (restTime > 0) {
+          setRestTime((prevTime) => prevTime - 1);
+        }
+      }, 1000);
+    }
+
+
+
+    if (prepareTime === 0 && exerciseTime === 0 && restTime === 0 && !isPaused) {
+      BoxingBellSound.play();
+      if (currentSet < sets) {
+        setCurrentSet((prevSet) => prevSet + 1);
+
+        setExerciseTime(initialExerciseTime);
+        setRestTime(initialRestTime);
+      } else {
+        Alert.alert('운동 종료!', '축하합니다. 운동이 완료되었습니다.');
       }
     }
-  };
-
-  if ((prepareTime > 0 || exerciseTime > 0 || restTime > 0) && !isPaused) {
-    intervalId = setInterval(() => {
-      if (prepareTime > 0) {
-        setPrepareTime((prevTime) => prevTime - 1);
-      } else if (exerciseTime > 0) {
-        setExerciseTime((prevTime) => prevTime - 1);
-      } else if (restTime > 0) {
-        setRestTime((prevTime) => prevTime - 1);
-      }
-    }, 1000);
-  }
-
- 
-
-  if (prepareTime === 0 && exerciseTime === 0 && restTime === 0 && !isPaused) {
-    BoxingBellSound.play();
-    if (currentSet < sets) {
-      setCurrentSet((prevSet) => prevSet + 1);
- 
-      setExerciseTime(initialExerciseTime);
-      setRestTime(initialRestTime);
-    } else {
-      Alert.alert('운동 종료!', '축하합니다. 운동이 완료되었습니다.');
+    if ((prepareTime === 1 || exerciseTime === 1 || restTime === 1) && !isPaused) {
+      BoxingBellSound.play();
     }
-  }
-  if ((prepareTime === 1 || exerciseTime === 1 || restTime === 1) && !isPaused) {
-    BoxingBellSound.play();
-  }
 
-  return () => {
-    clearInterval(intervalId);
-  };
-}, [prepareTime, exerciseTime, restTime, isPaused]);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [prepareTime, exerciseTime, restTime, isPaused]);
 
-  
+
 
 
 
@@ -234,7 +234,7 @@ useEffect(() => {
     <View style={{ backgroundColor: 'rgba(255, 255, 255, 1)', flex: 1 }}>
       <SpeakerContainer>
         <TouchableOpacity onPress={toggleSpeaker}>
-        <Image source={isSoundOn  ? speakerfilled : speakerunfilled} style={{ width: 30, height: 30 }} />
+          <Image source={isSoundOn ? speakerfilled : speakerunfilled} style={{ width: 30, height: 30 }} />
         </TouchableOpacity>
       </SpeakerContainer>
 
@@ -271,23 +271,23 @@ useEffect(() => {
       ))}
 
 
-      <PlayerControl>
+      <View style={{ alignSelf: 'center', flexDirection: 'row', flex: 1, marginTop: 20 }}>
         <ImageContainer>
           <TouchableOpacity onPress={handlePrevious}>
             <Image source={previousbutton} style={{ width: 30, height: 30 }} />
           </TouchableOpacity>
         </ImageContainer>
-        <ImageContainer>
+        <View style={{ marginLeft: 80, marginRight: 80 }}>
           <TouchableOpacity onPress={toggleStart}>
             <Image source={isPaused ? stop : play} style={{ width: 30, height: 30 }} />
           </TouchableOpacity>
-        </ImageContainer>
+        </View>
         <ImageContainer>
           <TouchableOpacity onPress={handleNext}>
             <Image source={nextbutton} style={{ width: 30, height: 30 }} />
           </TouchableOpacity>
         </ImageContainer>
-      </PlayerControl>
+      </View>
       <StatusBar backgroundColor="black" />
     </View>
   );
