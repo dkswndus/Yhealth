@@ -8,6 +8,7 @@ const ExerciseRecord = ({ exerciseData, selectedDate }) => {
   );
   useEffect(() => {
     console.log('Filtered Exercise Data:', filteredExerciseData);
+    console.log(selectedDate);
   }, [filteredExerciseData]);
 
 
@@ -23,7 +24,7 @@ const ExerciseRecord = ({ exerciseData, selectedDate }) => {
         </View>
         {filteredExerciseData.map((data, index) => (
           <View key={index} style={styles.row}>
-            <Text style={styles.cell}>{data.exerciseOrder}</Text>
+            <Text style={styles.cell}>{data.name}</Text>
             <Text style={styles.cell}>{data.time}</Text>
             <Text style={styles.cell}>{data.sets}</Text>
             <Text style={styles.cell}>{data.reps}</Text>

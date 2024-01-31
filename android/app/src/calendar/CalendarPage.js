@@ -10,26 +10,26 @@ const CalendarComponent = ({ route }) => {
   const [selectedDate, setSelectedDate] = useState('');
   const [exerciseData, setExerciseData] = useState([]);
 
-useEffect(() => {
-  const loadDataFromStorage = async () => {
-    try {
-      const storedData = await AsyncStorage.getItem('appData');
-      console.log('저장된 데이터:', storedData);
+  useEffect(() => {
+    const loadDataFromStorage = async () => {
+      try {
+        const storedData = await AsyncStorage.getItem('appData');
+        console.log('저장된 데이터:', storedData);
 
-      if (storedData) {
-        const parsedData = JSON.parse(storedData);
-        console.log('파싱된 데이터:', parsedData);
-
-        setExerciseData((prevData) => [...prevData, parsedData]);
+        if (storedData) {
+          const parsedData = JSON.parse(storedData);
+          console.log('파싱된 데이터:', parsedData);
+          console.log(exerciseData);
+          setExerciseData((prevData) => [...prevData, parsedData]);
+        }
+      } catch (error) {
+        console.error('AsyncStorage에서 데이터를 불러오는 중 오류 발생:', error);
       }
-    } catch (error) {
-      console.error('AsyncStorage에서 데이터를 불러오는 중 오류 발생:', error);
-    }
-  };
+    };
 
-  // 컴포넌트가 마운트될 때 데이터 로드
-  loadDataFromStorage();
-}, []);
+    // 컴포넌트가 마운트될 때 데이터 로드
+    loadDataFromStorage();
+  }, []);
 
 
   const handleDayPress = (day) => {

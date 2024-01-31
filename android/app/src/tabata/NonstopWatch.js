@@ -12,7 +12,8 @@ const play = require("../assets/image/play.png");
 const CompleteContainer = styled.TouchableOpacity`
   border: 1px solid black;
   padding: 10px;
-  margin: 5px;
+  margin-right: 80px;
+  margin-left: 80px;
   border-radius: 5px;
   margin-top: -4px;
   background-color: ${({ completed }) => (completed ? 'black' : 'transparent')};
@@ -40,7 +41,7 @@ const PlayerControl = styled.View`
 `;
 
 const ImageContainer = styled.View`
-  margin-right: 90px;
+  
 `;
 
 const NonstopWatch = ({ route }) => {
@@ -69,7 +70,7 @@ const NonstopWatch = ({ route }) => {
           time: time,
           sets: sets,
           reps: reps,
-          date: new Date().toLocaleString(),
+          date: new Date().toLocaleDateString(),
         };
 
         await AsyncStorage.setItem('appData', JSON.stringify(dataToSave));
@@ -78,9 +79,6 @@ const NonstopWatch = ({ route }) => {
       }
     }
   };
-
-
-
 
   useEffect(() => {
     saveDataToStorage();
@@ -118,28 +116,31 @@ const NonstopWatch = ({ route }) => {
     if (completionStatus.every((status) => status === true)) {
 
       Alert.alert('운동 종료!', '축하합니다. 운동이 완료되었습니다.');
+      navigation.goBack();
     }
   }, [completionStatus]);
 
   return (
     <View style={{ backgroundColor: 'rgba(255, 255, 255, 1)', flex: 1 }}>
-      {selectedExercises.map((exercise, index) => (
-        <View key={index}>
-          <ExerciseInformation>
-            <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
-              {currentIndex + index + 1}/{exercises.length}
-            </Text>
-            <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
-              {name}
-            </Text>
-            <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
-              {sets} x {reps}
-            </Text>
-          </ExerciseInformation>
-        </View>
-      ))}
+      <View style={{flex:1}}>
+        {selectedExercises.map((exercise, index) => (
+          <View key={index}>
+            <ExerciseInformation>
+              <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
+                {currentIndex + index + 1}/{exercises.length}
+              </Text>
+              <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
+                {name}
+              </Text>
+              <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
+                {sets} x {reps}
+              </Text>
+            </ExerciseInformation>
+          </View>
+        ))}
+      </View>
+      <View style={{ alignSelf: 'center', flexDirection: 'row', flex:1}}>
 
-      <PlayerControl>
         <ImageContainer>
           <TouchableOpacity onPress={handlePrevious}>
             <Image source={previousbutton} style={{ width: 30, height: 30 }} />
@@ -155,8 +156,8 @@ const NonstopWatch = ({ route }) => {
             <Image source={nextbutton} style={{ width: 30, height: 30 }} />
           </TouchableOpacity>
         </ImageContainer>
-      </PlayerControl>
 
+      </View>
       <StatusBar backgroundColor="black" />
     </View>
   );
