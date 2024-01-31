@@ -18,6 +18,7 @@ const WeightSetPage = ({ route }) => {
   }
 
   const saveWeightData = async () => {
+    navigation.goBack();
 
   }
 

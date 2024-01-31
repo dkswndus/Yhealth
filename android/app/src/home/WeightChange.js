@@ -11,7 +11,7 @@ const Weight = () => {
     { date: '월', weight: 12 },
     { date: '화', weight: 30 },
     { date: '수', weight: 30 },
-    { date: '목', weight: 100 },
+    { date: '목', weight: 60 },
     { date: '금', weight: 30 },
     { date: '화', weight: 18 },
     { date: '화', weight: 15 },

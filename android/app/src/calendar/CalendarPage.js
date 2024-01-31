@@ -37,7 +37,7 @@ useEffect(() => {
   };
 
   const renderHeader = (date) => {
-    const month = date.toString('MMMM');
+    const month = date.toString('M월');
     return (
       <View style={{ padding: 10 }}>
         <Text style={{ fontSize: 25 }}>{month}</Text>
