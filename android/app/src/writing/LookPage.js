@@ -165,7 +165,7 @@ const LookPage = ({ route, navigation }) => {
           {comments.map((item, index) => (
             <View key={index} style={styles.commentContainer}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text style={{ color: 'black',fontWeight:'bold' }}>
+                <Text style={{ color: 'black', fontWeight: 'bold' }}>
                   {item.author}
                 </Text>
 

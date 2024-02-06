@@ -125,24 +125,24 @@ const NonstopWatch = ({ route }) => {
 
   return (
     <View style={{ backgroundColor: 'rgba(255, 255, 255, 1)', flex: 1 }}>
-      <View style={{flex:1}}>
-         {selectedExercises.map((exerciseInfoOff, index) => (
-        <View key={index}>
-          <ExerciseInformation>
-            <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
-              {currentIndex + index + 1}/{exerciseInfoOff.length}
-            </Text>
-            <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
-              {exerciseInfoOff.name}
-            </Text>
-            <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
-              {exerciseInfoOff.sets} x {exerciseInfoOff.reps}
-            </Text>
-          </ExerciseInformation>
-        </View>
-      ))}
+      <View style={{ flex: 1 }}>
+        {selectedExercises.map((exerciseInfoOff, index) => (
+          <View key={index}>
+            <ExerciseInformation>
+              <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
+                {currentIndex + index + 1}/{exerciseInfoOff.length}
+              </Text>
+              <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
+                {exerciseInfoOff.name}
+              </Text>
+              <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
+                {exerciseInfoOff.sets} x {exerciseInfoOff.reps}
+              </Text>
+            </ExerciseInformation>
+          </View>
+        ))}
       </View>
-     
+
       <View style={{ alignSelf: 'center', flexDirection: 'row', flex: 1, marginTop: 50 }}>
         <ImageContainer>
           <TouchableOpacity onPress={handlePrevious}>

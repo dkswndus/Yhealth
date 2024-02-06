@@ -38,7 +38,7 @@ const PlaceDropdown = ({ value, setValue }) => {
         valueField="value"
         placeholder="장소를 선택해주세요."
         value={value}
-        
+
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={(item) => {

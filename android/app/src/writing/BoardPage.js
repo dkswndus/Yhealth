@@ -82,7 +82,7 @@ const BoardPage = ({ route }) => {
                           <Image source={thumbsup} style={{ width: 25, height: 25, marginRight: 15 }} />
                           <Text style={styles.textcontent3}>{item.like}</Text>
                         </View>
-                        
+
                       </View>
                     </View>
                   </View>
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: 'Noto Sans',
     fontWeight: '900',
-    paddingRight:2,
+    paddingRight: 2,
   },
   addButton: {
     position: 'absolute',

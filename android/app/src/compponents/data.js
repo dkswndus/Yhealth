@@ -14,8 +14,8 @@ export const generalGymData = [
   { id: '11', title: '스텝퍼' },
   { id: '12', title: '스쿼트 오버헤드 프레스' },
   { id: '13', title: '니 쓰러스트' },
- 
-  { id: '15', title:  '이지바 바이셉 컬'},
+
+  { id: '15', title: '이지바 바이셉 컬' },
   { id: '16', title: '트위스트 니 쓰러스트' },
   { id: '17', title: '크리스 크로스 엘보우 투 니' },
   { id: '18', title: '로우 런지 트위스트' },
@@ -156,7 +156,7 @@ export const generalGymData = [
   { id: '158', title: '덤벨 해머 컬' },
   { id: '159', title: '바벨 바이셉 컬' },
 
- 
+
 
 
 ];
@@ -460,9 +460,9 @@ export const martialArtsGymData = [
   { id: '132', title: '버드 독' },
   { id: '133', title: '스타피쉬 크런치' },
   { id: '134', title: '레인보우 플랭크' },
- 
 
-  
+
+
 
 ];
 
@@ -657,7 +657,7 @@ export const cardioExercisesData = [
   { id: '12', title: '스쿼트 오버헤드 프레스' },
   { id: '13', title: '니 쓰러스트' },
   { id: '14', title: '스케이터 홉 탭' },
-  { id: '15', title: '로우 런지 트위스트'},
+  { id: '15', title: '로우 런지 트위스트' },
   { id: '16', title: '트위스트 니 쓰러스트' },
   { id: '17', title: '크리스 크로스 엘보우 투 니' },
 

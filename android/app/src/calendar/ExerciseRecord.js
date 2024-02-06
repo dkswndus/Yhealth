@@ -2,24 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ExerciseRecord = ({  }) => {
+const ExerciseRecord = ({ }) => {
   const [exerciseData, setExerciseData] = useState([]);
 
 
-// 저장된 데이터 불러오기
-const loadSavedData = async () => {
-  try {
-    const storedData = await AsyncStorage.getItem('appData');
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      console.log('파싱된 sdfsf데이터:', parsedData); // parsedData 확인을 위해 이 줄을 추가
-      setExerciseData(parsedData);
+  // 저장된 데이터 불러오기
+  const loadSavedData = async () => {
+    try {
+      const storedData = await AsyncStorage.getItem('appData');
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        console.log('파싱된 sdfsf데이터:', parsedData); // parsedData 확인을 위해 이 줄을 추가
+        setExerciseData(parsedData);
 
+      }
+    } catch (error) {
+      console.error('데이터 불러오기 오류', error);
     }
-  } catch (error) {
-    console.error('데이터 불러오기 오류', error);
-  }
-};
+  };
 
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const loadSavedData = async () => {
           <Text style={styles.cell}>시간</Text>
         </View>
 
-   
+
         {exerciseData.map((exercise, index) => (
           <View style={styles.row} key={index}>
             <Text style={styles.cell}>{exercise.date}</Text>

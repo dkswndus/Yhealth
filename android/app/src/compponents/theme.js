@@ -4,6 +4,6 @@ export const theme = {
     main: 'rgba(0,0,0,0.9)',
 
 
-    
+
     solidLine: ' rgba(0,0,0,0.2)',
 };

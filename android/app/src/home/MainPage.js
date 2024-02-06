@@ -13,7 +13,7 @@ const MainPage = ({ route }) => {
   const limitedBoardData = boardData.slice(-6);
   return (
     <ScrollView style={{ backgroundColor: 'white', flex: 1 }}>
-      <TopBar1/>
+      <TopBar1 />
       <View>
 
         <View style={styles.Container}>

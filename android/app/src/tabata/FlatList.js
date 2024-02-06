@@ -1,8 +1,8 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import styled from 'styled-components/native';
 import { Alert } from 'react-native';
-import { useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   cardioExercisesData, coreExercisesData,
@@ -34,7 +34,7 @@ const FlatList = ({ route }) => {
   const [likedExercises, setLikedExercises] = useRecoilState(likedExercisesState);
   const [selectedExercises, setSelectedExercises] = useRecoilState(selectedExercisesState);
   const [dropdownValue, setDropdownValue] = useRecoilState(dropdownValueState);
- 
+
 
   const saveDataToStorage = async () => {
     try {
@@ -61,20 +61,20 @@ const FlatList = ({ route }) => {
   };
 
 
- // 화면이 나타날 때와 dropdownValue가 변경될 때 데이터 불러오기
- useEffect(() => {
-  loadDataFromStorage();
-}, [dropdownValue]);
+  // 화면이 나타날 때와 dropdownValue가 변경될 때 데이터 불러오기
+  useEffect(() => {
+    loadDataFromStorage();
+  }, [dropdownValue]);
 
-// 상태가 변경될 때마다 데이터 저장
-useEffect(() => {
+  // 상태가 변경될 때마다 데이터 저장
+  useEffect(() => {
     saveDataToStorage();
-}, [likedExercises]);
+  }, [likedExercises]);
 
 
 
- 
- 
+
+
   useEffect(() => {
     // 드롭다운 값에 따라 현재 데이터 설정
     switch (dropdownValue) {
@@ -166,7 +166,7 @@ useEffect(() => {
     if (isTimeLimitOn) {
       navigation.navigate('TimeLimit', {
       });
-    } 
+    }
     else {
       navigation.navigate('TimeLimit', {
       });
@@ -243,7 +243,7 @@ useEffect(() => {
   const toggleSelection = (exerciseTitle) => {
     // 이미 선택된 운동인지 확인
     const isSelected = selectedExercises.includes(exerciseTitle);
-  
+
     // 선택된 운동이면 제거, 아니면 추가
     if (isSelected) {
       // 이미 선택된 경우, 선택 해제 로직 수행
@@ -259,7 +259,7 @@ useEffect(() => {
       }
     }
   };
-  
+
 
 
 
@@ -361,31 +361,31 @@ const styles = StyleSheet.create({
   todoText: {
     flexDirection: 'row',
     alignItems: 'center',
-   
+
 
   },
   addButtonContainer: {
     flexDirection: 'row',
-  
+
     justifyContent: 'space-between',
-  
+
   },
   addButtonText: {
     fontSize: 25,
     fontWeight: 'bold',
     color: 'rgba(0, 0, 0, 0.9)',
-    marginTop:-5,
-    marginLeft:100,
+    marginTop: -5,
+    marginLeft: 100,
 
   },
- 
+
   horizontaaScrollView: {
     flexDirection: 'row',
   },
   exerciseContainer: {
     flexDirection: 'row',
     padding: 15,
-    paddingBottom:35,
+    paddingBottom: 35,
   },
 });
 

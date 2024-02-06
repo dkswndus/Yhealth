@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components/native";
-import Icon from 'react-native-vector-icons/AntDesign'; 
-import { View, Text, Image,TouchableOpacity } from "react-native";
+import Icon from 'react-native-vector-icons/AntDesign';
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 const QrcCdeScan = require("../assets/image/QrcCdeScan.png");
 
@@ -30,7 +30,7 @@ const TopBar1 = () => {
   const navigation = useNavigation();
 
   const handleQrCodePress = () => {
-   
+
     navigation.navigate('QRCodeScanner');
   };
   return (
@@ -40,10 +40,10 @@ const TopBar1 = () => {
         <BlackText>health</BlackText>
       </View>
       <View style={styles.iconContainer}>
-      <TouchableOpacity onPress={handleQrCodePress}>
-        <Image source={QrcCdeScan} style={{ width: 25, height: 25 }} />
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity onPress={handleQrCodePress}>
+          <Image source={QrcCdeScan} style={{ width: 25, height: 25 }} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

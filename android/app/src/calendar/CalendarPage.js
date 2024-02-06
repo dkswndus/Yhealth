@@ -12,20 +12,20 @@ const CalendarComponent = ({ route }) => {
 
 
 
-// 저장된 데이터 불러오기
-const loadSavedData = async () => {
-  try {
-    const storedData = await AsyncStorage.getItem('appData');
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      console.log('파싱된 데이터:', parsedData); // parsedData 확인을 위해 이 줄을 추가
-      setExerciseData(parsedData);
+  // 저장된 데이터 불러오기
+  const loadSavedData = async () => {
+    try {
+      const storedData = await AsyncStorage.getItem('appData');
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        console.log('파싱된 데이터:', parsedData); // parsedData 확인을 위해 이 줄을 추가
+        setExerciseData(parsedData);
 
+      }
+    } catch (error) {
+      console.error('데이터 불러오기 오류', error);
     }
-  } catch (error) {
-    console.error('데이터 불러오기 오류', error);
-  }
-};
+  };
 
 
   useEffect(() => {
@@ -86,8 +86,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginLeft: 1,
     marginRight: 1,
-    marginLeft:25, 
-    marginRight:20
+    marginLeft: 25,
+    marginRight: 20
   },
   title: {
     color: 'black',

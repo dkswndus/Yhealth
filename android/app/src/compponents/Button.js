@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 import { TouchableOpacity, Text, View, } from 'react-native';
 import { theme } from '../compponents/theme';
 
-const ExerciseStartContainer= styled(View)`
+const ExerciseStartContainer = styled(View)`
       width:100%;
       height: 42px;
       background-color: #1A6DFF;
@@ -25,7 +25,7 @@ export const ExerciseStart = props => {
         <ExerciseStartContainer>
             <ExerciseStartText>{props.title}</ExerciseStartText>
         </ExerciseStartContainer>
-       
+
     );
 };
 
@@ -59,7 +59,7 @@ const TimeLimitText = styled.Text`
   color: rgba(0, 0, 0, 0.9);
 `;
 export const TimeLimitOn = props => {
-    return(
+    return (
         <TimeOnButtonContainer>
             <TimeLimitText>{props.title}</TimeLimitText>
         </TimeOnButtonContainer>
@@ -68,9 +68,9 @@ export const TimeLimitOn = props => {
 
 
 export const TimeLimitOff = props => {
-    return(
+    return (
         <TimeOffButtonContainer>
-             <TimeLimitText>{props.title}</TimeLimitText>
+            <TimeLimitText>{props.title}</TimeLimitText>
         </TimeOffButtonContainer>
     );
 };
@@ -104,4 +104,4 @@ export const ExerciseAdd = props => {
 
 
 
-export default {  ExerciseStart, ExerciseAdd,TimeLimitOff,TimeLimitOn};
+export default { ExerciseStart, ExerciseAdd, TimeLimitOff, TimeLimitOn };

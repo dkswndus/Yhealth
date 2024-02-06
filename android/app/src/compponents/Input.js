@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 import { Dimensions } from 'react-native';
 import { css } from 'styled-components';
 import { TextInput } from 'react-native';
-import { Image,Text,View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { GeneralGymScroll } from '../scrollview/ScrollView';
 import { FlatList } from 'react-native';
@@ -46,13 +46,13 @@ const Input5 = ({ placeholder }) => {
   return (
     <StyledInput5Container>
       <StyledInput5 width={width} placeholder={placeholder} maxLength={50} />
-      <View style={{ flexDirection: 'row',justifyContent: 'space-between' }}>
-      <IconContainer>
-        <Image source={thumbsup} style={{ width: 25, height: 25, marginRight: 30 }} />
-        <Image source={messages} style={{ width: 25, height: 25 }} />
-      </IconContainer>
-      <Text> 수정 | 삭제</Text>
-         </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <IconContainer>
+          <Image source={thumbsup} style={{ width: 25, height: 25, marginRight: 30 }} />
+          <Image source={messages} style={{ width: 25, height: 25 }} />
+        </IconContainer>
+        <Text> 수정 | 삭제</Text>
+      </View>
     </StyledInput5Container>
   );
 };
@@ -132,7 +132,7 @@ const Input7 = () => {
       fontWeight: 'normal',
       paddingLeft: 20,
       paddingRight: 20,
-   
+
     },
   };
 
@@ -183,4 +183,4 @@ const Input7 = () => {
 
 
 
-export {Input5, Input6, Input7 };
+export { Input5, Input6, Input7 };

@@ -12,14 +12,14 @@ export const exerciseLikesState = atom({
 export const likedExercisesState = atom({
     key: 'likedExercisesState',
     default: [],
-  });
+});
 export const selectedExercisesState = atom({
     key: 'selectedExercises',
-    default: [], 
+    default: [],
 });
 export const dropdownValueState = atom({
     key: 'dropdownValueState',
-    default: [], 
+    default: [],
 });
 
 export const exerciseOrderState = atom({
@@ -69,7 +69,7 @@ export const setRemainingExercisesState = atom({
 export const isPausedState = atom({
     key: 'isPausedState',
     default: false,
-  });
+});
 export const isSoundOnState = atom({
     key: 'isSoundOnState',
     default: true,

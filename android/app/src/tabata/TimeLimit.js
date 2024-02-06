@@ -128,7 +128,7 @@ const TimeLimit = ({ route }) => {
     const [selectedExercises, setSelectedExercises] = useRecoilState(selectedExercisesState);
     const [remainingExercises, setRemainingExercises] = useRecoilState(remainingExercisesState);
     const prevDropdownValue = useRef(dropdownValue);
-    const time = "0"; 
+    const time = "0";
 
 
     useEffect(() => {
@@ -227,39 +227,39 @@ const TimeLimit = ({ route }) => {
         const updatedExercises = [...selectedExercises];
         updatedExercises.splice(index, 1);
         setSelectedExercises(updatedExercises);
-    
+
         // 운동 삭제 시 해당 운동의 세트, 횟수 등 초기화
         setSets((prevSets) => {
             const newSets = { ...prevSets };
             delete newSets[selectedExercises[index]];
             return newSets;
         });
-    
+
         setReps((prevReps) => {
             const newReps = { ...prevReps };
             delete newReps[selectedExercises[index]];
             return newReps;
         });
-    
+
         setPrepareTime((prevPrepareTime) => {
             const newPrepareTime = { ...prevPrepareTime };
             delete newPrepareTime[selectedExercises[index]];
             return newPrepareTime;
         });
-    
+
         setExerciseTime((prevExerciseTime) => {
             const newExerciseTime = { ...prevExerciseTime };
             delete newExerciseTime[selectedExercises[index]];
             return newExerciseTime;
         });
-    
+
         setRestTime((prevRestTime) => {
             const newRestTime = { ...prevRestTime };
             delete newRestTime[selectedExercises[index]];
             return newRestTime;
         });
     };
-    
+
 
 
 
@@ -348,113 +348,113 @@ const TimeLimit = ({ route }) => {
                     <TimeLimitOff title="Time Limit OFF" />
                 )}
             </TouchableOpacity>
-    
-                <ScrollView>
-                    {isTimeLimitOn ? (
-                        <ExerciseInformation>
-                            {exerciseOrder.map((exercise, index) => (
-                                <View key={index}>
-                                    <IntegreatedContainer>
-                                        <ExerciseText>{exercise}</ExerciseText>
-                                        <SettingContainer>
-                                            <TouchableOpacity onPress={() => moveExerciseUp(index)}>
-                                                <Image source={up} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
-                                            </TouchableOpacity>
-                                            <TouchableOpacity onPress={() => moveExerciseDown(index)}>
-                                                <Image source={down} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
-                                            </TouchableOpacity>
-                                            <TouchableOpacity onPress={() => removeExercise(index)}>
-                                                <Image source={remove} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
-                                            </TouchableOpacity>
-                                        </SettingContainer>
-                                    </IntegreatedContainer>
-                                    <InputContainer>
-                                        <TextInput
-                                            placeholder="세트"
-                                            keyboardType="numeric"
 
-                                            color="black"
-                                            value={sets[exercise]}
-                                            onChangeText={(value) => handleSetsChange(exercise, value)}
-                                        />
-                                        <TextInput
-                                            placeholder="횟수"
-                                            keyboardType="numeric"
+            <ScrollView>
+                {isTimeLimitOn ? (
+                    <ExerciseInformation>
+                        {exerciseOrder.map((exercise, index) => (
+                            <View key={index}>
+                                <IntegreatedContainer>
+                                    <ExerciseText>{exercise}</ExerciseText>
+                                    <SettingContainer>
+                                        <TouchableOpacity onPress={() => moveExerciseUp(index)}>
+                                            <Image source={up} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => moveExerciseDown(index)}>
+                                            <Image source={down} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => removeExercise(index)}>
+                                            <Image source={remove} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
+                                        </TouchableOpacity>
+                                    </SettingContainer>
+                                </IntegreatedContainer>
+                                <InputContainer>
+                                    <TextInput
+                                        placeholder="세트"
+                                        keyboardType="numeric"
 
-                                            color="black"
-                                            value={reps[exercise]}
-                                            onChangeText={(value) => handleRepsChange(exercise, value)}
-                                        />
-                                        <TextInput
-                                            placeholder="준비시간"
-                                            keyboardType="numeric"
+                                        color="black"
+                                        value={sets[exercise]}
+                                        onChangeText={(value) => handleSetsChange(exercise, value)}
+                                    />
+                                    <TextInput
+                                        placeholder="횟수"
+                                        keyboardType="numeric"
 
-                                            color="black"
-                                            value={prepareTime[exercise]}
-                                            onChangeText={(value) => handlePrepareTimeChange(exercise, value)}
-                                        />
-                                        <TextInput
-                                            placeholder="운동시간"
-                                            keyboardType="numeric"
+                                        color="black"
+                                        value={reps[exercise]}
+                                        onChangeText={(value) => handleRepsChange(exercise, value)}
+                                    />
+                                    <TextInput
+                                        placeholder="준비시간"
+                                        keyboardType="numeric"
 
-                                            color="black"
-                                            value={exerciseTime[exercise]}
-                                            onChangeText={( value) => handleExerciseTimeChange(exercise, value)}
-                                        />
-                                        <TextInput
-                                            placeholder="휴식시간"
-                                            keyboardType="numeric"
+                                        color="black"
+                                        value={prepareTime[exercise]}
+                                        onChangeText={(value) => handlePrepareTimeChange(exercise, value)}
+                                    />
+                                    <TextInput
+                                        placeholder="운동시간"
+                                        keyboardType="numeric"
 
-                                            color="black"
-                                            value={restTime[exercise]}
-                                            onChangeText={(value) => handleRestTimeChange(exercise, value)}
-                                        />
-                                    </InputContainer>
-                                </View>
-                            ))}
-                        </ExerciseInformation>
-                    ) : (
-                        <ExerciseInformation>
-                            {exerciseOrder.map((exercise, index) => (
-                                <View key={index}>
-                                    <IntegreatedContainer>
-                                        <ExerciseText>{exercise}</ExerciseText>
-                                        <SettingContainer>
-                                            <TouchableOpacity onPress={() => moveExerciseUp(index)}>
-                                                <Image source={up} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
-                                            </TouchableOpacity>
-                                            <TouchableOpacity onPress={() => moveExerciseDown(index)}>
-                                                <Image source={down} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
-                                            </TouchableOpacity>
-                                            <TouchableOpacity onPress={() => removeExercise(index)}>
-                                                <Image source={remove} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
-                                            </TouchableOpacity>
-                                        </SettingContainer>
-                                    </IntegreatedContainer>
-                                    <InputContainer>
-                                        <TextInput
-                                            placeholder="세트"
-                                            keyboardType="numeric"
+                                        color="black"
+                                        value={exerciseTime[exercise]}
+                                        onChangeText={(value) => handleExerciseTimeChange(exercise, value)}
+                                    />
+                                    <TextInput
+                                        placeholder="휴식시간"
+                                        keyboardType="numeric"
 
-                                            value={sets[exercise]}
-                                            onChangeText={(value) => handleSetsChange(exercise, value)}
+                                        color="black"
+                                        value={restTime[exercise]}
+                                        onChangeText={(value) => handleRestTimeChange(exercise, value)}
+                                    />
+                                </InputContainer>
+                            </View>
+                        ))}
+                    </ExerciseInformation>
+                ) : (
+                    <ExerciseInformation>
+                        {exerciseOrder.map((exercise, index) => (
+                            <View key={index}>
+                                <IntegreatedContainer>
+                                    <ExerciseText>{exercise}</ExerciseText>
+                                    <SettingContainer>
+                                        <TouchableOpacity onPress={() => moveExerciseUp(index)}>
+                                            <Image source={up} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => moveExerciseDown(index)}>
+                                            <Image source={down} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => removeExercise(index)}>
+                                            <Image source={remove} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
+                                        </TouchableOpacity>
+                                    </SettingContainer>
+                                </IntegreatedContainer>
+                                <InputContainer>
+                                    <TextInput
+                                        placeholder="세트"
+                                        keyboardType="numeric"
 
-                                        />
-                                        <TextInput
-                                            placeholder="횟수 "
-                                            keyboardType="numeric"
+                                        value={sets[exercise]}
+                                        onChangeText={(value) => handleSetsChange(exercise, value)}
 
-                                            value={reps[exercise]}
-                                            onChangeText={(value) => handleRepsChange(exercise, value)}
+                                    />
+                                    <TextInput
+                                        placeholder="횟수 "
+                                        keyboardType="numeric"
 
-                                        />
-                                    </InputContainer>
-                                </View>
-                            ))}
-                        </ExerciseInformation>
-                    )}
-                </ScrollView>
-    
+                                        value={reps[exercise]}
+                                        onChangeText={(value) => handleRepsChange(exercise, value)}
+
+                                    />
+                                </InputContainer>
+                            </View>
+                        ))}
+                    </ExerciseInformation>
+                )}
+            </ScrollView>
+
             <ExerciseContainer>
                 <ExerciseLine>
                     <TouchableOpacity onPress={navigateToFlatList}>
