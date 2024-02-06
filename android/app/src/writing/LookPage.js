@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View, TextInput, Text, Image, Alert, Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ScrollView, StyleSheet, TouchableOpacity, View, TextInput, Text, Image, Alert } from 'react-native';
 import { TopBar1 } from '../compponents/TopBar';
 
 const LookPage = ({ route, navigation }) => {
@@ -8,81 +8,117 @@ const LookPage = ({ route, navigation }) => {
     // 게시글이 변경될 때마다 댓글 상태 초기화
     setComments([]);
   }, [selectedItem]);
-
-  const [selectedItem, setSelectedItem] = useState(route.params.selectedItem);
-  const [nickname, setNickname] = useState('');
-  const [password, setPassword] = useState('');
-  const [comment, setComment] = useState('');
-  const [comments, setComments] = useState([]);
-  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(route.params.selectedItem); // 게시글 상태 추가
 
   const paperplane = require("../assets/image/paperplane.png");
   const thumbsup = require("../assets/image/thumbsup.png");
   const messages = require("../assets/image/messages.png");
+  const [nickname, setNickname] = useState('');
+  const [password, setPassword] = useState('');
+  const [comment, setComment] = useState('');
+  const [comments, setComments] = useState([]); // 댓글을 저장할 상태 변수
 
   const handleThumbsUp = () => {
+    // 여기에 좋아요 증가 로직을 추가
     const updatedSelectedItem = {
       ...selectedItem,
-      like: selectedItem.like + 1,
+      like: selectedItem.like + 1, // 좋아요 수를 1 증가
     };
+
+    // 여기에서 업데이트된 게시글 정보를 AsyncStorage 또는 서버에 저장해야 합니다.
+
+    // 업데이트된 게시글 정보를 상태에 반영
     setSelectedItem(updatedSelectedItem);
   };
-
   const handleNameChange = (inputName) => {
     setNickname(inputName);
   };
-
   const handlePwdChange = (inputPwd) => {
     setPassword(inputPwd);
   };
-
   const handleTextChange = (inputText) => {
     setComment(inputText);
   };
-
   const handleCommentDelete = (index) => {
-    setDeleteModalVisible(true);
+    // 댓글 삭제를 위해 index를 인자로 받습니다.
+    Alert.alert(
+      '댓글 삭제',
+      '정말로 삭제하시겠습니까?',
+      [
+        {
+          text: '취소',
+          style: 'cancel',
+        },
+        {
+          text: '삭제',
+          onPress: () => {
+            // 선택된 인덱스의 댓글을 제외한 새로운 댓글 목록을 생성합니다.
+            const updatedComments = [...comments.slice(0, index), ...comments.slice(index + 1)];
+            // 업데이트된 댓글 목록을 상태에 반영합니다.
+            setComments(updatedComments);
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
-
   const handleEditDelete = () => {
-    setEditModalVisible(true);
+    //삭제 기능
+    Alert.alert(
+      '글 삭제',
+      '정말로 삭제하시겠습니까?',
+      [
+        {
+          text: '취소',
+          style: 'cancel',
+        },
+        {
+          text: '삭제',
+          onPress: async () => {
+            try {
+              // 삭제할 글의 ID를 기준으로 글 목록에서 해당 글을 제외한 새로운 목록을 생성
+              const existingPosts = await AsyncStorage.getItem('posts');
+              const posts = existingPosts ? JSON.parse(existingPosts) : [];
+              const updatedPosts = posts.filter(post => post.id !== selectedItem.id);
+
+              // 업데이트된 글 목록을 저장
+              await AsyncStorage.setItem('posts', JSON.stringify(updatedPosts));
+
+              // 삭제 후 게시판 화면으로 이동
+              navigation.navigate('BoardPage');
+            } catch (error) {
+              console.error('글 삭제 중 오류 발생:', error);
+            }
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   const handleEditEdit = () => {
+    // 여기에 수정 기능을 추가.
     console.log("수정 버튼이 눌렸습니다.");
   };
-
   const handleSend = () => {
+    console.log("전송 버튼이 눌렸습니다.");
+
+    // 전송 로직을 추가하세요.
+    // 댓글을 추가할 때마다 comments 상태를 업데이트합니다.
     const newComment = { author: nickname, content: comment };
+
     setComments([...comments, newComment]);
+
+    // 댓글 작성 후 입력 필드 초기화
     setNickname('');
     setPassword('');
     setComment('');
+
+    // 댓글 수를 업데이트
     const updatedSelectedItem = {
       ...selectedItem,
-      comments: selectedItem.comments + 1,
+      comments: selectedItem.comments + 1, // 댓글 수를 1 증가
     };
-  };
-
-  const handleConfirmDelete = () => {
-    if (password !== '비밀번호') {
-      Alert.alert('비밀번호 오류', '비밀번호가 일치하지 않습니다.');
-      return;
-    }
-    setDeleteModalVisible(false);
-    // 삭제 로직 추가
-    const updatedComments = [...comments.slice(0, index), ...comments.slice(index + 1)];
-    setComments(updatedComments);
-  };
-
-  const handleConfirmEdit = () => {
-    if (password !== '비밀번호') {
-      Alert.alert('비밀번호 오류', '비밀번호가 일치하지 않습니다.');
-      return;
-    }
-    setEditModalVisible(false);
-    // 수정 로직 추가
   };
 
   return (
@@ -177,64 +213,9 @@ const LookPage = ({ route, navigation }) => {
             </View>
           </TouchableOpacity>
         </View>
+
       </View>
 
-      {/* 댓글 삭제를 위한 모달 */}
-      <Modal
-        visible={deleteModalVisible}
-        transparent
-        onRequestClose={() => setDeleteModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <TextInput
-              style={styles.inputcontainer}
-              onChangeText={handlePwdChange}
-              value={password}
-              placeholder="비밀번호를 입력하세요"
-              placeholderTextColor="gray"
-              secureTextEntry
-            />
-            <View style={styles.modalButtons}>
-              <TouchableOpacity onPress={handleConfirmDelete}>
-                <Text style={styles.button}>확인</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setDeleteModalVisible(false)}>
-                <Text style={styles.button}>취소</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* 글 수정을 위한 모달 */}
-      <Modal
-        visible={editModalVisible}
-        transparent
-        onRequestClose={() => setEditModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <TextInput
-              style={styles.inputcontainer}
-              onChangeText={handlePwdChange}
-              value={password}
-              placeholder="비밀번호를 입력하세요"
-              placeholderTextColor="gray"
-             
-            />
-            <View style={styles.modalButtons}>
-              <TouchableOpacity onPress={() => setEditModalVisible(false)}>
-                <Text style={styles.button}>취소</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleConfirmEdit}>
-                <Text style={styles.button}>확인</Text>
-              </TouchableOpacity>
-              
-            </View>
-          </View>
-        </View>
-      </Modal>
 
     </View>
   );
@@ -264,7 +245,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     color: 'black',
   },
-  commentContainer: {
+  titlecontentcontainer: {
+    height: 200,
     borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 10,
@@ -273,28 +255,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     color: 'black',
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
+  commentContainer: {
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 10,
+    padding: 5,
     backgroundColor: 'white',
-    padding: 20,
     borderRadius: 10,
-    elevation: 5,
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 10,
-  },
-  button: {
-    padding: 10,
-    borderRadius: 5,
-    backgroundColor: 'blue',
-    color: 'white',
+    color: 'black',
   },
 });
 
