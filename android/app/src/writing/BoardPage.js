@@ -3,16 +3,18 @@ import { View, StyleSheet, Text, ScrollView, TouchableOpacity, RefreshControl, I
 import { useNavigation } from '@react-navigation/native';
 import { TopBar1 } from '../compponents/TopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { useIsFocused } from '@react-navigation/native';
 const BoardPage = ({ route }) => {
+  const isFocused = useIsFocused();
   const navigation = useNavigation();
   const [boardData, setBoardData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const thumbsup = require("../assets/image/thumbsup.png");
   const messages = require("../assets/image/messages.png");
   useEffect(() => {
+
     fetchData();
-  }, []);
+  }, [isFocused]);
 
   const fetchData = async () => {
     try {

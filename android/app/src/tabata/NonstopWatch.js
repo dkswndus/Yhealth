@@ -143,7 +143,7 @@ const NonstopWatch = ({ route }) => {
         ))}
       </View>
 
-      <View style={{ alignSelf: 'center', flexDirection: 'row', flex: 1, marginTop: 50 }}>
+      <View style={{ alignSelf: 'center', flexDirection: 'row', flex: 1, paddingTop: 350 }}>
         <ImageContainer>
           <TouchableOpacity onPress={handlePrevious}>
             <Image source={previousbutton} style={{ width: 30, height: 30 }} />
