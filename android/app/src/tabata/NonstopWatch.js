@@ -39,7 +39,7 @@ const PlayerControl = styled.View`
 `;
 
 const ImageContainer = styled.View`
-  margin-right: 90px;
+
 `;
 
 const NonstopWatch = ({ route }) => {
@@ -58,7 +58,7 @@ const NonstopWatch = ({ route }) => {
   useEffect(() => {
     console.log('exerciseInfoOff 정보:', exerciseInfoOff);
   }, [exerciseInfoOff]);
-  
+
   useEffect(() => {
     const saveDataToStorage = async (data) => {
       try {
@@ -67,13 +67,13 @@ const NonstopWatch = ({ route }) => {
         console.error('오류', error);
       }
     };
-  
+
     // exerciseInfoOff를 기반으로 transformedData 생성
     const transformedData = exerciseInfoOff.map(item => {
       const { name, reps, sets, time } = item;
       const currentDate = new Date();
       const formattedDate = currentDate.toISOString().split('T')[0];
-  
+
       return {
         name: name,
         date: formattedDate,
@@ -82,10 +82,10 @@ const NonstopWatch = ({ route }) => {
         time: time,
       };
     });
-  
+
     // transformedData를 이용하여 저장
     saveDataToStorage(transformedData);
-  
+
     if (completionStatus.every((status) => status === true)) {
       Alert.alert('종료', '운동이 완료되었습니다.');
       navigation.goBack();
@@ -94,8 +94,8 @@ const NonstopWatch = ({ route }) => {
       });
     }
   }, [completionStatus, exerciseInfoOff]);
-  
-  
+
+
 
 
 
@@ -125,38 +125,41 @@ const NonstopWatch = ({ route }) => {
 
   return (
     <View style={{ backgroundColor: 'rgba(255, 255, 255, 1)', flex: 1 }}>
-   {selectedExercises.map((exerciseInfoOff, index) => (
-  <View key={index}>
-    <ExerciseInformation>
-      <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
-        {currentIndex + index + 1}/{exerciseInfoOff.length}
-      </Text>
-      <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
-        {exerciseInfoOff.name} 
-      </Text>
-      <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
-        {exerciseInfoOff.sets} x {exerciseInfoOff.reps} 
-      </Text>
-    </ExerciseInformation>
-  </View>
-))}
-      <PlayerControl>
+      <View style={{flex:1}}>
+         {selectedExercises.map((exerciseInfoOff, index) => (
+        <View key={index}>
+          <ExerciseInformation>
+            <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
+              {currentIndex + index + 1}/{exerciseInfoOff.length}
+            </Text>
+            <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
+              {exerciseInfoOff.name}
+            </Text>
+            <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
+              {exerciseInfoOff.sets} x {exerciseInfoOff.reps}
+            </Text>
+          </ExerciseInformation>
+        </View>
+      ))}
+      </View>
+     
+      <View style={{ alignSelf: 'center', flexDirection: 'row', flex: 1, marginTop: 50 }}>
         <ImageContainer>
           <TouchableOpacity onPress={handlePrevious}>
             <Image source={previousbutton} style={{ width: 30, height: 30 }} />
           </TouchableOpacity>
         </ImageContainer>
-        <ImageContainer>
+        <View style={{ marginLeft: 80, marginRight: 80 }}>
           <CompleteContainer completed={completionStatus[currentIndex]} onPress={handleCompletion}>
             <CompleteText completed={completionStatus[currentIndex]}>완료</CompleteText>
           </CompleteContainer>
-        </ImageContainer>
+        </View>
         <ImageContainer>
           <TouchableOpacity onPress={handleNext}>
             <Image source={nextbutton} style={{ width: 30, height: 30 }} />
           </TouchableOpacity>
         </ImageContainer>
-      </PlayerControl>
+      </View>
 
       <StatusBar backgroundColor="black" />
     </View>
