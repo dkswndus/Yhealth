@@ -9,7 +9,7 @@ const LookPage = ({ route, navigation }) => {
     setComments([]);
   }, [selectedItem]);
   const [selectedItem, setSelectedItem] = useState(route.params.selectedItem); // 게시글 상태 추가
- 
+
   const paperplane = require("../assets/image/paperplane.png");
   const thumbsup = require("../assets/image/thumbsup.png");
   const messages = require("../assets/image/messages.png");
@@ -17,7 +17,7 @@ const LookPage = ({ route, navigation }) => {
   const [password, setPassword] = useState('');
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]); // 댓글을 저장할 상태 변수
-  
+
   const handleThumbsUp = () => {
     // 여기에 좋아요 증가 로직을 추가
     const updatedSelectedItem = {
@@ -39,9 +39,31 @@ const LookPage = ({ route, navigation }) => {
   const handleTextChange = (inputText) => {
     setComment(inputText);
   };
+  const handleCommentDelete = (index) => {
+    // 댓글 삭제를 위해 index를 인자로 받습니다.
+    Alert.alert(
+      '댓글 삭제',
+      '정말로 삭제하시겠습니까?',
+      [
+        {
+          text: '취소',
+          style: 'cancel',
+        },
+        {
+          text: '삭제',
+          onPress: () => {
+            // 선택된 인덱스의 댓글을 제외한 새로운 댓글 목록을 생성합니다.
+            const updatedComments = [...comments.slice(0, index), ...comments.slice(index + 1)];
+            // 업데이트된 댓글 목록을 상태에 반영합니다.
+            setComments(updatedComments);
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
   const handleEditDelete = () => {
-    // 여기에 삭제 기능을 추가
-    // 글 삭제 로직을 추가하세요.
+    //삭제 기능
     Alert.alert(
       '글 삭제',
       '정말로 삭제하시겠습니까?',
@@ -142,10 +164,16 @@ const LookPage = ({ route, navigation }) => {
         <View style={styles.viewcontainer}>
           {comments.map((item, index) => (
             <View key={index} style={styles.commentContainer}>
-              <Text style={{ color: 'black' }}>
-                {item.author}
-                {'\n'}
-                {item.content}</Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Text style={{ color: 'black',fontWeight:'bold' }}>
+                  {item.author}
+                </Text>
+
+                <TouchableOpacity onPress={() => handleCommentDelete(index)}>
+                  <Text style={{ color: 'blue', marginLeft: 10 }}>삭제</Text>
+                </TouchableOpacity>
+              </View>
+              <Text style={{ color: 'black' }}>{item.content}</Text>
             </View>
           ))}
         </View>

@@ -128,7 +128,7 @@ const TimeLimit = ({ route }) => {
     const [selectedExercises, setSelectedExercises] = useRecoilState(selectedExercisesState);
     const [remainingExercises, setRemainingExercises] = useRecoilState(remainingExercisesState);
     const prevDropdownValue = useRef(dropdownValue);
-
+    const time = "0"; 
 
 
     useEffect(() => {
@@ -215,6 +215,7 @@ const TimeLimit = ({ route }) => {
             name: exercise,
             sets: sets[exercise],
             reps: reps[exercise],
+            time: time,
         }));
 
         navigation.navigate('NonstopWatch', { exerciseInfoOff });

@@ -47,7 +47,9 @@ const Writepage = ({ route }) => {
   //     toggleModal();
   //   }
   // };
-
+  const cancelModal = () => {
+    setModalVisible(!isModalVisible);
+  }
   const toggleModal = async () => {
     setModalVisible(!isModalVisible);
 
@@ -140,22 +142,33 @@ const Writepage = ({ route }) => {
             <View style={styles.modalContainer}>
               <TouchableWithoutFeedback onPress={() => { }}>
                 <View style={styles.modalContent}>
-                  <TextInput
-                    style={styles.inputcontainer}
-                    onChangeText={handleNameChange}
-                    onFocus={clearNickname}
-                    value={nickname}
-                    placeholder="닉네임"
-                    placeholderTextColor="gray"
-                  />
-                  <TextInput
-                    style={styles.inputcontainer}
-                    onChangeText={handlePwdChange}
-                    value={pwd}
-                    placeholder="비밀번호"
-                    placeholderTextColor="gray"
-                  />
-                  <Button title="확인" onPress={toggleModal} />
+                  <View>
+                    <TextInput
+                      style={styles.inputcontainer}
+                      onChangeText={handleNameChange}
+                      onFocus={clearNickname}
+                      value={nickname}
+                      placeholder="닉네임"
+                      placeholderTextColor="gray"
+                    />
+                    <TextInput
+                      style={styles.inputcontainer}
+                      onChangeText={handlePwdChange}
+                      value={pwd}
+                      placeholder="비밀번호"
+                      placeholderTextColor="gray"
+                    />
+                  </View>
+
+                  <View style={{ padding: 10, flexDirection: 'row' }}>
+                    <TouchableOpacity style={styles.buttonStyle} onPress={cancelModal}>
+                      <Text style={{ color: 'white', textAlign: 'center' }}>취소</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress={toggleModal}>
+                      <Text style={{ color: 'white', textAlign: 'center' }}>확인</Text>
+                    </TouchableOpacity>
+                  </View>
+
                 </View>
               </TouchableWithoutFeedback>
             </View>

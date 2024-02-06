@@ -1,33 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ExerciseRecord = ({ exerciseData, selectedDate }) => {
-  // 선택된 날짜를 기반으로 운동 데이터 필터링
-  const filteredExerciseData = exerciseData.filter(
-    (data) => data.date === selectedDate
-  );
+const ExerciseRecord = ({  }) => {
+  const [exerciseData, setExerciseData] = useState([]);
+
+
+// 저장된 데이터 불러오기
+const loadSavedData = async () => {
+  try {
+    const storedData = await AsyncStorage.getItem('appData');
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      console.log('파싱된 sdfsf데이터:', parsedData); // parsedData 확인을 위해 이 줄을 추가
+      setExerciseData(parsedData);
+
+    }
+  } catch (error) {
+    console.error('데이터 불러오기 오류', error);
+  }
+};
+
+
   useEffect(() => {
-    console.log('Filtered Exercise Data:', filteredExerciseData);
-    console.log(selectedDate);
-  }, [filteredExerciseData]);
-
+    // 저장된 데이터 불러오기
+    loadSavedData();
+  }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>운동 기록</Text>
       <View style={styles.table}>
         <View style={styles.row}>
-          <Text style={styles.cell}>운동 이름</Text>
-          <Text style={styles.cell}>운동 시간</Text>
-          <Text style={styles.cell}>세트</Text>
+          <Text style={styles.cell}>날짜</Text>
+          <Text style={styles.cell}>운동이름</Text>
           <Text style={styles.cell}>횟수</Text>
+          <Text style={styles.cell}>세트</Text>
+          <Text style={styles.cell}>시간</Text>
         </View>
-        {filteredExerciseData.map((data, index) => (
-          <View key={index} style={styles.row}>
-            <Text style={styles.cell}>{data.name}</Text>
-            <Text style={styles.cell}>{data.time}</Text>
-            <Text style={styles.cell}>{data.sets}</Text>
-            <Text style={styles.cell}>{data.reps}</Text>
+
+   
+        {exerciseData.map((exercise, index) => (
+          <View style={styles.row} key={index}>
+            <Text style={styles.cell}>{exercise.date}</Text>
+            <Text style={styles.cell}>{exercise.name}</Text>
+            <Text style={styles.cell}>{exercise.reps}</Text>
+            <Text style={styles.cell}>{exercise.sets}</Text>
+            <Text style={styles.cell}>{exercise.time}</Text>
           </View>
         ))}
       </View>

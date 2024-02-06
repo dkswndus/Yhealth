@@ -20,43 +20,57 @@ import TimeLimit from './android/app/src/tabata/TimeLimit';
 import QRCodeScanner from './android/app/src/compponents/QRCodeScanner';
 import WeightSetPage from './android/app/src/weight/Weightset';
 import WeightView from './android/app/src/weight/WeightView';
-
-
+import { KeyboardAvoidingView, Platform } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 
 
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const WritingScreen = ({ route }) => {
-  console.log("WritingScreen");
   return <BoardPage route={route} />;
 };
 
-const ExerciseScreen = ({ route }) => {
+const TimeLimitScreen = ({ route }) => {
   return < TimeLimit route={route} />;
- 
+
 };
 
 const CalendarScreen = ({ route }) => {
-  console.log("CalendarScreen");
   return <CalendarComponent route={route} />;
 };
 
 const HomeScreen = ({ route }) => {
-  console.log("HomeScreen");
   return <MainPage route={route} />;
 };
 
 const TabNavigation = () => {
   return (
+  <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={-200} // 키보드가 나타날 때 UI를 위로 200만큼 올립니다.
+      style={{ flex: 1 }}
+    >
     <Tab.Navigator
 
       tabBarOptions={{
         style: { height: 70 },
         labelStyle: { fontSize: 14 },
-      
+
       }}
     >
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={home}
+              style={{ width: 30, height: 30, tintColor: focused ? '#1A6DFF' : 'gray' }}
+            />
+          ),
+        }}
+      />
       <Tab.Screen
         name="Calendar"
         component={CalendarScreen}
@@ -71,8 +85,9 @@ const TabNavigation = () => {
       />
       <Tab.Screen
         name="TimeLimit"
-        component={ExerciseScreen}
+        component={TimeLimitScreen}
         options={{
+
           tabBarIcon: ({ focused }) => (
             <Image
               source={exercise}
@@ -82,18 +97,7 @@ const TabNavigation = () => {
 
         }}
       />
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Image
-              source={home}
-              style={{ width: 30, height: 30, tintColor: focused ? '#1A6DFF' : 'gray' }}
-            />
-          ),
-        }}
-      />
+      
       <Tab.Screen
         name="BoardPage"
         component={WritingScreen}
@@ -107,6 +111,7 @@ const TabNavigation = () => {
         }}
       />
     </Tab.Navigator>
+    </KeyboardAvoidingView>
   );
 };
 //탭네비게이션에 있는 애들은 스택네비에 있으면 안됨
@@ -114,17 +119,19 @@ const App = () => {
   return (
     <RecoilRoot>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Main" component={TabNavigation} />
-          <Stack.Screen name="FlatList" component={FlatList} options={{ headerShown: false }} />
-          <Stack.Screen name="StopWatch" component={StopWatch} options={{ headerShown: true }} />
-          <Stack.Screen name="NonstopWatch" component={NonstopWatch} options={{ headerShown: true }} />
-          <Stack.Screen name="Writepage" component={Writepage} options={{ headerShown: false }} />
-          <Stack.Screen name="QRCodeScanner" component={QRCodeScanner} options={{ headerShown: true }} />
-          <Stack.Screen name="LookPage" component={LookPage} options={{ headerShown: false }} />
-          <Stack.Screen name="체중 기록" component={WeightView} options={{ headerShown: true }} />
-          <Stack.Screen name="체중 등록" component={WeightSetPage} options={{ headerShown: true }} />
-        </Stack.Navigator>
+   
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Main" component={TabNavigation} />
+            <Stack.Screen name="FlatList" component={FlatList} options={{ headerShown: false }} />
+            <Stack.Screen name="StopWatch" component={StopWatch} options={{ headerShown: true }} />
+            <Stack.Screen name="NonstopWatch" component={NonstopWatch} options={{ headerShown: true }} />
+            <Stack.Screen name="Writepage" component={Writepage} options={{ headerShown: false }} />
+            <Stack.Screen name="QRCodeScanner" component={QRCodeScanner} options={{ headerShown: true }} />
+            <Stack.Screen name="LookPage" component={LookPage} options={{ headerShown:true }} />
+            <Stack.Screen name="체중 기록" component={WeightView} options={{ headerShown: true }} />
+            <Stack.Screen name="체중 등록" component={WeightSetPage} options={{ headerShown: true }} />
+          </Stack.Navigator>
+
       </NavigationContainer>
     </RecoilRoot>
 

@@ -4,10 +4,9 @@ import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const stop = require("../assets/image/stop.png");
 const previousbutton = require("../assets/image/previousbutton.png");
 const nextbutton = require("../assets/image/nextbutton.png");
-const play = require("../assets/image/play.png");
+
 
 const CompleteContainer = styled.TouchableOpacity`
   border: 1px solid black;
@@ -45,7 +44,6 @@ const ImageContainer = styled.View`
 
 const NonstopWatch = ({ route }) => {
   const navigation = useNavigation();
-  const [playImage, setPlayImage] = useState(play);
   const exerciseInfoOff = route.params?.exerciseInfoOff || [];
   const [currentIndex, setCurrentIndex] = useState(0);
   const [completionStatus, setCompletionStatus] = useState(Array(exerciseInfoOff.length).fill(false));
@@ -55,45 +53,49 @@ const NonstopWatch = ({ route }) => {
 
 
   const exerciseOrder = exerciseInfoOff.length > 0 ? exerciseInfoOff[0].exerciseOrder : '';
-  const time = 0;
-
-
-
 
 
   useEffect(() => {
     console.log('exerciseInfoOff 정보:', exerciseInfoOff);
-
   }, [exerciseInfoOff]);
   
-
-  const saveDataToStorage = async () => {
-    try {
-      const dataToSave = {
-        exerciseInfoOff: exerciseInfoOff,
-        date: new Date().toLocaleDateString(),
+  useEffect(() => {
+    const saveDataToStorage = async (data) => {
+      try {
+        await AsyncStorage.setItem('appData', JSON.stringify(data));
+      } catch (error) {
+        console.error('오류', error);
+      }
+    };
+  
+    // exerciseInfoOff를 기반으로 transformedData 생성
+    const transformedData = exerciseInfoOff.map(item => {
+      const { name, reps, sets, time } = item;
+      const currentDate = new Date();
+      const formattedDate = currentDate.toISOString().split('T')[0];
+  
+      return {
+        name: name,
+        date: formattedDate,
+        sets: sets,
+        reps: reps,
+        time: time,
       };
+    });
   
-      await AsyncStorage.setItem('appData', JSON.stringify(dataToSave));
-    } catch (error) {
-      console.error('오류', error);
-    }
-  };
+    // transformedData를 이용하여 저장
+    saveDataToStorage(transformedData);
   
-  useEffect(() => {
-    saveDataToStorage();
-  }, [exerciseInfoOff]);
-  
-  useEffect(() => {
     if (completionStatus.every((status) => status === true)) {
       Alert.alert('종료', '운동이 완료되었습니다.');
       navigation.goBack();
-      console.log('저장된 데이터:', {
-        exerciseInfoOff: exerciseInfoOff,
-        date: new Date().toLocaleDateString(),
+      console.log('저장된 dsf데이터:', {
+        transformedData
       });
     }
-  }, [completionStatus,exerciseInfoOff]);
+  }, [completionStatus, exerciseInfoOff]);
+  
+  
 
 
 
@@ -117,13 +119,7 @@ const NonstopWatch = ({ route }) => {
     }
   };
 
-  useEffect(() => {
-    setCompletionStatus(Array(exerciseInfoOff.length).fill(false));
 
-    if (route.params?.completed) {
-      setCompletionStatus(route.params.completed);
-    }
-  }, [exerciseInfoOff]);
 
 
 
@@ -144,7 +140,6 @@ const NonstopWatch = ({ route }) => {
     </ExerciseInformation>
   </View>
 ))}
-
       <PlayerControl>
         <ImageContainer>
           <TouchableOpacity onPress={handlePrevious}>
