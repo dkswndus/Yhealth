@@ -63,6 +63,7 @@ const TabNavigation = () => {
         name="Home"
         component={HomeScreen}
         options={{
+          unmountOnBlur: true,
           tabBarIcon: ({ focused }) => (
             <Image
               source={home}
@@ -75,6 +76,7 @@ const TabNavigation = () => {
         name="Calendar"
         component={CalendarScreen}
         options={{
+          unmountOnBlur: true,
           tabBarIcon: ({ focused }) => (
             <Image
               source={calendar}
@@ -87,7 +89,6 @@ const TabNavigation = () => {
         name="TimeLimit"
         component={TimeLimitScreen}
         options={{
-
           tabBarIcon: ({ focused }) => (
             <Image
               source={exercise}
@@ -102,6 +103,7 @@ const TabNavigation = () => {
         name="BoardPage"
         component={WritingScreen}
         options={{
+          unmountOnBlur: true,
           tabBarIcon: ({ focused }) => (
             <Image
               source={writing}
