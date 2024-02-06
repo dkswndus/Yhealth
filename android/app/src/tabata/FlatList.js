@@ -35,38 +35,36 @@ const FlatList = ({ route }) => {
   const [selectedExercises, setSelectedExercises] = useRecoilState(selectedExercisesState);
   const [dropdownValue, setDropdownValue] = useRecoilState(dropdownValueState);
  
+
   const saveDataToStorage = async () => {
     try {
-     
-        const dataToSave = {
-            likedExercises: likedExercises,
-        };
-
-        // JSON 형태로 직렬화하여 AsyncStorage에 저장
-        await AsyncStorage.setItem('appData', JSON.stringify(dataToSave));
+      const dataToSave = {
+        likedExercises: likedExercises,
+      };
+      // JSON 형태로 직렬화하여 AsyncStorage에 저장
+      await AsyncStorage.setItem(`appData_${dropdownValue}`, JSON.stringify(dataToSave));
     } catch (error) {
-        console.error('Error saving data to AsyncStorage:', error);
+      console.error('오류', error);
     }
-};
+  };
 
-const loadDataFromStorage = async () => {
+  const loadDataFromStorage = async () => {
     try {
-        
-        const savedData = await AsyncStorage.getItem('appData');
-        if (savedData !== null) {
-            const parsedData = JSON.parse(savedData);
-            setLikedExercises(parsedData.likedExercises || []);
-            console.log('데이터 로드:', parsedData);
-        }
+      const savedData = await AsyncStorage.getItem(`appData_${dropdownValue}`);
+      if (savedData !== null) {
+        const parsedData = JSON.parse(savedData);
+        setLikedExercises(parsedData.likedExercises || []);
+      }
     } catch (error) {
-        console.error('오류:', error);
+      console.error('오류:', error);
     }
-};
+  };
 
-// 화면이 나타날 때 데이터 불러오기
-useEffect(() => {
-    loadDataFromStorage();
-}, []);
+
+ // 화면이 나타날 때와 dropdownValue가 변경될 때 데이터 불러오기
+ useEffect(() => {
+  loadDataFromStorage();
+}, [dropdownValue]);
 
 // 상태가 변경될 때마다 데이터 저장
 useEffect(() => {
@@ -74,13 +72,7 @@ useEffect(() => {
 }, [likedExercises]);
 
 
- 
- 
- 
- 
- 
- 
- 
+
  
  
   useEffect(() => {
@@ -173,13 +165,10 @@ useEffect(() => {
   const navigateTimeLimit = () => {
     if (isTimeLimitOn) {
       navigation.navigate('TimeLimit', {
-   
       });
-
-    } else {
+    } 
+    else {
       navigation.navigate('TimeLimit', {
-     
-
       });
     }
   }
@@ -278,7 +267,7 @@ useEffect(() => {
     <View style={styles.container}>
       <View style={styles.addButtonContainer}>
         <Text style={styles.addButtonText}>운동 추가하기</Text>
-        <TouchableOpacity onPress={navigateTimeLimit} style={styles.xButton}>
+        <TouchableOpacity onPress={navigateTimeLimit} >
           <Image source={x} style={{ width: 20, height: 20, marginRight: 10 }} />
         </TouchableOpacity>
       </View>
@@ -372,31 +361,31 @@ const styles = StyleSheet.create({
   todoText: {
     flexDirection: 'row',
     alignItems: 'center',
+   
 
   },
   addButtonContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+  
     justifyContent: 'space-between',
-    backgroundColor: 'rgba(252, 253, 255, 0.49)',
+  
   },
   addButtonText: {
     fontSize: 25,
     fontWeight: 'bold',
     color: 'rgba(0, 0, 0, 0.9)',
-    marginLeft: 100,
+    marginTop:-5,
+    marginLeft:100,
+
   },
-  xButton: {
-    marginRight: 3,
-  },
+ 
   horizontaaScrollView: {
-
     flexDirection: 'row',
-
   },
   exerciseContainer: {
     flexDirection: 'row',
     padding: 15,
+    paddingBottom:35,
   },
 });
 

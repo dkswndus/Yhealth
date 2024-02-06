@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ScrollView, StatusBar, TouchableOpacity, View, Text, Image } from 'react-native';
+import { ScrollView, StatusBar, TouchableOpacity, View, Text, Image, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
@@ -13,6 +13,7 @@ import { KeyboardAvoidingView, Platform, SafeAreaView } from 'react-native';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import up from "../assets/image/up.png";
 import down from "../assets/image/down.png";
+import { Picker } from '@react-native-picker/picker';
 
 
 
@@ -71,7 +72,6 @@ margin-bottom: 30px;
 
 
 `;
-
 
 //횟수,세트 통합
 const InputContainer = styled.View`
@@ -159,11 +159,11 @@ const TimeLimit = ({ route }) => {
 
     const navigateToNextStopWatch = () => {
         if (!dropdownValue || (dropdownValue !== '1' && dropdownValue !== '2')) {
-            alert('장소를 선택하세요.');
+            Alert.alert('오류', '장소를 선택하세요.');
             return;
         }
         if (selectedExercises.length === 0) { // 운동이 선택되지 않았을 때
-            alert('운동을 선택하세요.');
+            Alert.alert('오류', '운동을 선택하세요.');
             return;
         }
         const missingInputs = selectedExercises.filter(exercise => {
@@ -177,7 +177,7 @@ const TimeLimit = ({ route }) => {
         });
 
         if (missingInputs.length > 0) {
-            alert('입력하세요.');
+            Alert.alert('오류', '입력하세요.');
             return;
         }
 
@@ -196,7 +196,7 @@ const TimeLimit = ({ route }) => {
 
     const navigateToNextNonstopWatch = () => {
         if (!dropdownValue || (dropdownValue !== '1' && dropdownValue !== '2')) {
-            alert('장소를 선택하세요.');
+            Alert.alert('오류', '장소를 선택하세요.');
             return;
         }
 
@@ -204,11 +204,11 @@ const TimeLimit = ({ route }) => {
         const missingInputs = selectedExercises.filter(exercise => !sets[exercise] || !reps[exercise]);
 
         if (missingInputs.length > 0) {
-            alert('입력하세요.');
+            Alert.alert('오류', '입력하세요.');
             return;
         }
         if (selectedExercises.length === 0) { // 운동이 선택되지 않았을 때
-            alert('운동을 선택하세요.');
+            Alert.alert('오류', '운동을 선택하세요.');
             return;
         }
         const exerciseInfoOff = selectedExercises.map(exercise => ({
@@ -221,14 +221,46 @@ const TimeLimit = ({ route }) => {
     };
 
 
-
-
     const removeExercise = (index) => {
         // 선택한 운동에서 운동을 삭제한 후, 업데이트된 상태를 반영
         const updatedExercises = [...selectedExercises];
         updatedExercises.splice(index, 1);
         setSelectedExercises(updatedExercises);
+    
+        // 운동 삭제 시 해당 운동의 세트, 횟수 등 초기화
+        setSets((prevSets) => {
+            const newSets = { ...prevSets };
+            delete newSets[selectedExercises[index]];
+            return newSets;
+        });
+    
+        setReps((prevReps) => {
+            const newReps = { ...prevReps };
+            delete newReps[selectedExercises[index]];
+            return newReps;
+        });
+    
+        setPrepareTime((prevPrepareTime) => {
+            const newPrepareTime = { ...prevPrepareTime };
+            delete newPrepareTime[selectedExercises[index]];
+            return newPrepareTime;
+        });
+    
+        setExerciseTime((prevExerciseTime) => {
+            const newExerciseTime = { ...prevExerciseTime };
+            delete newExerciseTime[selectedExercises[index]];
+            return newExerciseTime;
+        });
+    
+        setRestTime((prevRestTime) => {
+            const newRestTime = { ...prevRestTime };
+            delete newRestTime[selectedExercises[index]];
+            return newRestTime;
+        });
     };
+    
+
+
 
     const moveExerciseUp = (index) => {
         if (index > 0) {
@@ -294,9 +326,6 @@ const TimeLimit = ({ route }) => {
         setExerciseTime((prevExerciseTime) => ({ ...prevExerciseTime, [exercise]: value }));
         console.log(`운동 시간: ${value}`);
     };
-
-
-
     const onExerciseOrderChange = ({ data }) => {
         setExerciseOrder(data.map(item => item.exercise));
     };
@@ -305,147 +334,147 @@ const TimeLimit = ({ route }) => {
 
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'rgba(255, 255, 255, 1)' }}>
-            <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={{ flex: 1, backgroundColor: 'rgba(255, 255, 255, 1)' }}
-            >
-                <View style={{ flex: 1 }}>
-                    <TopBar1 />
-                    <Dropdown>
-                        <PlaceDropdown value={dropdownValue} setValue={setDropdownValue} enabled={false} />
-                    </Dropdown>
-                    <TouchableOpacity onPress={toggleTimeLimit} style={{ alignItems: 'flex-end', paddingRight: 22 }}>
-                        {isTimeLimitOn ? (
-                            <TimeLimitOn title="Time Limit ON" />
-                        ) : (
-                            <TimeLimitOff title="Time Limit OFF" />
-                        )}
-                    </TouchableOpacity>
 
-                    <ScrollView>
-                        {isTimeLimitOn ? (
-                            <ExerciseInformation>
-                                {exerciseOrder.map((exercise, index) => (
-                                    <View key={index}>
-                                        <IntegreatedContainer>
-                                            <ExerciseText>{exercise}</ExerciseText>
-
-
-                                            <SettingContainer>
-                                                <TouchableOpacity onPress={() => moveExerciseUp(index)}>
-                                                    <Image source={up} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
-                                                </TouchableOpacity>
-                                                <TouchableOpacity onPress={() => moveExerciseDown(index)}>
-                                                    <Image source={down} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
-                                                </TouchableOpacity>
-                                                <TouchableOpacity onPress={() => removeExercise(index)}>
-                                                    <Image source={remove} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
-                                                </TouchableOpacity>
-                                            </SettingContainer>
-
-
-
-
-
-
-                                        </IntegreatedContainer>
-                                        <InputContainer>
-                                            <TextInput
-                                                placeholder="세트"
-                                                keyboardType="numeric"
-                                                color="black"
-                                                value={sets[exercise]}
-                                                onChangeText={(value) => handleSetsChange(exercise, value)}
-                                            />
-                                            <TextInput
-                                                placeholder="횟수"
-                                                keyboardType="numeric"
-                                                color="black"
-                                                value={reps[exercise]}
-                                                onChangeText={(value) => handleRepsChange(exercise, value)}
-                                            />
-                                            <TextInput
-                                                placeholder="준비시간"
-                                                keyboardType="numeric"
-                                                color="black"
-                                                value={prepareTime[exercise]}
-                                                onChangeText={(value) => handlePrepareTimeChange(exercise, value)}
-                                            />
-                                            <TextInput
-                                                placeholder="운동시간"
-                                                keyboardType="numeric"
-                                                color="black"
-                                                value={exerciseTime[exercise]}
-                                                onChangeText={(value) => handleExerciseTimeChange(exercise, value)}
-                                            />
-                                            <TextInput
-                                                placeholder="휴식시간"
-                                                keyboardType="numeric"
-                                                color="black"
-                                                value={restTime[exercise]}
-                                                onChangeText={(value) => handleRestTimeChange(exercise, value)}
-                                            />
-                                        </InputContainer>
-                                    </View>
-                                ))}
-                            </ExerciseInformation>
-                        ) : (
-                            <ExerciseInformation>
-                                {exerciseOrder.map((exercise, index) => (
-                                    <View key={index}>
-                                        <IntegreatedContainer>
-                                            <ExerciseText>{exercise}</ExerciseText>
-                                            <TouchableOpacity onPress={() => removeExercise(index)}>
-                                                <Image source={remove} style={{ width: 18, height: 18 }} />
+        <View style={{ flex: 1, backgroundColor: 'rgba(255, 255, 255, 1)' }}>
+            <TopBar1 />
+            <Dropdown>
+                <PlaceDropdown value={dropdownValue} setValue={setDropdownValue} enabled={false} />
+            </Dropdown>
+            <TouchableOpacity onPress={toggleTimeLimit} style={{ alignItems: 'flex-end', paddingRight: 22 }}>
+                {isTimeLimitOn ? (
+                    <TimeLimitOn title="Time Limit ON" />
+                ) : (
+                    <TimeLimitOff title="Time Limit OFF" />
+                )}
+            </TouchableOpacity>
+    
+                <ScrollView>
+                    {isTimeLimitOn ? (
+                        <ExerciseInformation>
+                            {exerciseOrder.map((exercise, index) => (
+                                <View key={index}>
+                                    <IntegreatedContainer>
+                                        <ExerciseText>{exercise}</ExerciseText>
+                                        <SettingContainer>
+                                            <TouchableOpacity onPress={() => moveExerciseUp(index)}>
+                                                <Image source={up} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
                                             </TouchableOpacity>
-                                        </IntegreatedContainer>
-                                        <InputContainer>
-                                            <TextInput
-                                                placeholder="세트"
-                                                keyboardType="numeric"
-                                                value={sets[exercise]}
-                                                onChangeText={(value) => handleSetsChange(exercise, value)}
-                                            />
-                                            <TextInput
-                                                placeholder="횟수"
-                                                keyboardType="numeric"
-                                                value={reps[exercise]}
-                                                onChangeText={(value) => handleRepsChange(exercise, value)}
-                                            />
-                                        </InputContainer>
-                                    </View>
-                                ))}
-                            </ExerciseInformation>
-                        )}
-                    </ScrollView>
+                                            <TouchableOpacity onPress={() => moveExerciseDown(index)}>
+                                                <Image source={down} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
+                                            </TouchableOpacity>
+                                            <TouchableOpacity onPress={() => removeExercise(index)}>
+                                                <Image source={remove} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
+                                            </TouchableOpacity>
+                                        </SettingContainer>
+                                    </IntegreatedContainer>
+                                    <InputContainer>
+                                        <TextInput
+                                            placeholder="세트"
+                                            keyboardType="numeric"
 
+                                            color="black"
+                                            value={sets[exercise]}
+                                            onChangeText={(value) => handleSetsChange(exercise, value)}
+                                        />
+                                        <TextInput
+                                            placeholder="횟수"
+                                            keyboardType="numeric"
 
+                                            color="black"
+                                            value={reps[exercise]}
+                                            onChangeText={(value) => handleRepsChange(exercise, value)}
+                                        />
+                                        <TextInput
+                                            placeholder="준비시간"
+                                            keyboardType="numeric"
 
-                    <ExerciseContainer>
-                        <ExerciseLine>
-                            <TouchableOpacity onPress={navigateToFlatList}>
-                                <ExerciseAdd title={`+ 운동 추가하기 `} />
-                            </TouchableOpacity>
-                        </ExerciseLine>
-                    </ExerciseContainer>
+                                            color="black"
+                                            value={prepareTime[exercise]}
+                                            onChangeText={(value) => handlePrepareTimeChange(exercise, value)}
+                                        />
+                                        <TextInput
+                                            placeholder="운동시간"
+                                            keyboardType="numeric"
 
-                    <ExerciseStartContainer>
-                        <TouchableOpacity onPress={() => {
-                            if (isTimeLimitOn) {
-                                navigateToNextStopWatch();
-                            } else {
-                                navigateToNextNonstopWatch();
-                            }
-                        }}>
-                            <ExerciseStart title="운동 시작" />
-                        </TouchableOpacity>
-                    </ExerciseStartContainer>
+                                            color="black"
+                                            value={exerciseTime[exercise]}
+                                            onChangeText={( value) => handleExerciseTimeChange(exercise, value)}
+                                        />
+                                        <TextInput
+                                            placeholder="휴식시간"
+                                            keyboardType="numeric"
 
-                    <StatusBar backgroundColor="black" />
-                </View>
-            </KeyboardAvoidingView>
-        </SafeAreaView>
+                                            color="black"
+                                            value={restTime[exercise]}
+                                            onChangeText={(value) => handleRestTimeChange(exercise, value)}
+                                        />
+                                    </InputContainer>
+                                </View>
+                            ))}
+                        </ExerciseInformation>
+                    ) : (
+                        <ExerciseInformation>
+                            {exerciseOrder.map((exercise, index) => (
+                                <View key={index}>
+                                    <IntegreatedContainer>
+                                        <ExerciseText>{exercise}</ExerciseText>
+                                        <SettingContainer>
+                                            <TouchableOpacity onPress={() => moveExerciseUp(index)}>
+                                                <Image source={up} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
+                                            </TouchableOpacity>
+                                            <TouchableOpacity onPress={() => moveExerciseDown(index)}>
+                                                <Image source={down} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
+                                            </TouchableOpacity>
+                                            <TouchableOpacity onPress={() => removeExercise(index)}>
+                                                <Image source={remove} style={{ width: 18, height: 18, marginTop: -5, marginLeft: 8 }} />
+                                            </TouchableOpacity>
+                                        </SettingContainer>
+                                    </IntegreatedContainer>
+                                    <InputContainer>
+                                        <TextInput
+                                            placeholder="세트"
+                                            keyboardType="numeric"
+
+                                            value={sets[exercise]}
+                                            onChangeText={(value) => handleSetsChange(exercise, value)}
+
+                                        />
+                                        <TextInput
+                                            placeholder="횟수 "
+                                            keyboardType="numeric"
+
+                                            value={reps[exercise]}
+                                            onChangeText={(value) => handleRepsChange(exercise, value)}
+
+                                        />
+                                    </InputContainer>
+                                </View>
+                            ))}
+                        </ExerciseInformation>
+                    )}
+                </ScrollView>
+    
+            <ExerciseContainer>
+                <ExerciseLine>
+                    <TouchableOpacity onPress={navigateToFlatList}>
+                        <ExerciseAdd title={`+ 운동 추가하기 `} />
+                    </TouchableOpacity>
+                </ExerciseLine>
+            </ExerciseContainer>
+            <ExerciseStartContainer>
+                <TouchableOpacity onPress={() => {
+                    if (isTimeLimitOn) {
+                        navigateToNextStopWatch();
+                    } else {
+                        navigateToNextNonstopWatch();
+                    }
+                }}>
+                    <ExerciseStart title="운동 시작" />
+                </TouchableOpacity>
+            </ExerciseStartContainer>
+            <StatusBar backgroundColor="black" />
+        </View>
+
     );
 };
 

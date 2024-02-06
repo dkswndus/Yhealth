@@ -12,8 +12,7 @@ const play = require("../assets/image/play.png");
 const CompleteContainer = styled.TouchableOpacity`
   border: 1px solid black;
   padding: 10px;
-  margin-right: 80px;
-  margin-left: 80px;
+  margin: 5px;
   border-radius: 5px;
   margin-top: -4px;
   background-color: ${({ completed }) => (completed ? 'black' : 'transparent')};
@@ -41,48 +40,62 @@ const PlayerControl = styled.View`
 `;
 
 const ImageContainer = styled.View`
-  
+  margin-right: 90px;
 `;
 
 const NonstopWatch = ({ route }) => {
   const navigation = useNavigation();
   const [playImage, setPlayImage] = useState(play);
-  const exercises = route.params?.exerciseInfoOff || [];
+  const exerciseInfoOff = route.params?.exerciseInfoOff || [];
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [completionStatus, setCompletionStatus] = useState(Array(exercises.length).fill(false));
-  const [reps, setReps] = useState(exercises.length > 0 ? exercises[0].reps : 0);
-  const [sets, setSets] = useState(exercises.length > 0 ? exercises[0].sets : 0);
-  const [name, setName] = useState(exercises.length > 0 ? exercises[0].name : 0);
+  const [completionStatus, setCompletionStatus] = useState(Array(exerciseInfoOff.length).fill(false));
+  const [reps, setReps] = useState(exerciseInfoOff.length > 0 ? exerciseInfoOff[0].reps : 0);
+  const [sets, setSets] = useState(exerciseInfoOff.length > 0 ? exerciseInfoOff[0].sets : 0);
+  const [name, setName] = useState(exerciseInfoOff.length > 0 ? exerciseInfoOff[0].name : 0);
 
 
-  const exerciseOrder = exercises.length > 0 ? exercises[0].exerciseOrder : '';
+  const exerciseOrder = exerciseInfoOff.length > 0 ? exerciseInfoOff[0].exerciseOrder : '';
   const time = 0;
 
-  const saveDataToStorage = async () => {
-    const updatedStatus = [...completionStatus];
-    updatedStatus[currentIndex] = !completionStatus[currentIndex];
-    setCompletionStatus(updatedStatus);
 
-    if (!completionStatus[currentIndex]) {
-      try {
-        const dataToSave = {
-          name: name,
-          time: time,
-          sets: sets,
-          reps: reps,
-          date: new Date().toLocaleDateString(),
-        };
 
-        await AsyncStorage.setItem('appData', JSON.stringify(dataToSave));
-      } catch (error) {
-        console.error('Error saving data to AsyncStorage:', error);
-      }
-    }
-  };
+
 
   useEffect(() => {
+    console.log('exerciseInfoOff 정보:', exerciseInfoOff);
+
+  }, [exerciseInfoOff]);
+  
+
+  const saveDataToStorage = async () => {
+    try {
+      const dataToSave = {
+        exerciseInfoOff: exerciseInfoOff,
+        date: new Date().toLocaleDateString(),
+      };
+  
+      await AsyncStorage.setItem('appData', JSON.stringify(dataToSave));
+    } catch (error) {
+      console.error('오류', error);
+    }
+  };
+  
+  useEffect(() => {
     saveDataToStorage();
-  }, [sets, reps, name, time]);
+  }, [exerciseInfoOff]);
+  
+  useEffect(() => {
+    if (completionStatus.every((status) => status === true)) {
+      Alert.alert('종료', '운동이 완료되었습니다.');
+      navigation.goBack();
+      console.log('저장된 데이터:', {
+        exerciseInfoOff: exerciseInfoOff,
+        date: new Date().toLocaleDateString(),
+      });
+    }
+  }, [completionStatus,exerciseInfoOff]);
+
+
 
   const handleCompletion = () => {
     const updatedStatus = [...completionStatus];
@@ -90,10 +103,10 @@ const NonstopWatch = ({ route }) => {
     setCompletionStatus(updatedStatus);
   };
 
-  const selectedExercises = exercises.slice(currentIndex, currentIndex + 2);
+  const selectedExercises = exerciseInfoOff.slice(currentIndex, currentIndex + 2);
 
   const handleNext = () => {
-    if (currentIndex < exercises.length - 1) {
+    if (currentIndex < exerciseInfoOff.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
   };
@@ -105,42 +118,34 @@ const NonstopWatch = ({ route }) => {
   };
 
   useEffect(() => {
-    setCompletionStatus(Array(exercises.length).fill(false));
+    setCompletionStatus(Array(exerciseInfoOff.length).fill(false));
 
     if (route.params?.completed) {
       setCompletionStatus(route.params.completed);
     }
-  }, [exercises]);
+  }, [exerciseInfoOff]);
 
-  useEffect(() => {
-    if (completionStatus.every((status) => status === true)) {
 
-      Alert.alert('운동 종료!', '축하합니다. 운동이 완료되었습니다.');
-      navigation.goBack();
-    }
-  }, [completionStatus]);
 
   return (
     <View style={{ backgroundColor: 'rgba(255, 255, 255, 1)', flex: 1 }}>
-      <View style={{flex:1}}>
-        {selectedExercises.map((exercise, index) => (
-          <View key={index}>
-            <ExerciseInformation>
-              <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
-                {currentIndex + index + 1}/{exercises.length}
-              </Text>
-              <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
-                {name}
-              </Text>
-              <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
-                {sets} x {reps}
-              </Text>
-            </ExerciseInformation>
-          </View>
-        ))}
-      </View>
-      <View style={{ alignSelf: 'center', flexDirection: 'row', flex:1}}>
+   {selectedExercises.map((exerciseInfoOff, index) => (
+  <View key={index}>
+    <ExerciseInformation>
+      <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
+        {currentIndex + index + 1}/{exerciseInfoOff.length}
+      </Text>
+      <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
+        {exerciseInfoOff.name} 
+      </Text>
+      <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
+        {exerciseInfoOff.sets} x {exerciseInfoOff.reps} 
+      </Text>
+    </ExerciseInformation>
+  </View>
+))}
 
+      <PlayerControl>
         <ImageContainer>
           <TouchableOpacity onPress={handlePrevious}>
             <Image source={previousbutton} style={{ width: 30, height: 30 }} />
@@ -156,8 +161,8 @@ const NonstopWatch = ({ route }) => {
             <Image source={nextbutton} style={{ width: 30, height: 30 }} />
           </TouchableOpacity>
         </ImageContainer>
+      </PlayerControl>
 
-      </View>
       <StatusBar backgroundColor="black" />
     </View>
   );
