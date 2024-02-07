@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ExerciseRecord = ({ }) => {
+const ExerciseRecord = ({selectedDate }) => {
   const [exerciseData, setExerciseData] = useState([]);
 
 
@@ -20,7 +20,7 @@ const ExerciseRecord = ({ }) => {
       console.error('데이터 불러오기 오류', error);
     }
   };
-
+  const filteredData = exerciseData.filter(exercise => exercise.date === selectedDate);
 
   useEffect(() => {
     // 저장된 데이터 불러오기
@@ -40,7 +40,7 @@ const ExerciseRecord = ({ }) => {
         </View>
 
 
-        {exerciseData.map((exercise, index) => (
+        {filteredData.map((exercise, index) => (
           <View style={styles.row} key={index}>
             <Text style={styles.cell}>{exercise.date}</Text>
             <Text style={styles.cell}>{exercise.name}</Text>
