@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 import Sound from 'react-native-sound';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { theme } from "../compponents/theme";
+import { theme } from "../components/theme";
 import { Alert } from 'react-native';
 
 

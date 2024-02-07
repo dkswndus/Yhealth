@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Button, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TopBar1 } from '../compponents/TopBar';
+import { TopBar1 } from '../components/TopBar';
 import { useNavigation } from '@react-navigation/native';
 
 const Writepage = ({ route }) => {
@@ -58,7 +58,13 @@ const Writepage = ({ route }) => {
 
     } else {
       // 모달이 켜져있을 때
-
+      if (nickname.trim() === '') {
+        alert('닉네임을 입력하세요.');
+       return;
+      } else if (pwd.length < 4) {
+        alert('비밀번호는 최소 4자리 이상이어야 합니다.');
+        return;
+      }
       try {
         const post = {
           id: new Date().getTime().toString(),
@@ -70,7 +76,32 @@ const Writepage = ({ route }) => {
           like: 0, // 추천 수 초기값
         };
 
+        //     const response = await fetch('https://your-backend-url.com/post', {
+        //     method: 'POST',
+        //     headers: {
+        //       'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(post),
+        //   });
+
+        //   // 서버로부터의 응답을 확인합니다.
+        //   if (response.ok) {
+        //     console.log('글이 성공적으로 저장되었습니다.');
+        //     // 서버로부터의 추가 작업에 대한 처리를 이어서 진행할 수 있습니다.
+        //   } else {
+        //     console.error('글 저장 중 오류 발생:', response.statusText);
+        //   }
+
+        // } catch (error) {
+        //   console.error('글 저장 중 오류 발생:', error);
+        // }
         // 이전에 저장된 글 목록을 가져와서 배열에 추가
+
+        {/*저장형태
+       {"id": "1707234408198", "like": 0, "nickname": "익명", "pwd": "1234", "text": "비밀번호 1234",
+       "time": "Wed Feb  7 00:46:48 2024", "title": "비밀번호 1234"} */}
+
+        {/*백엔드 연결시 삭제 */ }
         const existingPosts = await AsyncStorage.getItem('posts');
         const posts = existingPosts ? JSON.parse(existingPosts) : [];
         posts.push(post);
@@ -89,6 +120,8 @@ const Writepage = ({ route }) => {
       console.log('내용:', text);
       console.log('이름:', nickname);
       console.log('비번:', pwd);
+      {/*백엔드 연결시 삭제 */ }
+
       navigation.goBack();
     }
   };

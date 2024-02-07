@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import { TouchableOpacity, Text, View, } from 'react-native';
-import { theme } from '../compponents/theme';
+import { theme } from '../components/theme';
 
 const ExerciseStartContainer = styled(View)`
       width:100%;

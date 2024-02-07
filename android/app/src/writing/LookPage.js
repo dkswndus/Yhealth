@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ScrollView, StyleSheet, TouchableOpacity, View, TextInput, Text, Image, Alert } from 'react-native';
-import { TopBar1 } from '../compponents/TopBar';
+import { ScrollView, StyleSheet, TouchableOpacity, View, TextInput, Text, Image, Alert, Modal, TouchableWithoutFeedback } from 'react-native';
+import { TopBar1 } from '../components/TopBar';
 
 const LookPage = ({ route, navigation }) => {
   useEffect(() => {
@@ -17,7 +17,25 @@ const LookPage = ({ route, navigation }) => {
   const [password, setPassword] = useState('');
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]); // 댓글을 저장할 상태 변수
+  const [ckPwd, setCkPwd] = useState('');
+  const [isModalVisible, setModalVisible] = useState(false);
 
+  const handleCkPwd = (inputpwd) => {
+    setCkPwd(inputpwd);
+  };
+  const comparePwd = () => {
+
+  };
+  const toggleModal = () => {
+    if (selectedItem.pwd != ckPwd){
+      Alert.alert('비밀번호가 다릅니다.')
+      console.log(selectedItem);
+    }else{
+      handleEditDelete();
+      console.log(selectedItem);
+    }
+    
+  };
   const handleThumbsUp = () => {
     // 여기에 좋아요 증가 로직을 추가
     const updatedSelectedItem = {
@@ -39,6 +57,9 @@ const LookPage = ({ route, navigation }) => {
   const handleTextChange = (inputText) => {
     setComment(inputText);
   };
+  const cancelModal = () => {
+    setModalVisible(!isModalVisible);
+  }
   const handleCommentDelete = (index) => {
     // 댓글 삭제를 위해 index를 인자로 받습니다.
     Alert.alert(
@@ -97,7 +118,6 @@ const LookPage = ({ route, navigation }) => {
   };
 
   const handleEditEdit = () => {
-    // 여기에 수정 기능을 추가.
     console.log("수정 버튼이 눌렸습니다.");
   };
   const handleSend = () => {
@@ -126,13 +146,13 @@ const LookPage = ({ route, navigation }) => {
       <TopBar1 />
       <ScrollView>
         <View style={[styles.viewcontainer, styles.editdeletecontainer]}>
-          <Text style={{ color: 'black' }}>작성자 : {selectedItem.writer}</Text>
+          <Text style={{ color: 'black' }}>작성자 : {selectedItem.nickname}</Text>
           <Text style={{ color: 'black' }}>작성시간 :  {selectedItem.time}</Text>
         </View>
 
         <View style={[styles.viewcontainer, styles.editdeletecontainer]}>
           <Text style={{ color: 'black', fontWeight: 'bold' }}>{selectedItem.title}</Text>
-          <Text style={{ color: 'black' }}>{selectedItem.content}</Text>
+          <Text style={{ color: 'black' }}>{selectedItem.text}</Text>
           <View style={{ flexDirection: 'row', marginTop: 10, justifyContent: 'space-between' }}>
             <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity onPress={handleThumbsUp}>
@@ -145,13 +165,13 @@ const LookPage = ({ route, navigation }) => {
               <Text style={{ color: 'black' }}>{comments.length}</Text>
             </View>
             <View style={{ flexDirection: 'row' }}>
-              <TouchableOpacity onPress={handleEditEdit}>
+              {/* <TouchableOpacity onPress={handleEditEdit}>
                 <View>
                   <Text style={{ color: 'blue' }}>수정</Text>
                 </View>
               </TouchableOpacity>
-              <Text style={{ color: 'blue', paddingRight: 5, paddingLeft: 5 }}>/</Text>
-              <TouchableOpacity onPress={handleEditDelete}>
+              <Text style={{ color: 'blue', paddingRight: 5, paddingLeft: 5 }}>/</Text> */}
+              <TouchableOpacity onPress={cancelModal}>
                 <View>
                   <Text style={{ color: 'blue' }}>삭제</Text>
                 </View>
@@ -216,7 +236,36 @@ const LookPage = ({ route, navigation }) => {
 
       </View>
 
+      {/* 모달 */}
+      <Modal visible={isModalVisible} animationType="slide" transparent={true}>
+        <TouchableWithoutFeedback onPress={toggleModal}>
+          <View style={styles.modalContainer}>
+            <TouchableWithoutFeedback onPress={() => { }}>
+              <View style={styles.modalContent}>
+                <View>
+                  <TextInput
+                    style={styles.inputcontainer}
+                    onChangeText={handleCkPwd}
+                    value={ckPwd}
+                    placeholder="글 비밀번호"
+                    placeholderTextColor="gray"
+                  />
+                </View>
 
+                <View style={{ padding: 10, flexDirection: 'row' }}>
+                  <TouchableOpacity style={styles.buttonStyle} onPress={cancelModal}>
+                    <Text style={{ color: 'white', textAlign: 'center' }}>취소</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.buttonStyle} onPress={toggleModal}>
+                    <Text style={{ color: 'white', textAlign: 'center' }}>확인</Text>
+                  </TouchableOpacity>
+                </View>
+
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </View>
   );
 };
@@ -263,6 +312,25 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 10,
     color: 'black',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    elevation: 5,
+  },
+  buttonStyle: {
+    height: 40,
+    width: '50%',
+    borderRadius: 10,
+    backgroundColor: '#1A6DFF',
+    padding: 10,
   },
 });
 

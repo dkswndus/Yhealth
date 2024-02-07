@@ -4,8 +4,8 @@ import { View, StyleSheet, Text, ScrollView } from 'react-native';
 import Board from './MainBoard';
 import Busy from './MainBusy';
 import Weight from './WeightChange';
-import { boardData } from '../compponents/data';
-import { TopBar1 } from '../compponents/TopBar';
+import { boardData } from '../components/data';
+import { TopBar1 } from '../components/TopBar';
 
 const MainPage = ({ route }) => {
 

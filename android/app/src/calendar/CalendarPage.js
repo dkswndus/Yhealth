@@ -3,7 +3,7 @@ import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import ExerciseRecord from './ExerciseRecord';
 import ExerciseGraph from './ExerciseGraph';
-import { TopBar1 } from '../compponents/TopBar';
+import { TopBar1 } from '../components/TopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CalendarComponent = ({ route }) => {
@@ -84,10 +84,8 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
     borderWidth: 1,
-    marginLeft: 1,
-    marginRight: 1,
-    marginLeft: 25,
-    marginRight: 20
+    marginLeft: 3,
+    marginRight: 3,
   },
   title: {
     color: 'black',

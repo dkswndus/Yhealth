@@ -13,7 +13,7 @@ import {
   martialArtsgymbicepsExercisesData, martialArtsgymchestExercisesData,
   martialArtsgymlowerBodyExercisesData, martialArtsgymshoulderExercisesData,
   martialArtsgymtricepsExercisesData, generalGymData, martialArtsGymData
-} from '../compponents/data';
+} from '../components/data';
 
 import redheart from "../assets/image/redheart.png";
 import emptyheart from "../assets/image/emptyheart.png";

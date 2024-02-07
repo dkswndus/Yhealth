@@ -17,7 +17,7 @@ import MainPage from './android/app/src/home/MainPage';
 import LookPage from './android/app/src/writing/LookPage';
 import CalendarComponent from './android/app/src/calendar/CalendarPage';
 import TimeLimit from './android/app/src/tabata/TimeLimit';
-import QRCodeScanner from './android/app/src/compponents/QRCodeScanner';
+import QRCodeScanner from './android/app/src/components/QRCodeScanner';
 import WeightSetPage from './android/app/src/weight/Weightset';
 import WeightView from './android/app/src/weight/WeightView';
 import { KeyboardAvoidingView, Platform } from 'react-native';

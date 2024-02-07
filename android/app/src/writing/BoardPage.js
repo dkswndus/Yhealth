@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, ScrollView, TouchableOpacity, RefreshControl, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { TopBar1 } from '../compponents/TopBar';
+import { TopBar1 } from '../components/TopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 const BoardPage = ({ route }) => {
