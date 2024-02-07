@@ -43,7 +43,6 @@ const LookPage = ({ route, navigation }) => {
       like: selectedItem.like + 1, // 좋아요 수를 1 증가
     };
 
-    // 여기에서 업데이트된 게시글 정보를 AsyncStorage 또는 서버에 저장해야 합니다.
 
     // 업데이트된 게시글 정보를 상태에 반영
     setSelectedItem(updatedSelectedItem);
@@ -73,9 +72,9 @@ const LookPage = ({ route, navigation }) => {
         {
           text: '삭제',
           onPress: () => {
-            // 선택된 인덱스의 댓글을 제외한 새로운 댓글 목록을 생성합니다.
+            // 선택된 인덱스의 댓글을 제외한 새로운 댓글 목록을 생성
             const updatedComments = [...comments.slice(0, index), ...comments.slice(index + 1)];
-            // 업데이트된 댓글 목록을 상태에 반영합니다.
+            // 업데이트된 댓글 목록 반영
             setComments(updatedComments);
           },
         },

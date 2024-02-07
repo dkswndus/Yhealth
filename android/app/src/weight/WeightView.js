@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { useIsFocused } from '@react-navigation/native';
@@ -15,7 +15,7 @@ const WeightView = ({ route }) => {
 
   const fetchData = async () => {
     try {
-      const storedData = await AsyncStorage.getItem('weightEntries'); // 'posts'가 아니라 'weightEntries'로 변경
+      const storedData = await AsyncStorage.getItem('weightEntries');
       if (storedData) {
         const parsedData = JSON.parse(storedData);
         setWeightData(parsedData);
@@ -27,6 +27,18 @@ const WeightView = ({ route }) => {
 
   const handleMorePress = () => {
     navigation.navigate('체중 등록');
+    console.log(weightData);
+  };
+
+  const handleDelete = async (index) => {
+    try {
+      const updatedData = weightData.filter((item, idx) => idx !== index);
+      await AsyncStorage.setItem('weightEntries', JSON.stringify(updatedData));
+      setWeightData(updatedData);
+    } catch (error) {
+      console.error('데이터 삭제 중 오류 발생:', error);
+      Alert.alert('삭제 오류', '체중을 삭제하는 중에 오류가 발생했습니다.');
+    }
   };
 
   return (
@@ -45,6 +57,9 @@ const WeightView = ({ route }) => {
               <Text style={styles.textTitle}>체중:</Text>
               <Text style={styles.textcontent}>{item.weight}</Text>
             </View>
+            <TouchableOpacity onPress={() => handleDelete(index)} style={styles.deleteButton}>
+              <Text style={styles.deleteButtonText}>삭제</Text>
+            </TouchableOpacity>
           </View>
         ))}
       </ScrollView>
@@ -73,6 +88,7 @@ const styles = StyleSheet.create({
     padding: 5,
     borderBottomWidth: 1,
     borderColor: 'black',
+    justifyContent: 'space-between',
   },
   textRow2: {
     flexDirection: 'row',
@@ -103,6 +119,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     alignSelf: 'center',
+  },
+  deleteButton: {
+    backgroundColor: 'blue',
+    padding: 5,
+    borderRadius: 5,
+  },
+  deleteButtonText: {
+    color: 'white',
   },
 })
 
