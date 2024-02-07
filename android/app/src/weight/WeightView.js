@@ -2,12 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 
 const WeightView = ({ route }) => {
   const navigation = useNavigation();
   const [weightData, setWeightData] = useState([]);
+  const isFocused = useIsFocused();
 
- 
+  useEffect(() => {
+    fetchData();
+  }, [isFocused]);
+
+  const fetchData = async () => {
+    try {
+      const storedData = await AsyncStorage.getItem('weightEntries'); // 'posts'가 아니라 'weightEntries'로 변경
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        setWeightData(parsedData);
+      }
+    } catch (error) {
+      console.error('데이터 불러오기 중 오류 발생:', error);
+    }
+  };
 
   const handleMorePress = () => {
     navigation.navigate('체중 등록');
@@ -53,14 +69,10 @@ const styles = StyleSheet.create({
     borderColor: 'black',
   },
   row: {
-    flexDirection: 'row', // 가로로 배치
+    flexDirection: 'row',
     padding: 5,
     borderBottomWidth: 1,
     borderColor: 'black',
-
-  },
-  textRow: {
-    flexDirection: 'row',
   },
   textRow2: {
     flexDirection: 'row',
@@ -77,25 +89,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: 'Noto Sans',
     fontWeight: '400',
-
-  },
-  textcontent2: {
-    color: '#767676',
-    fontSize: 15,
-    fontFamily: 'Noto Sans',
-    fontWeight: '400',
-  },
-  textcontent3: {
-    color: 'rgba(0,0,0, 0.50)',
-    fontSize: 15,
-    fontFamily: 'Noto Sans',
-    fontWeight: '900',
   },
   addButton: {
     position: 'absolute',
-    bottom: 20, // 조절 가능한 값으로 변경
-    alignSelf: 'center', // 가운데 정렬
-    backgroundColor: 'blue', // 적절한 배경색 설정
+    bottom: 20,
+    alignSelf: 'center',
+    backgroundColor: 'blue',
     padding: 10,
     borderRadius: 38,
   },
