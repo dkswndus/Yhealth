@@ -61,6 +61,7 @@ const formatTime = (seconds) => {
 };
 
 const StopWatch = ({ route }) => {
+  const navigation = useNavigation();
   const exerciseInfoOn = route.params?.exerciseInfoOn || [];
   const [isPaused, setIsPaused] = useState(true);
   const [isSoundOn, setIsSoundOn] = useState(true);
@@ -81,36 +82,53 @@ const StopWatch = ({ route }) => {
   const exercises = route.params?.exerciseInfoOn || [];
   const exerciseOrder = exercises.length > 0 ? exercises[0].exerciseOrder : '';
 
-  const saveDataToStorage = async () => {
-    try {
-
-      const dataToSave = {
-        sets: sets,
-        reps: reps,
-        prepareTime: prepareTime,
-        exerciseTime: exerciseTime,
-        restTime: restTime,
-        date: new Date().toLocaleString(),
-        name: name,
-
-      };
 
 
-      await AsyncStorage.setItem('appData', JSON.stringify(dataToSave));
-    } catch (error) {
-      console.error('Error saving data to AsyncStorage:', error);
-    }
+
+  useEffect(() => {
+    console.log('exerciseInfoOn 정보:', exerciseInfoOn);
+  }, [exerciseInfoOn]);
+
+
+  const showExerciseCompletionAlert = () => {
+    Alert.alert('종료', '운동이 완료되었습니다.');
+    navigation.goBack();
   };
 
 
-  // 상태가 변경될 때마다 데이터 저장
   useEffect(() => {
-    saveDataToStorage();
-  }, [sets, reps, prepareTime, exerciseTime, restTime, name]);
+    const saveDataToStorage = async (data, key) => {
+      try {
+        await AsyncStorage.setItem(`appData${key}`, JSON.stringify(data));
+      } catch (error) {
+        console.error('오류', error);
+      }
+    };
+
+    // exerciseInfoOn이 변경될 때마다 실행되도록 함
+    const transformedData = exerciseInfoOn.map(item => {
+      const { name, reps, sets, exerciseTime } = item;
+      const currentDate = new Date();
+      const formattedDate = currentDate.toISOString().split('T')[0];
+
+      const result = {
+        name: name,
+        date: formattedDate,
+        sets: sets,
+        reps: reps,
+        time: exerciseTime,
+      };
 
 
+      return result;
+    });
 
-
+  // 모든 운동을 마쳤으면 종료 알림 표시
+  if (currentIndex === exerciseInfoOn.length - 1 && prepareTime === 0 && exerciseTime === 0 && restTime === 0 && isPaused) {
+    Alert.alert('종료', '운동이 완료되었습니다.');
+    navigation.goBack();
+  }
+}, [currentIndex, prepareTime, exerciseTime, restTime, isPaused, exerciseInfoOn, navigation]);
 
 
 
@@ -127,19 +145,7 @@ const StopWatch = ({ route }) => {
   useEffect(() => {
     let intervalId;
 
-    const startNextSet = () => {
-      if (currentIndex < exerciseInfoOn.length - 1) {
-        setCurrentIndex((prevIndex) => prevIndex + 1);
-        setPrepareTime(exerciseInfoOn[currentIndex + 1].prepareTime);
-        setSets(exerciseInfoOn[currentIndex + 1].sets);
-        setCurrentSet(1);
-        setExerciseTime(exerciseInfoOn[currentIndex + 1].exerciseTime);
-        setRestTime(exerciseInfoOn[currentIndex + 1].restTime);
-        if (!isPaused) {
-          setIsPaused(true);
-        }
-      }
-    };
+
 
     if ((prepareTime > 0 || exerciseTime > 0 || restTime > 0) && !isPaused) {
       intervalId = setInterval(() => {
@@ -154,18 +160,33 @@ const StopWatch = ({ route }) => {
     }
 
 
-
     if (prepareTime === 0 && exerciseTime === 0 && restTime === 0 && !isPaused) {
       BoxingBellSound.play();
       if (currentSet < sets) {
         setCurrentSet((prevSet) => prevSet + 1);
-
         setExerciseTime(initialExerciseTime);
         setRestTime(initialRestTime);
       } else {
-        Alert.alert('운동 종료!', '축하합니다. 운동이 완료되었습니다.');
+        // 모든 세트가 완료되면 다음 운동으로 전환
+        if (currentIndex < exerciseInfoOn.length - 1) {
+          setCurrentIndex((prevIndex) => prevIndex + 1);
+          setPrepareTime(exerciseInfoOn[currentIndex + 1].prepareTime);
+          setName(exerciseInfoOn[currentIndex + 1].name);
+          setSets(exerciseInfoOn[currentIndex + 1].sets);
+          setReps(exerciseInfoOn[currentIndex + 1].reps);
+          setCurrentSet(1);
+          setExerciseTime(exerciseInfoOn[currentIndex + 1].exerciseTime);
+          setRestTime(exerciseInfoOn[currentIndex + 1].restTime);
+          if (!isPaused) {
+            setIsPaused(true);
+          }
+        } else {
+          showExerciseCompletionAlert();
+        }
       }
     }
+
+
     if ((prepareTime === 1 || exerciseTime === 1 || restTime === 1) && !isPaused) {
       BoxingBellSound.play();
     }
@@ -173,6 +194,7 @@ const StopWatch = ({ route }) => {
     return () => {
       clearInterval(intervalId);
     };
+
   }, [prepareTime, exerciseTime, restTime, isPaused]);
 
 
@@ -184,7 +206,9 @@ const StopWatch = ({ route }) => {
     if (currentIndex < exerciseInfoOn.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setPrepareTime(exerciseInfoOn[currentIndex + 1].prepareTime);
+      setName(exerciseInfoOn[currentIndex + 1].name);
       setSets(exerciseInfoOn[currentIndex + 1].sets);
+      setReps(exerciseInfoOn[currentIndex + 1].reps);
       setCurrentSet(1);
       setExerciseTime(exerciseInfoOn[currentIndex + 1].exerciseTime);
       setRestTime(exerciseInfoOn[currentIndex + 1].restTime);
@@ -198,7 +222,9 @@ const StopWatch = ({ route }) => {
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
       setPrepareTime(exerciseInfoOn[currentIndex - 1].prepareTime);
+      setName(exerciseInfoOn[currentIndex - 1].name);
       setSets(exerciseInfoOn[currentIndex - 1].sets);
+      setReps(exerciseInfoOn[currentIndex - 1].reps);
       setExerciseTime(exerciseInfoOn[currentIndex - 1].exerciseTime);
       setRestTime(exerciseInfoOn[currentIndex - 1].restTime);
       setCurrentSet(1);

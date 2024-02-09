@@ -11,6 +11,16 @@ const getColorByValue = (value) => {
     return 'red'; // 혼잡할 때의 색상
   }
 };
+const getColorByText = (value) => {
+  // 예시: 여유(0-7), 보통(7-15), 혼잡(15-30)
+  if (value <= 7) {
+    return '여유'; // 여유할 때의 색상
+  } else if (value <= 30) {
+    return '보통'; // 보통일 때의 색상
+  } else {
+    return '혼잡'; // 혼잡할 때의 색상
+  }
+};
 
 const Busy = () => {
   const data = {
@@ -29,9 +39,12 @@ const Busy = () => {
       <View style={styles.rowContainer}>
         <View style={[styles.flexContainer, styles.flex5]}>
           <Text style={styles.midtitle}>종합 체육관</Text>
-          <View style={[styles.numberContainer, { backgroundColor: getColorByValue(data.datasets[0].data[0]) }]}>
-            {/* <Text style={styles.busynum}>{data.datasets[0].data[0]}</Text> */}
+          <View>
+            <View style={[styles.numberContainer, { backgroundColor: getColorByValue(data.datasets[0].data[0]) }]}>
+            </View>
+            <Text style={styles.busynum}>{getColorByText(data.datasets[0].data[0])}</Text>
           </View>
+
         </View>
         <View style={[styles.flexContainer, styles.flex5]}>
           <Text style={styles.midtitle}>무도대</Text>
@@ -67,7 +80,7 @@ const styles = StyleSheet.create({
   busynum: {
     color: 'black',
     textAlign: 'center',
-    fontSize: 40,
+    fontSize: 20,
     fontFamily: 'Noto Sans',
     fontWeight: '700',
   },

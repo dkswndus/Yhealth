@@ -1,19 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ScrollView, StatusBar, TouchableOpacity, View, Text, Image, Alert } from 'react-native';
+import { ScrollView, StatusBar, TouchableOpacity, View,Image, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
-import { useFocusEffect } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TopBar1 } from "../components/TopBar";
 import { ExerciseStart, ExerciseAdd, TimeLimitOn, TimeLimitOff } from "../components/Button";
 import { PlaceDropdown } from '../components/DropDown';
-import DraggableFlatList from 'react-native-draggable-flatlist';
 import remove from "../assets/image/remove.png";
-import { KeyboardAvoidingView, Platform, SafeAreaView } from 'react-native';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import up from "../assets/image/up.png";
 import down from "../assets/image/down.png";
-import { Picker } from '@react-native-picker/picker';
+
 
 
 
@@ -26,7 +22,7 @@ import {
     exerciseLikesState,
     isTimeLimitOnState,
     selectedExercisesState,
-    remainingExercisesState,
+ 
     dropdownValueState,
     likedExercisesState,
 
@@ -116,6 +112,11 @@ flex-direction: row;
 const TimeLimit = ({ route }) => {
     const navigation = useNavigation();
     const [dropdownValue, setDropdownValue] = useRecoilState(dropdownValueState);
+    const [initialSets, setInitialSets] = useState("3");
+    const [initialPrepareTime, setInitialPrepareTime] = useState("10");
+    const [initialReps, setInitialReps] = useState("25");
+    const [initialRestTime, setInitialRestTime] = useState("10");
+
     const [sets, setSets] = useRecoilState(setsState);
     const [reps, setReps] = useRecoilState(repsState);
     const [prepareTime, setPrepareTime] = useRecoilState(prepareTimeState);
@@ -126,7 +127,7 @@ const TimeLimit = ({ route }) => {
     const [exerciseOrder, setExerciseOrder] = useState([]);
     const [exerciseLikes, setExerciseLikes] = useRecoilState(exerciseLikesState);
     const [selectedExercises, setSelectedExercises] = useRecoilState(selectedExercisesState);
-    const [remainingExercises, setRemainingExercises] = useRecoilState(remainingExercisesState);
+
     const prevDropdownValue = useRef(dropdownValue);
     const time = "0";
 
@@ -152,8 +153,14 @@ const TimeLimit = ({ route }) => {
 
 
     useEffect(() => {
+  
+        setSets((prevSets) => selectedExercises.reduce((acc, exercise) => ({ ...acc, [exercise]: prevSets[exercise] || initialSets }), {}));
+        setReps((prevReps) => selectedExercises.reduce((acc, exercise) => ({ ...acc, [exercise]: prevReps[exercise] || initialReps }), {}));
+        setPrepareTime((prevPrepareTime) => selectedExercises.reduce((acc, exercise) => ({ ...acc, [exercise]: prevPrepareTime[exercise] || initialPrepareTime }), {}));
+        setRestTime((prevRestTime) => selectedExercises.reduce((acc, exercise) => ({ ...acc, [exercise]: prevRestTime[exercise] || initialRestTime }), {}));
+
         setDropdownValue(dropdownValue);
-    }, [dropdownValue]);
+    }, [dropdownValue, initialSets, initialReps, selectedExercises, setSets, setReps,setRestTime,setPrepareTime]);
 
 
 
@@ -290,7 +297,7 @@ const TimeLimit = ({ route }) => {
             return;
         }
 
-        // FlatList 스크린으로 이동하면서 직렬화 가능한 함수를 직접 전달
+    
         navigation.navigate('FlatList', {
             dropdownValue: dropdownValue,
 
@@ -315,7 +322,7 @@ const TimeLimit = ({ route }) => {
 
     const handlePrepareTimeChange = (exercise, value) => {
         setPrepareTime((prevPrepareTime) => ({ ...prevPrepareTime, [exercise]: value }));
-        console.log(`준비 시간: ${value}`);
+        console.log(`준비 시간: ${value} `);
     };
 
     const handleRestTimeChange = (exercise, value) => {
@@ -327,9 +334,7 @@ const TimeLimit = ({ route }) => {
         setExerciseTime((prevExerciseTime) => ({ ...prevExerciseTime, [exercise]: value }));
         console.log(`운동 시간: ${value}`);
     };
-    const onExerciseOrderChange = ({ data }) => {
-        setExerciseOrder(data.map(item => item.exercise));
-    };
+   
 
 
 

@@ -12,13 +12,13 @@ const CalendarComponent = ({ route }) => {
 
 
 
-  // 저장된 데이터 불러오기
+
   const loadSavedData = async () => {
     try {
-      const storedData = await AsyncStorage.getItem('appData');
+      const storedData = await AsyncStorage.getItem('appDataOn');
       if (storedData) {
         const parsedData = JSON.parse(storedData);
-        console.log('파싱된 데이터:', parsedData); // parsedData 확인을 위해 이 줄을 추가
+        console.log('파싱된 데이터:', parsedData); 
         setExerciseData(parsedData);
 
       }
@@ -29,7 +29,7 @@ const CalendarComponent = ({ route }) => {
 
 
   useEffect(() => {
-    // 저장된 데이터 불러오기
+   
     loadSavedData();
   }, []);
 
@@ -53,9 +53,10 @@ const CalendarComponent = ({ route }) => {
   });
 
   return (
-    <ScrollView style={{ backgroundColor: 'white', flex: 1 }}>
-      <View>
+
+       <View style={{ backgroundColor: 'white', flex: 1 }}>
         <TopBar1 />
+        <ScrollView >
         <View style={styles.Container}>
           <Calendar
             onDayPress={handleDayPress}
@@ -73,8 +74,8 @@ const CalendarComponent = ({ route }) => {
         <View style={styles.Container}>
           <ExerciseRecord exerciseData={exerciseData} selectedDate={selectedDate} />
         </View>
-      </View>
-    </ScrollView>
+        </ScrollView>
+         </View>
   );
 };
 
@@ -86,6 +87,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginLeft: 3,
     marginRight: 3,
+    marginLeft: 20,
+    marginRight: 20,
   },
   title: {
     color: 'black',

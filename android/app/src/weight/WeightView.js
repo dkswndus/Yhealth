@@ -19,6 +19,7 @@ const WeightView = ({ route }) => {
       if (storedData) {
         const parsedData = JSON.parse(storedData);
         setWeightData(parsedData);
+        console.log('체중 데이터:', parsedData);
       }
     } catch (error) {
       console.error('데이터 불러오기 중 오류 발생:', error);
@@ -47,21 +48,21 @@ const WeightView = ({ route }) => {
         <Text style={styles.title}>체중 기록</Text>
       </View>
       <ScrollView>
-        {weightData.map((item, index) => (
-          <View key={index} style={styles.row}>
+        {weightData.length > 0 && (
+          <View key={0} style={styles.row}>
             <View style={styles.textRow2}>
               <Text style={styles.textTitle}>날짜:</Text>
-              <Text style={styles.textcontent}>{item.date}</Text>
+              <Text style={styles.textcontent}>{weightData[weightData.length - 1].date}</Text>
             </View>
             <View style={styles.textRow2}>
               <Text style={styles.textTitle}>체중:</Text>
-              <Text style={styles.textcontent}>{item.weight}</Text>
+              <Text style={styles.textcontent}>{weightData[weightData.length - 1].weight}</Text>
             </View>
-            <TouchableOpacity onPress={() => handleDelete(index)} style={styles.deleteButton}>
+            <TouchableOpacity onPress={() => handleDelete(weightData.length - 1)} style={styles.deleteButton}>
               <Text style={styles.deleteButtonText}>삭제</Text>
             </TouchableOpacity>
           </View>
-        ))}
+        )}
       </ScrollView>
       <TouchableOpacity style={styles.addButton} onPress={handleMorePress}>
         <Text style={styles.addButtonText}>기록 추가</Text>
@@ -128,6 +129,6 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     color: 'white',
   },
-})
+});
 
 export default WeightView;

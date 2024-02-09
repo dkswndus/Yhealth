@@ -2,30 +2,39 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ExerciseRecord = ({selectedDate }) => {
-  const [exerciseData, setExerciseData] = useState([]);
+const ExerciseRecord = ({ selectedDate }) => {
+  const [exerciseDataOn, setExerciseDataOn] = useState([]);
+  const [exerciseDataOff, setExerciseDataOff] = useState([]);
 
-
-  // 저장된 데이터 불러오기
-  const loadSavedData = async () => {
+  const loadSavedData = async (key, setter) => {
     try {
-      const storedData = await AsyncStorage.getItem('appData');
+      const storedData = await AsyncStorage.getItem(`appData${key}`);
       if (storedData) {
         const parsedData = JSON.parse(storedData);
-        console.log('파싱된 sdfsf데이터:', parsedData); // parsedData 확인을 위해 이 줄을 추가
-        setExerciseData(parsedData);
-
+        console.log(` ${key} 데이터:`, parsedData);
+        setter(parsedData);
       }
     } catch (error) {
       console.error('데이터 불러오기 오류', error);
     }
   };
-  const filteredData = exerciseData.filter(exercise => exercise.date === selectedDate);
 
   useEffect(() => {
-    // 저장된 데이터 불러오기
-    loadSavedData();
-  }, []);
+    loadSavedData('On', setExerciseDataOn);
+    loadSavedData('Off', setExerciseDataOff);
+  }, [selectedDate]);
+
+  const renderExerciseData = (filteredData) => {
+    return filteredData.map((exercise, index) => (
+      <View style={styles.row} key={index}>
+        <Text style={styles.cell}>{exercise.date}</Text>
+        <Text style={styles.cell}>{exercise.name}</Text>
+        <Text style={styles.cell}>{exercise.reps}</Text>
+        <Text style={styles.cell}>{exercise.sets}</Text>
+        <Text style={styles.cell}>{exercise.time}</Text>
+      </View>
+    ));
+  };
 
   return (
     <View style={styles.container}>
@@ -39,16 +48,11 @@ const ExerciseRecord = ({selectedDate }) => {
           <Text style={styles.cell}>시간</Text>
         </View>
 
+        {/* 'On' 데이터 표시 */}
+        {renderExerciseData(exerciseDataOn)}
 
-        {filteredData.map((exercise, index) => (
-          <View style={styles.row} key={index}>
-            <Text style={styles.cell}>{exercise.date}</Text>
-            <Text style={styles.cell}>{exercise.name}</Text>
-            <Text style={styles.cell}>{exercise.reps}</Text>
-            <Text style={styles.cell}>{exercise.sets}</Text>
-            <Text style={styles.cell}>{exercise.time}</Text>
-          </View>
-        ))}
+        {/* 'Off' 데이터 표시 */}
+        {renderExerciseData(exerciseDataOff)}
       </View>
     </View>
   );

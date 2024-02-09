@@ -53,27 +53,27 @@ const NonstopWatch = ({ route }) => {
 
 
   const exerciseOrder = exerciseInfoOff.length > 0 ? exerciseInfoOff[0].exerciseOrder : '';
-
+  const length = exerciseInfoOff.length;
 
   useEffect(() => {
     console.log('exerciseInfoOff 정보:', exerciseInfoOff);
   }, [exerciseInfoOff]);
 
   useEffect(() => {
-    const saveDataToStorage = async (data) => {
+    const saveDataToStorage = async (data, key) => {
       try {
-        await AsyncStorage.setItem('appData', JSON.stringify(data));
+        await AsyncStorage.setItem(`appData${key}`, JSON.stringify(data));
       } catch (error) {
         console.error('오류', error);
       }
     };
-
+  
     // exerciseInfoOff를 기반으로 transformedData 생성
     const transformedData = exerciseInfoOff.map(item => {
       const { name, reps, sets, time } = item;
       const currentDate = new Date();
       const formattedDate = currentDate.toISOString().split('T')[0];
-
+  
       return {
         name: name,
         date: formattedDate,
@@ -82,18 +82,19 @@ const NonstopWatch = ({ route }) => {
         time: time,
       };
     });
-
-    // transformedData를 이용하여 저장
-    saveDataToStorage(transformedData);
-
+  
+    // transformedData를 이용하여 저장 (appDataOff)
+    saveDataToStorage(transformedData, 'Off');
+  
     if (completionStatus.every((status) => status === true)) {
       Alert.alert('종료', '운동이 완료되었습니다.');
       navigation.goBack();
-      console.log('저장된 dsf데이터:', {
+      console.log('appDataOff:', {
         transformedData
       });
     }
   }, [completionStatus, exerciseInfoOff]);
+  
 
 
 
@@ -130,7 +131,7 @@ const NonstopWatch = ({ route }) => {
           <View key={index}>
             <ExerciseInformation>
               <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
-                {currentIndex + index + 1}/{exerciseInfoOff.length}
+                {currentIndex + index + 1}/{length}
               </Text>
               <Text style={index === 0 ? styles.currentbigText : styles.currentmediumText}>
                 {exerciseInfoOff.name}
