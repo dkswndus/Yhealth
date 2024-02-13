@@ -1,5 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { ImageBackground, View, Text, StyleSheet } from 'react-native';
+import { BarChart, LineChart } from 'react-native-chart-kit';
+const MGym = require("../assets/image/Mgym.png");
+const SGym = require("../assets/image/Sgym.png");
 
 const getColorByValue = (value) => {
   // 예시: 여유(0-7), 보통(7-15), 혼잡(15-30)
@@ -23,7 +26,7 @@ const getColorByText = (value) => {
 };
 
 const Busy = () => {
-  const data = {
+  const Busydata = {
     labels: ['여유', '보통', '혼잡'],
     datasets: [
       {
@@ -32,25 +35,77 @@ const Busy = () => {
       },
     ],
   };
-
+  // const data = [
+  //   { name: '', count: 10 },
+  //   { name: '', count: 20 },
+  // ]
+  // const data = {
+  //   labels: Busydata.map((dataPoint) => dataPoint.name),
+  //   datasets: [
+  //     {
+  //       data: Busydata.map((dataPoint) => dataPoint.count),
+  //     },
+  //   ],
+  // };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>헬스장 혼잡도</Text>
+      <View>
+        {/* <LineChart
+          data={data}
+          width={200}
+          height={200}
+          fromZero={true}
+          chartConfig={{
+            backgroundColor: '#ffffff',
+            backgroundGradientFrom: '#ffffff',
+            backgroundGradientTo: '#ffffff',
+            decimalPlaces: 2, // 소수점 자리수
+            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // 선 색상 설정
+            style: {
+              borderRadius: 16,
+            },
+          }}
+          bezier={false}
+          style={{ borderRadius: 16, alignSelf: 'center', transform: [{ rotate: '90deg' }], }}
+
+          // withHorizontalLabels={false}
+          withHorizontalLines={false}
+          horizontal={false}
+          horizontalLabelRotation={-90}
+          withShadow={false}
+
+        /> */}
+      </View>
       <View style={styles.rowContainer}>
         <View style={[styles.flexContainer, styles.flex5]}>
+
           <Text style={styles.midtitle}>종합 체육관</Text>
-          <View>
-            <View style={[styles.numberContainer, { backgroundColor: getColorByValue(data.datasets[0].data[0]) }]}>
+          <ImageBackground
+            source={SGym}
+            style={styles.background}
+          >
+            <View style={[styles.numberContainer, { backgroundColor: getColorByValue(Busydata.datasets[0].data[0]) }]}>
+              {/* <Text style={styles.busynum}>{getColorByText(data.datasets[0].Busydata[0])}</Text> */}
             </View>
-            <Text style={styles.busynum}>{getColorByText(data.datasets[0].data[0])}</Text>
+          </ImageBackground>
+          <View>
+            
+
           </View>
 
         </View>
         <View style={[styles.flexContainer, styles.flex5]}>
           <Text style={styles.midtitle}>무도대</Text>
-          <View style={[styles.numberContainer, { backgroundColor: getColorByValue(data.datasets[0].data[1]) }]}>
-            {/* <Text style={styles.busynum}>{data.datasets[0].data[1]}</Text> */}
-          </View>
+          <ImageBackground
+            source={MGym}
+            style={styles.background}
+          >
+            <View style={[styles.numberContainer, { backgroundColor: getColorByValue(Busydata.datasets[0].data[1]) }]}>
+              {/* <Text style={styles.busynum}>{data.datasets[0].data[1]}</Text> */}
+            </View>
+          </ImageBackground>
+
         </View>
       </View>
     </View>
@@ -59,6 +114,12 @@ const Busy = () => {
 
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: 'cover',
+    width: 90,
+    height: 70
+  },
   container: {
     padding: 10,
   },
@@ -98,9 +159,9 @@ const styles = StyleSheet.create({
   numberContainer: {
     borderWidth: 1,
     borderColor: 'black',
-    borderRadius: 5,
-    width: 60,
-    height: 60,
+    borderRadius: 50,
+    width: 30,
+    height: 20,
   },
 });
 
