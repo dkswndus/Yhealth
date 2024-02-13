@@ -96,39 +96,62 @@ const StopWatch = ({ route }) => {
   };
 
 
+
+
+
+
+
   useEffect(() => {
+
     const saveDataToStorage = async (data, key) => {
       try {
-        await AsyncStorage.setItem(`appData${key}`, JSON.stringify(data));
+        // 이전 데이터 불러오기
+        const existingData = await AsyncStorage.getItem(`appData${key}`);
+        const parsedExistingData = existingData ? JSON.parse(existingData) : [];
+
+        // exerciseInfoOff를 기반으로 transformedData 생성
+        const transformedData = exerciseInfoOn.map(item => {
+          const { name, reps, sets, exerciseTime } = item;
+          const currentDate = new Date();
+          const formattedDate = currentDate.toISOString().split('T')[0];
+          const minutes = Math.floor(exerciseTime / 60);
+          const seconds = exerciseTime % 60;
+          const formattedExerciseTime = `${minutes}분 ${seconds}초`;
+
+          return {
+            name: name,
+            date: formattedDate,
+            sets: sets,
+            reps: reps,
+            time: formattedExerciseTime,
+          };
+        });
+
+        // 일주일 이전의 날짜 계산
+        const currentDate = new Date();
+        const oneWeekAgo = new Date(currentDate);
+        oneWeekAgo.setDate(currentDate.getDate() - 7);
+
+        // 이전 데이터 중 일주일 이전의 데이터 제거
+        const filteredExistingData = parsedExistingData.filter(item => {
+          const itemDate = new Date(item.date);
+          return itemDate > oneWeekAgo;
+        });
+
+        // 이전 데이터와 새로운 데이터 합치기
+        const combinedData = [...filteredExistingData, ...transformedData];
+
+        // 데이터 저장
+        await AsyncStorage.setItem(`appData${key}`, JSON.stringify(combinedData));
+
       } catch (error) {
         console.error('오류', error);
       }
     };
 
-    // exerciseInfoOn이 변경될 때마다 실행되도록 함
-    const transformedData = exerciseInfoOn.map(item => {
-      const { name, reps, sets, exerciseTime } = item;
-      const currentDate = new Date();
-      const formattedDate = currentDate.toISOString().split('T')[0];
+    saveDataToStorage([], 'On'); // 초기 실행 시 빈 배열을 전달
+  }, [exerciseInfoOn]);
 
-      const result = {
-        name: name,
-        date: formattedDate,
-        sets: sets,
-        reps: reps,
-        time: exerciseTime,
-      };
-
-
-      return result;
-    });
-
-  // 모든 운동을 마쳤으면 종료 알림 표시
-  if (currentIndex === exerciseInfoOn.length - 1 && prepareTime === 0 && exerciseTime === 0 && restTime === 0 && isPaused) {
-    Alert.alert('종료', '운동이 완료되었습니다.');
-    navigation.goBack();
-  }
-}, [currentIndex, prepareTime, exerciseTime, restTime, isPaused, exerciseInfoOn, navigation]);
 
 
 

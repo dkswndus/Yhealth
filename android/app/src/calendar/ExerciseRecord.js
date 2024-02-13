@@ -1,58 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ExerciseRecord = ({ selectedDate }) => {
-  const [exerciseDataOn, setExerciseDataOn] = useState([]);
-  const [exerciseDataOff, setExerciseDataOff] = useState([]);
-
-  const loadSavedData = async (key, setter) => {
-    try {
-      const storedData = await AsyncStorage.getItem(`appData${key}`);
-      if (storedData) {
-        const parsedData = JSON.parse(storedData);
-        console.log(` ${key} 데이터:`, parsedData);
-        setter(parsedData);
-      }
-    } catch (error) {
-      console.error('데이터 불러오기 오류', error);
-    }
-  };
-
-  useEffect(() => {
-    loadSavedData('On', setExerciseDataOn);
-    loadSavedData('Off', setExerciseDataOff);
-  }, [selectedDate]);
-
-  const renderExerciseData = (filteredData) => {
-    return filteredData.map((exercise, index) => (
-      <View style={styles.row} key={index}>
-        <Text style={styles.cell}>{exercise.date}</Text>
-        <Text style={styles.cell}>{exercise.name}</Text>
-        <Text style={styles.cell}>{exercise.reps}</Text>
-        <Text style={styles.cell}>{exercise.sets}</Text>
-        <Text style={styles.cell}>{exercise.time}</Text>
-      </View>
-    ));
-  };
-
+const ExerciseRecord = ({ exerciseDataOff,exerciseDataOn ,selectedDate }) => {
+  
+  // 선택된 날짜를 기반으로 운동 데이터 필터링
+  const filteredExerciseDataOff = exerciseDataOff.filter(
+    (data) => data.date === selectedDate
+  );
+  const filteredExerciseDataOn = exerciseDataOn.filter(
+    (data) => data.date === selectedDate
+  );
+  const combinedData = [...filteredExerciseDataOn, ...filteredExerciseDataOff];
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>운동 기록</Text>
       <View style={styles.table}>
         <View style={styles.row}>
-          <Text style={styles.cell}>날짜</Text>
-          <Text style={styles.cell}>운동이름</Text>
-          <Text style={styles.cell}>횟수</Text>
+          <Text style={styles.cell}>운동 이름</Text>
+          <Text style={styles.cell}>운동 시간</Text>
           <Text style={styles.cell}>세트</Text>
-          <Text style={styles.cell}>시간</Text>
+          <Text style={styles.cell}>휴식</Text>
         </View>
-
-        {/* 'On' 데이터 표시 */}
-        {renderExerciseData(exerciseDataOn)}
-
-        {/* 'Off' 데이터 표시 */}
-        {renderExerciseData(exerciseDataOff)}
+        {combinedData.map((data, index) => (
+          <View key={index} style={styles.row}>
+            <Text style={styles.cell}>{data.name}</Text>
+            <Text style={styles.cell}>{data.time}</Text>
+            <Text style={styles.cell}>{data.sets}</Text>
+            <Text style={styles.cell}>{data.reps}</Text>
+          </View>
+        ))}
       </View>
     </View>
   );

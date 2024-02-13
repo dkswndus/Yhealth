@@ -1,6 +1,9 @@
+// CalendarComponent.js
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { Calendar } from 'react-native-calendars';
+
 import ExerciseRecord from './ExerciseRecord';
 import ExerciseGraph from './ExerciseGraph';
 import { TopBar1 } from '../components/TopBar';
@@ -8,36 +11,40 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CalendarComponent = ({ route }) => {
   const [selectedDate, setSelectedDate] = useState('');
-  const [exerciseData, setExerciseData] = useState([]);
+  const [exerciseDataOn, setExerciseDataOn] = useState([]);
+  const [exerciseDataOff, setExerciseDataOff] = useState([]);
+ 
 
-
-
-
-  const loadSavedData = async () => {
+  const loadSavedData = async (key, setter) => {
     try {
-      const storedData = await AsyncStorage.getItem('appDataOn');
+      const storedData = await AsyncStorage.getItem(`appData${key}`);
       if (storedData) {
         const parsedData = JSON.parse(storedData);
-        console.log('파싱된 데이터:', parsedData); 
-        setExerciseData(parsedData);
-
+        console.log(` ${key} 데이터:`, parsedData);
+        setter(parsedData);
       }
     } catch (error) {
       console.error('데이터 불러오기 오류', error);
     }
   };
 
-
   useEffect(() => {
-   
-    loadSavedData();
-  }, []);
+    loadSavedData('On', setExerciseDataOn);
+    loadSavedData('Off', setExerciseDataOff);
+  }, [selectedDate]);
+
+
+
+
+
+
+
+
 
 
   const handleDayPress = (day) => {
     setSelectedDate(day.dateString);
   };
-
   const renderHeader = (date) => {
     const month = date.toString('M월');
     return (
@@ -46,17 +53,24 @@ const CalendarComponent = ({ route }) => {
       </View>
     );
   };
-
   const markedDates = {};
-  exerciseData.forEach((data) => {
+  exerciseDataOn.forEach((data) => {
     markedDates[data.date] = { marked: true };
   });
 
-  return (
 
-       <View style={{ backgroundColor: 'white', flex: 1 }}>
+  exerciseDataOff.forEach((data) => {
+    markedDates[data.date] = { marked: true };
+  
+    
+  });
+
+
+  return (
+    <ScrollView style={{ backgroundColor: 'white', flex: 1 }} >
+
+      <View>
         <TopBar1 />
-        <ScrollView >
         <View style={styles.Container}>
           <Calendar
             onDayPress={handleDayPress}
@@ -66,27 +80,24 @@ const CalendarComponent = ({ route }) => {
             }}
             renderHeader={renderHeader}
             style={{ borderRadius: 30, padding: 12 }}
-          />
-        </View>
+          /></View>
         <View style={styles.Container}>
           <ExerciseGraph />
         </View>
         <View style={styles.Container}>
-          <ExerciseRecord exerciseData={exerciseData} selectedDate={selectedDate} />
+          <ExerciseRecord  exerciseDataOn={exerciseDataOn}
+            exerciseDataOff={exerciseDataOff} selectedDate={selectedDate} />
         </View>
-        </ScrollView>
-         </View>
+      </View>
+    </ScrollView>
   );
 };
-
 const styles = StyleSheet.create({
   Container: {
     borderRadius: 25,
     marginTop: 5,
     marginBottom: 5,
     borderWidth: 1,
-    marginLeft: 3,
-    marginRight: 3,
     marginLeft: 20,
     marginRight: 20,
   },
@@ -102,5 +113,4 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
 });
-
 export default CalendarComponent;

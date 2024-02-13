@@ -43,7 +43,7 @@ const WeightSetPage = ({ route }) => {
       </View>
       <View style={{ alignSelf: 'center', width: '80%' }}>
         <View style={{ width: '100%' }}>
-           <Text style={styles.title1}>날짜</Text>
+          <Text style={styles.title1}>날짜</Text>
           <TextInput
             style={styles.inputcontainer}
             onChangeText={handleDateChange}
@@ -60,7 +60,7 @@ const WeightSetPage = ({ route }) => {
             placeholder="체중을 입력하세요"
             placeholderTextColor="gray"
             keyboardType="numeric"
-          />         
+          />
         </View>
         <TouchableOpacity style={styles.addButton} onPress={saveWeightData}>
           <Text style={styles.addButtonText}>체중 설정</Text>

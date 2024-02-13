@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ImageBackground, View, Text, StyleSheet } from 'react-native';
+import axios from 'axios';
 import { BarChart, LineChart } from 'react-native-chart-kit';
+import API_URL from '../writing/URl';
 const MGym = require("../assets/image/Mgym.png");
 const SGym = require("../assets/image/Sgym.png");
 
@@ -26,6 +28,20 @@ const getColorByText = (value) => {
 };
 
 const Busy = () => {
+  // const [busyData, setBusyData] = useState(null);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get(API_URL);
+  //       setBusyData(response.data);
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
   const Busydata = {
     labels: ['여유', '보통', '혼잡'],
     datasets: [
@@ -90,7 +106,7 @@ const Busy = () => {
             </View>
           </ImageBackground>
           <View>
-            
+
 
           </View>
 

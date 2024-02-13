@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ScrollView, StatusBar, TouchableOpacity, View,Image, Alert } from 'react-native';
+import { ScrollView, StatusBar, TouchableOpacity, View, Image, Alert, Text, StyleSheet } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 import { TopBar1 } from "../components/TopBar";
@@ -22,11 +22,12 @@ import {
     exerciseLikesState,
     isTimeLimitOnState,
     selectedExercisesState,
- 
+
     dropdownValueState,
     likedExercisesState,
 
 } from './Recoil';
+import { stopUpload } from 'react-native-fs';
 //드롭다운 
 const Dropdown = styled.View`
 padding-left: 20px;
@@ -69,17 +70,24 @@ margin-bottom: 30px;
 
 `;
 
+
+
+//횟수,
+const TextInput = styled.TextInput`
+flex-direction: row;
+ 
+`;
 //횟수,세트 통합
 const InputContainer = styled.View`
   flex-direction: row;
+  justify-content: space-between;
   padding-left: 8px;
-
   margin-top: -10px;
 `;
-//횟수,
-const TextInput = styled.TextInput`
-  margin-right: 1px;
-  text-align: left; 
+
+const TextInputContainer = styled.View`
+  flex: 1;
+  margin-right: 10px;  // 텍스트 인풋 사이의 간격을 조절
 `;
 
 //운동 이름
@@ -116,7 +124,7 @@ const TimeLimit = ({ route }) => {
     const [initialPrepareTime, setInitialPrepareTime] = useState("10");
     const [initialReps, setInitialReps] = useState("25");
     const [initialRestTime, setInitialRestTime] = useState("10");
-
+    const [initialExerciseTime, setInitialExerciseTime] = useState("70");
     const [sets, setSets] = useRecoilState(setsState);
     const [reps, setReps] = useRecoilState(repsState);
     const [prepareTime, setPrepareTime] = useRecoilState(prepareTimeState);
@@ -129,7 +137,7 @@ const TimeLimit = ({ route }) => {
     const [selectedExercises, setSelectedExercises] = useRecoilState(selectedExercisesState);
 
     const prevDropdownValue = useRef(dropdownValue);
-    const time = "0";
+    const time = "0분";
 
 
     useEffect(() => {
@@ -153,14 +161,14 @@ const TimeLimit = ({ route }) => {
 
 
     useEffect(() => {
-  
+
         setSets((prevSets) => selectedExercises.reduce((acc, exercise) => ({ ...acc, [exercise]: prevSets[exercise] || initialSets }), {}));
         setReps((prevReps) => selectedExercises.reduce((acc, exercise) => ({ ...acc, [exercise]: prevReps[exercise] || initialReps }), {}));
         setPrepareTime((prevPrepareTime) => selectedExercises.reduce((acc, exercise) => ({ ...acc, [exercise]: prevPrepareTime[exercise] || initialPrepareTime }), {}));
         setRestTime((prevRestTime) => selectedExercises.reduce((acc, exercise) => ({ ...acc, [exercise]: prevRestTime[exercise] || initialRestTime }), {}));
-
+        setExerciseTime((prevExerciseTime) => selectedExercises.reduce((acc, exercise) => ({ ...acc, [exercise]: prevExerciseTime[exercise] || initialExerciseTime }), {}));
         setDropdownValue(dropdownValue);
-    }, [dropdownValue, initialSets, initialReps, selectedExercises, setSets, setReps,setRestTime,setPrepareTime]);
+    }, [dropdownValue, initialSets, initialReps, selectedExercises, setSets, setReps, setRestTime, setPrepareTime]);
 
 
 
@@ -297,7 +305,7 @@ const TimeLimit = ({ route }) => {
             return;
         }
 
-    
+
         navigation.navigate('FlatList', {
             dropdownValue: dropdownValue,
 
@@ -334,7 +342,7 @@ const TimeLimit = ({ route }) => {
         setExerciseTime((prevExerciseTime) => ({ ...prevExerciseTime, [exercise]: value }));
         console.log(`운동 시간: ${value}`);
     };
-   
+
 
 
 
@@ -373,48 +381,40 @@ const TimeLimit = ({ route }) => {
                                         </TouchableOpacity>
                                     </SettingContainer>
                                 </IntegreatedContainer>
-                                <InputContainer>
+                                <View style={styles.srcombine}>
+                                    <Text style={styles.information}>세트: </Text>
                                     <TextInput
-                                        placeholder="세트"
                                         keyboardType="numeric"
-
-                                        color="black"
                                         value={sets[exercise]}
                                         onChangeText={(value) => handleSetsChange(exercise, value)}
                                     />
+                                    <Text style={styles.information}>횟수: </Text>
                                     <TextInput
-                                        placeholder="횟수"
                                         keyboardType="numeric"
-
-                                        color="black"
                                         value={reps[exercise]}
                                         onChangeText={(value) => handleRepsChange(exercise, value)}
                                     />
+                                </View>
+                                <View style={styles.percombine}>
+                                    <Text style={styles.information}>준비시간: </Text>
                                     <TextInput
-                                        placeholder="준비시간"
                                         keyboardType="numeric"
-
-                                        color="black"
                                         value={prepareTime[exercise]}
                                         onChangeText={(value) => handlePrepareTimeChange(exercise, value)}
                                     />
+                                    <Text style={styles.information}>운동시간: </Text>
                                     <TextInput
-                                        placeholder="운동시간"
                                         keyboardType="numeric"
-
-                                        color="black"
                                         value={exerciseTime[exercise]}
                                         onChangeText={(value) => handleExerciseTimeChange(exercise, value)}
                                     />
+                                    <Text style={styles.information}>휴식시간:  </Text>
                                     <TextInput
-                                        placeholder="휴식시간"
                                         keyboardType="numeric"
-
-                                        color="black"
                                         value={restTime[exercise]}
                                         onChangeText={(value) => handleRestTimeChange(exercise, value)}
                                     />
-                                </InputContainer>
+                                </View>
                             </View>
                         ))}
                     </ExerciseInformation>
@@ -436,24 +436,20 @@ const TimeLimit = ({ route }) => {
                                         </TouchableOpacity>
                                     </SettingContainer>
                                 </IntegreatedContainer>
-                                <InputContainer>
+                                <View style={styles.srcombine}>
+                                    <Text style={styles.information}>세트: </Text>
                                     <TextInput
-                                        placeholder="세트"
                                         keyboardType="numeric"
-
                                         value={sets[exercise]}
                                         onChangeText={(value) => handleSetsChange(exercise, value)}
-
                                     />
+                                    <Text style={styles.information}>횟수: </Text>
                                     <TextInput
-                                        placeholder="횟수 "
                                         keyboardType="numeric"
-
                                         value={reps[exercise]}
                                         onChangeText={(value) => handleRepsChange(exercise, value)}
-
                                     />
-                                </InputContainer>
+                                </View>
                             </View>
                         ))}
                     </ExerciseInformation>
@@ -483,5 +479,26 @@ const TimeLimit = ({ route }) => {
 
     );
 };
+
+const styles = StyleSheet.create({
+    srcombine: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 12,
+        marginTop: -20,
+    },
+    information: {
+        color: 'black',
+
+    },
+    percombine: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 12,
+        marginTop: -45,
+    },
+});
+
+
 
 export default TimeLimit;
