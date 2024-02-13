@@ -131,10 +131,11 @@ const Busy = () => {
 
 const styles = StyleSheet.create({
   background: {
+    alignItems:'flex-end',
     flex: 1,
     resizeMode: 'cover',
     width: 90,
-    height: 70
+    height: 70,
   },
   container: {
     padding: 10,
@@ -149,9 +150,9 @@ const styles = StyleSheet.create({
   midtitle: {
     color: 'black',
     textAlign: 'center',
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: 'Noto Sans',
-    fontWeight: '700',
+    fontWeight: 'bold',
     marginBottom: 10,
   },
   busynum: {
@@ -173,10 +174,10 @@ const styles = StyleSheet.create({
     flex: 5,
   },
   numberContainer: {
-    borderWidth: 1,
+    margin:4,
     borderColor: 'black',
     borderRadius: 50,
-    width: 30,
+    width: 20,
     height: 20,
   },
 });

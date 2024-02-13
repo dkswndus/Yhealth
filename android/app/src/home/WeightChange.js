@@ -3,19 +3,39 @@ import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-nati
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LineChart } from 'react-native-chart-kit';
 import { useNavigation } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 
 const screenWidth = Dimensions.get('window').width - 8;
 const Weight = () => {
   const navigation = useNavigation();
-  const weightData = [
-    { date: '월', weight: 12 },
-    { date: '화', weight: 30 },
-    { date: '수', weight: 30 },
-    { date: '목', weight: 60 },
-    { date: '금', weight: 30 },
-    { date: '화', weight: 18 },
-    { date: '화', weight: 15 },
-  ]
+  const [weightData, setWeightData] = useState([]);
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    fetchData();
+  }, [isFocused]);
+
+  const fetchData = async () => {
+    try {
+      const storedData = await AsyncStorage.getItem('weightEntries');
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        setWeightData(parsedData);
+        console.log('체중 데이터:', parsedData);
+      }
+    } catch (error) {
+      console.error('데이터 불러오기 중 오류 발생:', error);
+    }
+  };
+  // const weightData = [
+  //   { date: '월', weight: 12 },
+  //   { date: '화', weight: 30 },
+  //   { date: '수', weight: 30 },
+  //   { date: '목', weight: 60 },
+  //   { date: '금', weight: 30 },
+  //   { date: '화', weight: 18 },
+  //   { date: '화', weight: 15 },
+  // ]
   const limitedweightData = weightData.slice(-7);
   const data = {
     labels: limitedweightData.map((dataPoint) => dataPoint.date),
@@ -38,24 +58,28 @@ const Weight = () => {
           </Text>
         </TouchableOpacity>
       </View>
-      <LineChart
-        data={data}
-        width={screenWidth}
-        height={200}
-        fromZero={true}
-        chartConfig={{
-          backgroundColor: '#ffffff',
-          backgroundGradientFrom: '#ffffff',
-          backgroundGradientTo: '#ffffff',
-          decimalPlaces: 2, // 소수점 자리수
-          color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // 선 색상 설정
-          style: {
-            borderRadius: 16,
-          },
-        }}
-        bezier={false}
-        style={{ borderRadius: 16, alignSelf: 'center' }}
-      />
+      {weightData.length > 1 ? (
+        <LineChart
+          data={data}
+          width={screenWidth}
+          height={200}
+          fromZero={true}
+          chartConfig={{
+            backgroundColor: '#ffffff',
+            backgroundGradientFrom: '#ffffff',
+            backgroundGradientTo: '#ffffff',
+            decimalPlaces: 2, // 소수점 자리수
+            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // 선 색상 설정
+            style: {
+              borderRadius: 16,
+            },
+          }}
+          bezier={false}
+          style={{ borderRadius: 16, alignSelf: 'center' }}
+        />
+      ) : (
+        <Text style={{color:'black',fontSize:20}}>체중을 2개 이상 입력하세요</Text>
+      )}
     </View>
   );
 }

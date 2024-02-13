@@ -14,7 +14,7 @@ const WeightSetPage = ({ route }) => {
   }
 
   const handleDateChange = (inputDate) => {
-    setDateData(inputDate);
+    setDateData(inputDate);                                                                                                                      
   }
 
   const saveWeightData = async () => {
