@@ -10,9 +10,9 @@ const Writepage = ({ route }) => {
   const navigation = useNavigation();
 
   const [title, setTitle] = useState('');
-  const [text, setText] = useState('');
-  const [nickname, setName] = useState(route.params?.initialNickname || '익명');
-  const [pwd, setPwd] = useState('');
+  const [description, setdescription] = useState('');
+  const [user_id, setName] = useState(route.params?.initialNickname || '익명');
+  const [user_pwd, setuser_pwd] = useState('');
   const [selectedDropdownValue, setSelectedDropdownValue] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -20,16 +20,16 @@ const Writepage = ({ route }) => {
     setName(inputName);
   };
 
-  const handlePwdChange = (inputPwd) => {
-    setPwd(inputPwd);
+  const handleuser_pwdChange = (inputPwd) => {
+    setuser_pwd(inputPwd);
   };
 
   const handleTitleChange = (inputTitle) => {
     setTitle(inputTitle);
   };
 
-  const handleTextChange = (inputText) => {
-    setText(inputText);
+  const handledescriptionChange = (inputdescription) => {
+    setdescription(inputdescription);
   };
 
   const clearNickname = () => {
@@ -52,21 +52,21 @@ const Writepage = ({ route }) => {
 
     } else {
       // 모달이 켜져있을 때
-      if (nickname.trim() === '') {
+      if (user_id.trim() === '') {
         alert('닉네임을 입력하세요.');
         return;
-      } else if (pwd.length < 4) {
+      } else if (user_pwd.length < 4) {
         alert('비밀번호는 최소 4자리 이상이어야 합니다.');
         return;
       }
       try {
         const post = {
           title,
-          text,
-          nickname,
-          pwd,
-          time: new Date().toLocaleString(),
-          like: 0,
+          description,
+          user_id,
+          user_pwd,
+          // time: new Date().toLocaleString(),
+          // like: 0,
         };
 
         // axios를 사용하여 백엔드에 글 생성 요청 보내기
@@ -98,8 +98,8 @@ const Writepage = ({ route }) => {
         <View style={[styles.viewcontainer, { flex: 1 }]}>
           <TextInput
             style={[styles.inputcontainer, { flex: 1 }]}
-            onChangeText={handleTextChange}
-            value={text}
+            onChangeText={handledescriptionChange}
+            value={description}
             placeholder="내용을 입력하세요"
             placeholderTextColor="gray"
           />
@@ -125,14 +125,14 @@ const Writepage = ({ route }) => {
                       style={styles.inputcontainer}
                       onChangeText={handleNameChange}
                       onFocus={clearNickname}
-                      value={nickname}
+                      value={user_id}
                       placeholder="닉네임"
                       placeholderTextColor="gray"
                     />
                     <TextInput
                       style={styles.inputcontainer}
-                      onChangeText={handlePwdChange}
-                      value={pwd}
+                      onChangeText={handleuser_pwdChange}
+                      value={user_pwd}
                       placeholder="비밀번호"
                       placeholderTextColor="gray"
                     />
