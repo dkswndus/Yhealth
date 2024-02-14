@@ -70,7 +70,11 @@ const Writepage = ({ route }) => {
         };
 
         // axios를 사용하여 백엔드에 글 생성 요청 보내기
-        const response = await axios.post(API_URL, post);
+        const response = await axios.post(API_URL, post,
+          {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        });
         console.log('글 생성 성공:', response.data);
 
         navigation.goBack(); // 성공 시 화면 이동
