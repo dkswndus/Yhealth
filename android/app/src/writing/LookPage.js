@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, TouchableOpacity, View, TextInput, Text, Image,
 import { TopBar1 } from '../components/TopBar';
 import axios from 'axios'; // axios 추가
 import API_URL from './URl';
-
+  
 const LookPage = ({ route, navigation }) => {
   const [selectedItem, setSelectedItem] = useState(route.params.selectedItem);
   const [nickname, setNickname] = useState('');
@@ -13,6 +13,9 @@ const LookPage = ({ route, navigation }) => {
   const [comments, setComments] = useState([]);
   const [ckPwd, setCkPwd] = useState('');
   const [isModalVisible, setModalVisible] = useState(false);
+  const paperplane = require("../assets/image/paperplane.png");
+  const thumbsup = require("../assets/image/thumbsup.png");
+  const messages = require("../assets/image/messages.png");
 
   useEffect(() => {
     const fetchData = async () => {
