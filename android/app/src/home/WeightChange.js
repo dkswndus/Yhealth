@@ -27,24 +27,29 @@ const Weight = () => {
       console.error('데이터 불러오기 중 오류 발생:', error);
     }
   };
-  // const weightData = [
-  //   { date: '월', weight: 12 },
-  //   { date: '화', weight: 30 },
-  //   { date: '수', weight: 30 },
-  //   { date: '목', weight: 60 },
-  //   { date: '금', weight: 30 },
-  //   { date: '화', weight: 18 },
-  //   { date: '화', weight: 15 },
-  // ]
-  const limitedweightData = weightData.slice(-7);
+/*
+  const exampleWeightData = [
+    { date: '2024-02-07', weight: '80' },
+    { date: '2024-02-08', weight: '49' },
+    { date: '2024-02-09', weight: '78' },
+    { date: '2024-02-10', weight: '45' },
+    { date: '2024-02-11', weight: '76' },
+    { date: '2024-02-12', weight: '75' },
+    { date: '2024-02-13', weight: '12' },
+  ];*/
+
+
+
+  const limitedWeightData = weightData.slice(-7);
   const data = {
-    labels: limitedweightData.map((dataPoint) => dataPoint.date),
+    labels: limitedWeightData.map(dataPoint => dataPoint.date.substring(5,10)),
     datasets: [
       {
-        data: limitedweightData.map((dataPoint) => dataPoint.weight),
+        data: limitedWeightData.map(dataPoint => parseFloat(dataPoint.weight)), // 문자열을 숫자로 변환 >>>>>>>추가 
       },
     ],
   };
+  
   const handleMorePress = () => {
     navigation.navigate('체중 기록');
   };
@@ -58,7 +63,7 @@ const Weight = () => {
           </Text>
         </TouchableOpacity>
       </View>
-      {weightData.length > 1 ? (
+      {weightData.length > 0 ? (
         <LineChart
           data={data}
           width={screenWidth}
@@ -78,7 +83,7 @@ const Weight = () => {
           style={{ borderRadius: 16, alignSelf: 'center' }}
         />
       ) : (
-        <Text style={{color:'black',fontSize:20}}>체중을 2개 이상 입력하세요</Text>
+        <Text style={{color:'black',fontSize:15}}>체중을 입력하세요.</Text>
       )}
     </View>
   );

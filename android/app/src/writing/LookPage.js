@@ -7,8 +7,8 @@ import API_URL from './URl';
   
 const LookPage = ({ route, navigation }) => {
   const [selectedItem, setSelectedItem] = useState(route.params.selectedItem);
-  const [nickname, setNickname] = useState('');
-  const [password, setPassword] = useState('');
+  const [user_id, setuser_id] = useState('');
+  const [user_pwd, setuser_pwd] = useState('');
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [ckPwd, setCkPwd] = useState('');
@@ -59,11 +59,11 @@ const LookPage = ({ route, navigation }) => {
   };
 
   const handleNameChange = (inputName) => {
-    setNickname(inputName);
+    setuser_id(inputName);
   };
 
   const handlePwdChange = (inputPwd) => {
-    setPassword(inputPwd);
+    setuser_pwd(inputPwd);
   };
 
   const handleTextChange = (inputText) => {
@@ -124,10 +124,10 @@ const LookPage = ({ route, navigation }) => {
   };
 
   const handleSend = () => {
-    const newComment = { author: nickname, content: comment };
+    const newComment = { author: user_id, content: comment };
     setComments([...comments, newComment]);
-    setNickname('');
-    setPassword('');
+    setuser_id('');
+    setuser_pwd('');
     setComment('');
     const updatedSelectedItem = {
       ...selectedItem,
@@ -140,7 +140,7 @@ const LookPage = ({ route, navigation }) => {
       <TopBar1 />
       <ScrollView>
         <View style={[styles.viewcontainer, styles.editdeletecontainer]}>
-          <Text style={{ color: 'black' }}>작성자 : {selectedItem.nickname}</Text>
+          <Text style={{ color: 'black' }}>작성자 : {selectedItem.user_id}</Text>
           <Text style={{ color: 'black' }}>작성시간 :  {selectedItem.time}</Text>
         </View>
 
@@ -193,7 +193,7 @@ const LookPage = ({ route, navigation }) => {
           <TextInput
             style={[styles.inputcontainer, { flex: 1 }]}
             onChangeText={handleNameChange}
-            value={nickname}
+            value={user_id}
             placeholder="닉네임"
             placeholderTextColor="gray"
           />
@@ -201,7 +201,7 @@ const LookPage = ({ route, navigation }) => {
           <TextInput
             style={[styles.inputcontainer, { flex: 1 }]}
             onChangeText={handlePwdChange}
-            value={password}
+            value={user_pwd}
             placeholder="비밀번호"
             placeholderTextColor="gray"
           />

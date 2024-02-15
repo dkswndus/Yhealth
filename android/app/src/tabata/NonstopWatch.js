@@ -29,14 +29,7 @@ const ExerciseInformation = styled.View`
   padding-bottom: 5px;
 `;
 
-const PlayerControl = styled.View`
-  position: absolute;
-  top: 450px;
-  left: -30px;
-  padding-top: 30px;
-  padding-left: 90px;
-  flex-direction: row;
-`;
+
 
 const ImageContainer = styled.View`
 
@@ -55,60 +48,61 @@ const NonstopWatch = ({ route }) => {
     console.log('exerciseInfoOff 정보:', exerciseInfoOff);
   }, [exerciseInfoOff]);
 
+
   useEffect(() => {
     const saveDataToStorage = async (data, key) => {
       try {
-        // 이전 데이터 불러오기
-        const existingData = await AsyncStorage.getItem(`appData${key}`);
-        const parsedExistingData = existingData ? JSON.parse(existingData) : [];
-
-        // exerciseInfoOff를 기반으로 transformedData 생성
-        const transformedData = exerciseInfoOff.map(item => {
-          const { name, reps, sets, time } = item;
-          const currentDate = new Date();
-          const formattedDate = currentDate.toISOString().split('T')[0];
-
-          return {
-            name: name,
-            date: formattedDate,
-            sets: sets,
-            reps: reps,
-            time: time,
-          };
-        });
-
-
-        // 일주일 이전의 날짜 계산
-        const currentDate = new Date();
-        const oneWeekAgo = new Date(currentDate);
-        oneWeekAgo.setDate(currentDate.getDate() - 7);
-
-        // 이전 데이터 중 일주일 이전의 데이터 제거
-        const filteredExistingData = parsedExistingData.filter(item => {
-          const itemDate = new Date(item.date);
-          return itemDate > oneWeekAgo;
-        });
-
-        // 이전 데이터와 새로운 데이터 합치기
-        const combinedData = [...filteredExistingData, ...transformedData];
-
-        // 데이터 저장
-        await AsyncStorage.setItem(`appData${key}`, JSON.stringify(combinedData));
-
-        if (completionStatus.every((status) => status === true)) {
+        if (completionStatus.every(status => status === true)) {
           Alert.alert('종료', '운동이 완료되었습니다.');
           navigation.goBack();
-          console.log('appDataOff:', {
-            combinedData
-          });
+          // 한 번만 저장하기 위해 조건 추가
+          if (exerciseInfoOff.length > 0) {
+            // 이전 데이터 불러오기
+            const existingData = await AsyncStorage.getItem(`appData${key}`);
+            const parsedExistingData = existingData ? JSON.parse(existingData) : [];
+  
+            // exerciseInfoOff를 기반으로 transformedData 생성
+            const transformedData = exerciseInfoOff.map(item => {
+              const { name, reps, sets, time } = item;
+              const currentDate = new Date();
+              const formattedDate = currentDate.toISOString().split('T')[0];
+  
+              return {
+                name: name,
+                date: formattedDate,
+                sets: sets,
+                reps: reps,
+                time: time,
+              };
+            });
+  
+            // 일주일 이전의 날짜 계산
+            const currentDate = new Date();
+            const oneWeekAgo = new Date(currentDate);
+            oneWeekAgo.setDate(currentDate.getDate() - 7);
+  
+            // 이전 데이터 중 일주일 이전의 데이터 제거
+            const filteredExistingData = parsedExistingData.filter(item => {
+              const itemDate = new Date(item.date);
+              return itemDate > oneWeekAgo;
+            });
+  
+            // 이전 데이터와 새로운 데이터 합치기
+            const combinedData = [...filteredExistingData, ...transformedData];
+            console.log("nonstopwatch: ", combinedData);
+            // 데이터 저장
+            await AsyncStorage.setItem(`appData${key}`, JSON.stringify(combinedData));
+          }
         }
       } catch (error) {
         console.error('오류', error);
       }
     };
-
+  
     saveDataToStorage([], 'Off'); // 초기 실행 시 빈 배열을 전달
-  }, [completionStatus, exerciseInfoOff]);
+  }, [completionStatus]); // completionStatus만 종속성으로 설정
+  
+  
 
 
 

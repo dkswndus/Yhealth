@@ -235,8 +235,6 @@ const FlatList = ({ route }) => {
 
 
 
-  const exerciseOrder = [...Array(currentData.length).keys()];
-
 
   const MAX_SELECTION = 10;
 

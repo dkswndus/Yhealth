@@ -22,7 +22,12 @@ const BoardPage = ({ route }) => {
   const fetchData = async () => {
     try {
       // 백엔드에서 게시글 데이터를 가져오는 요청
-      const response = await axios.get(API_URL);
+      const response = await axios.get(API_URL, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+        });
       const data = response.data;
       setBoardData(data);
     } catch (error) {

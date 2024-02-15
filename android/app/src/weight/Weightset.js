@@ -17,24 +17,45 @@ const WeightSetPage = ({ route }) => {
     setDateData(inputDate);                                                                                                                      
   }
 
+
+  
+  //const , let차이점 
+  //const: 재할당 x
+  //let: 재할당 o
   const saveWeightData = async () => {
     try {
       const weightEntry = {
         weight: weightData,
         date: dateData
       };
-      const existingEntries = await AsyncStorage.getItem('weightEntries');
-      let updatedEntries = [];
-      if (existingEntries) {
-        updatedEntries = JSON.parse(existingEntries);
+    
+    
+
+      // 이전에 저장된 데이터 가져오기
+      let storedData = await AsyncStorage.getItem('weightEntries');
+      storedData = storedData ? JSON.parse(storedData) : [];
+  
+      // 동일한 날짜의 데이터가 이미 있는지 확인
+      const existingDataIndex = storedData.findIndex(entry => entry.date === dateData);
+  
+      if (existingDataIndex !== -1) {
+        // 동일한 날짜의 데이터가 있으면 최신 데이터로 업데이트
+        storedData[existingDataIndex] = weightEntry;
+      } else {
+        // 동일한 날짜의 데이터가 없으면 새로운 데이터 추가
+        storedData.push(weightEntry);
       }
-      updatedEntries.push(weightEntry);
-      await AsyncStorage.setItem('weightEntries', JSON.stringify(updatedEntries));
+  
+      // 업데이트된 데이터 저장
+      await AsyncStorage.setItem('weightEntries', JSON.stringify(storedData));
+  
       navigation.goBack();
     } catch (error) {
-      console.error('Error saving weight data:', error);
+      console.error('체중 데이터 저장 중 오류 발생:', error);
     }
   }
+  
+  
 
   return (
     <View style={{ backgroundColor: 'white', flex: 1, justifyContent: 'center' }}>

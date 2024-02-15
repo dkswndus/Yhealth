@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -17,22 +17,22 @@ const ExerciseGraph = () => {
   // 시간을 분과 초로 분리하여 계산 후, 다시 합치기
   const calculateTotalTime = () => {
     const totalTimeByDate = {};
-  
+
     // 각 exerciseData 항목을 순회하면서 날짜별 총 운동 시간 계산
     exerciseData.forEach((item) => {
       const { date, time } = item;
       const totalTimeInSeconds = time.split(' ').reduce((acc, part) => {
         const value = parseInt(part) || 0;
-  
+
         if (part.includes('분')) {
           acc += value * 60;
         } else if (part.includes('초')) {
           acc += value;
         }
-  
+
         return acc;
       }, 0);
-  
+
       if (!totalTimeByDate[date]) {
         totalTimeByDate[date] = {
           totalSeconds: totalTimeInSeconds,
@@ -45,19 +45,19 @@ const ExerciseGraph = () => {
         totalTimeByDate[date].seconds = totalTimeByDate[date].totalSeconds % 60;
       }
     });
-  
+
     console.log('Total Time by Date:', totalTimeByDate);
-  
+
     return totalTimeByDate;
   };
-  
-  const totalTimeByDate = calculateTotalTime(); 
+
+  const totalTimeByDate = calculateTotalTime();
 
   useEffect(() => {
     console.log('uniqueDate:', uniqueDate);
-  
 
-  
+
+
     const totalMinutes = Math.floor(totalTimeByDate[uniqueDate[0]]?.totalSeconds / 60) || 0;
     const totalSeconds = totalTimeByDate[uniqueDate[0]]?.totalSeconds % 60 || 0;
 
@@ -65,35 +65,35 @@ const ExerciseGraph = () => {
     setTotalMinutes(totalMinutes);
     setTotalSeconds(totalSeconds);
   }, [uniqueDate, totalTimeByDate]);
-  
-  
 
 
-const loadSavedData = async (key, setter) => {
-  try {
-    const storedData = await AsyncStorage.getItem(`appData${key}`);
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      console.log(` ${key} 데이터:`, parsedData);
-      setter(parsedData);
+
+
+  const loadSavedData = async (key, setter) => {
+    try {
+      const storedData = await AsyncStorage.getItem(`appData${key}`);
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        console.log(` ${key} 데이터:`, parsedData);
+        setter(parsedData);
+      }
+    } catch (error) {
+      console.error('데이터 불러오기 오류', error);
     }
-  } catch (error) {
-    console.error('데이터 불러오기 오류', error);
-  }
-};
-useEffect(() => {
+  };
+  useEffect(() => {
 
-  loadSavedData('Off', setExerciseDataOff);
-  
+    loadSavedData('Off', setExerciseDataOff);
 
-  loadSavedData('On', setExerciseDataOn);
-}, []); 
 
-const oneWeekAgo = new Date();
-oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    loadSavedData('On', setExerciseDataOn);
+  }, []);
 
-const filteredExerciseData = exerciseData.filter(item => new Date(item.date) >= oneWeekAgo);
-const uniqueDates = Array.from(new Set(filteredExerciseData.map(item => item.date)));
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+  const filteredExerciseData = exerciseData.filter(item => new Date(item.date) >= oneWeekAgo);
+  const uniqueDates = Array.from(new Set(filteredExerciseData.map(item => item.date)));
 
 
   const data = {
@@ -104,32 +104,36 @@ const uniqueDates = Array.from(new Set(filteredExerciseData.map(item => item.dat
       },
     ],
   };
-  
+
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>운동시간 그래프</Text>
-      <BarChart
-        data={data}
-        width={350}
-        height={200}
-        yAxisSuffix="분"
-        fromZero={true}
-        chartConfig={{
-          backgroundColor: 'white',
-          backgroundGradientFrom: 'white',
-          backgroundGradientTo: 'white',
-          decimalPlaces: 0,
-          barPercentage: 0.8,
-          group: false,
-          color: (opacity = 1.0) => `rgba(0, 0, 255, ${opacity})`,
-        }}
-        style={{
-          marginVertical: 2,
-          borderRadius: 16,
-          paddingRight: 50,
-        }}
-      />
+
+      {uniqueDate.length > 0 ? (
+        <BarChart
+          data={data}
+          width={350}
+          height={200}
+          yAxisSuffix="분"
+          fromZero={true}
+          chartConfig={{
+            backgroundColor: 'white',
+            backgroundGradientFrom: 'white',
+            backgroundGradientTo: 'white',
+            decimalPlaces: 0,
+            barPercentage: 0.8,
+            group: false,
+            color: (opacity = 1.0) => `rgba(0, 0, 255, ${opacity})`,
+          }}
+          style={{
+            marginVertical: 2,
+            borderRadius: 16,
+            paddingRight: 50,
+          }}
+        />
+      ) : (<Text style={{ color: 'black', fontSize: 15 }}> 운동기록이 없습니다. </Text>)}
+
     </View>
   );
 };
