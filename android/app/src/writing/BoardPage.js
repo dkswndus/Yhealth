@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, ScrollView, TouchableOpacity, RefreshControl, Image, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { TopBar1 } from '../components/TopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
@@ -14,20 +14,29 @@ const BoardPage = ({ route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchData();
-  }, [isFocused]);
-
+	useFocusEffect(
+		React.useCallback(() => {
+		  fetchData(); // 화면이 focus되면 fetchData 함수 호출
+		}, [])
+	  );
+    
   const fetchData = async () => {
     try {
       // 백엔드에서 게시글 데이터를 가져오는 요청
-      const response = await axios.get('http://127.0.0.1:8002/forum/');
-      const data = response.data;
-      setBoardData(data);
-      setLoading(false); // 데이터 가져오기 완료 후 로딩 상태 변경
+      const response = await axios.get('http://127.0.0.1:8002/forum/', {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+        });
+      
+       // 가져온 데이터를 state에 저장
+      setBoardData(response.data);
+      
+     // setLoading(false); // 데이터 가져오기 완료 후 로딩 상태 변경
     } catch (error) {
       console.error('데이터 불러오기 중 오류 발생:', error);
-      setLoading(false); // 데이터 가져오기 실패 시 로딩 상태 변경
+     // setLoading(false); // 데이터 가져오기 실패 시 로딩 상태 변경
     }
   };
 
