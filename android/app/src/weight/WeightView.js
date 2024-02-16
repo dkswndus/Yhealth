@@ -48,21 +48,21 @@ const WeightView = ({ route }) => {
         <Text style={styles.title}>체중 기록</Text>
       </View>
       <ScrollView>
-        {weightData.length > 0 && (
-          <View key={0} style={styles.row}>
+        {weightData.map((data, index) => (
+          <View key={index} style={styles.row}>
             <View style={styles.textRow2}>
               <Text style={styles.textTitle}>날짜:</Text>
-              <Text style={styles.textcontent}>{weightData[weightData.length - 1].date}</Text>
+              <Text style={styles.textcontent}>{data.date}</Text>
             </View>
             <View style={styles.textRow2}>
               <Text style={styles.textTitle}>체중:</Text>
-              <Text style={styles.textcontent}>{weightData[weightData.length - 1].weight}</Text>
+              <Text style={styles.textcontent}>{data.weight}</Text>
             </View>
-            <TouchableOpacity onPress={() => handleDelete(weightData.length - 1)} style={styles.deleteButton}>
+            <TouchableOpacity onPress={() => handleDelete(index)} style={styles.deleteButton}>
               <Text style={styles.deleteButtonText}>삭제</Text>
             </TouchableOpacity>
           </View>
-        )}
+        ))}
       </ScrollView>
       <TouchableOpacity style={styles.addButton} onPress={handleMorePress}>
         <Text style={styles.addButtonText}>기록 추가</Text>
