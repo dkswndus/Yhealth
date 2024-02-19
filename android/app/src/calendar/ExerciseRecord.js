@@ -11,7 +11,7 @@ const ExerciseRecord = ({ exerciseDataOff,exerciseDataOn ,selectedDate }) => {
     (data) => data.date === selectedDate
   );
   const combinedData = [...filteredExerciseDataOn, ...filteredExerciseDataOff];
-  
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>운동 기록</Text>
@@ -20,7 +20,7 @@ const ExerciseRecord = ({ exerciseDataOff,exerciseDataOn ,selectedDate }) => {
           <Text style={styles.cell}>운동 이름</Text>
           <Text style={styles.cell}>운동 시간</Text>
           <Text style={styles.cell}>세트</Text>
-          <Text style={styles.cell}>휴식</Text>
+          <Text style={styles.cell}>횟수</Text>
         </View>
         {combinedData.map((data, index) => (
           <View key={index} style={styles.row}>

@@ -9,6 +9,7 @@ const ExerciseGraph = () => {
   const [exerciseDataOn, setExerciseDataOn] = useState([]);
   const [exerciseDataOff, setExerciseDataOff] = useState([]);
   const [totalMinutes, setTotalMinutes] = useState(0);
+
   const [totalSeconds, setTotalSeconds] = useState(0);
   const exerciseData = [...exerciseDataOff, ...exerciseDataOn];
   const uniqueDate = [...new Set(exerciseData.map(item => item.date))];
@@ -46,7 +47,7 @@ const ExerciseGraph = () => {
       }
     });
 
-    console.log('Total Time by Date:', totalTimeByDate);
+   
 
     return totalTimeByDate;
   };
@@ -54,16 +55,8 @@ const ExerciseGraph = () => {
   const totalTimeByDate = calculateTotalTime();
 
   useEffect(() => {
+    console.log('Total Time by Date:', totalTimeByDate);
     console.log('uniqueDate:', uniqueDate);
-
-
-
-    const totalMinutes = Math.floor(totalTimeByDate[uniqueDate[0]]?.totalSeconds / 60) || 0;
-    const totalSeconds = totalTimeByDate[uniqueDate[0]]?.totalSeconds % 60 || 0;
-
-
-    setTotalMinutes(totalMinutes);
-    setTotalSeconds(totalSeconds);
   }, [uniqueDate, totalTimeByDate]);
 
 
@@ -82,16 +75,22 @@ const ExerciseGraph = () => {
     }
   };
   useEffect(() => {
-
-    loadSavedData('Off', setExerciseDataOff);
-
-
-    loadSavedData('On', setExerciseDataOn);
+    let isMounted = true;
+  
+    const fetchData = async () => {
+      await loadSavedData('Off', setExerciseDataOff);
+      await loadSavedData('On', setExerciseDataOn);
+    };
+  
+    fetchData();
+  
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-
   const filteredExerciseData = exerciseData.filter(item => new Date(item.date) >= oneWeekAgo);
   const uniqueDates = Array.from(new Set(filteredExerciseData.map(item => item.date)));
 
@@ -132,7 +131,7 @@ const ExerciseGraph = () => {
             paddingRight: 50,
           }}
         />
-      ) : (<Text style={{ color: 'black', fontSize: 15 }}> 운동기록이 없습니다. </Text>)}
+      ) : ( <Text style={{color:'black',fontSize:15}}> 운동기록이 없습니다. </Text>)}
 
     </View>
   );

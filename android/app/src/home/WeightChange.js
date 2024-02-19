@@ -38,8 +38,6 @@ const Weight = () => {
     { date: '2024-02-13', weight: '12' },
   ];*/
 
-
-
   const limitedWeightData = weightData.slice(-7);
   const data = {
     labels: limitedWeightData.map(dataPoint => dataPoint.date.substring(5,10)),
@@ -66,7 +64,7 @@ const Weight = () => {
       {weightData.length > 0 ? (
         <LineChart
           data={data}
-          width={screenWidth}
+          width={350}
           height={200}
           fromZero={true}
           chartConfig={{
@@ -80,7 +78,7 @@ const Weight = () => {
             },
           }}
           bezier={false}
-          style={{ borderRadius: 16, alignSelf: 'center' }}
+          style={{ borderRadius: 16,     paddingRight: 50,}}
         />
       ) : (
         <Text style={{color:'black',fontSize:15}}>체중을 입력하세요.</Text>

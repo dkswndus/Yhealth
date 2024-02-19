@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     alignSelf: 'center',
-    backgroundColor: 'blue',
+    backgroundColor: '#1A6DFF',
     padding: 10,
     borderRadius: 38,
   },
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   deleteButton: {
-    backgroundColor: 'blue',
+    backgroundColor: ' #FF4500',
     padding: 5,
     borderRadius: 5,
   },

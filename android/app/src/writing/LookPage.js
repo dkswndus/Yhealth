@@ -18,10 +18,11 @@ const LookPage = ({ route, navigation }) => {
   const messages = require("../assets/image/messages.png");
 
   useEffect(() => {
+
     const fetchData = async () => {
       try {
         // 백엔드에서 게시글과 댓글 데이터를 가져오는 요청
-        const response = await axios.get(API_URL);
+        const response = await axios.get(API_URL+'/forum/comments');
         const data = response.data;
         setSelectedItem(data.selectedItem);
         setComments(data.comments);
@@ -43,7 +44,7 @@ const LookPage = ({ route, navigation }) => {
   };
 
   const toggleModal = () => {
-    if (selectedItem.pwd !== ckPwd) {
+    if (selectedItem.user_pwd !== ckPwd) {
       Alert.alert('비밀번호가 다릅니다.');
     } else {
       handleEditDelete();
@@ -108,13 +109,14 @@ const LookPage = ({ route, navigation }) => {
           text: '삭제',
           onPress: async () => {
             try {
-              const existingPosts = await AsyncStorage.getItem('posts');
-              const posts = existingPosts ? JSON.parse(existingPosts) : [];
-              const updatedPosts = posts.filter(post => post.id !== selectedItem.id);
-              await AsyncStorage.setItem('posts', JSON.stringify(updatedPosts));
+              const response = await axios.delete(`${API_URL}/forum/${selectedItem.id}`, {
+                withCredentials: true,
+              });
+              console.log('글 삭제 성공:', response.data);
               navigation.navigate('BoardPage');
             } catch (error) {
               console.error('글 삭제 중 오류 발생:', error);
+              // 오류 처리
             }
           },
         },
@@ -122,6 +124,7 @@ const LookPage = ({ route, navigation }) => {
       { cancelable: false }
     );
   };
+  
 
   const handleSend = () => {
     const newComment = { author: user_id, content: comment };
@@ -134,19 +137,23 @@ const LookPage = ({ route, navigation }) => {
       comments: selectedItem.comments + 1,
     };
   };
-
+  const formatDateString = (dateString) => {
+    // 날짜 문자열에서 요일 부분 제거
+    const dateWithoutDay = new Date(dateString).toLocaleDateString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' });
+    return dateWithoutDay;
+  };
   return (
     <View style={{ backgroundColor: 'rgba(255, 255, 255, 1)', flex: 1 }}>
       <TopBar1 />
       <ScrollView>
         <View style={[styles.viewcontainer, styles.editdeletecontainer]}>
           <Text style={{ color: 'black' }}>작성자 : {selectedItem.user_id}</Text>
-          <Text style={{ color: 'black' }}>작성시간 :  {selectedItem.time}</Text>
+          <Text style={{ color: 'black' }}>작성시간 :  {formatDateString(selectedItem.created_at)}</Text>
         </View>
 
         <View style={[styles.viewcontainer, styles.editdeletecontainer]}>
           <Text style={{ color: 'black', fontWeight: 'bold' }}>{selectedItem.title}</Text>
-          <Text style={{ color: 'black' }}>{selectedItem.text}</Text>
+          <Text style={{ color: 'black' }}>{selectedItem.description}</Text>
           <View style={{ flexDirection: 'row', marginTop: 10, justifyContent: 'space-between' }}>
             <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity onPress={handleThumbsUp}>

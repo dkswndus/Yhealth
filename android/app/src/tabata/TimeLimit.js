@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Picker } from '@react-native-picker/picker';
 import { ScrollView, StatusBar, TouchableOpacity, View, Image, Alert, Text, StyleSheet } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
@@ -115,16 +116,52 @@ flex-direction: row;
  padding-top:10px;
 
 `;
+const TimePicker = ({ time, onTimeChange, type }) => {
+    const minutes = Array.from({ length: 60 }, (_, index) => index.toString().padStart(2, '0'));
+    const seconds = Array.from({ length: 60 }, (_, index) => index.toString().padStart(2, '0'));
+
+    const handleMinuteChange = (itemValue) => {
+        console.log('Selected Minute:', itemValue);
+        onTimeChange('minutes', itemValue, type);
+    };
+
+    const handleSecondChange = (itemValue) => {
+        console.log('Selected Second:', itemValue);
+        onTimeChange('seconds', itemValue, type);
+    };
+
+    return (
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Picker
+                style={{ flex: 0.4 }}
+                selectedValue={time.minutes}
+                onValueChange={handleMinuteChange}
+            >
+                {minutes.map((minute) => <Picker.Item key={minute} label={minute} value={minute} />)}
+            </Picker>
+            <Text style={{ color: 'black' }}>분</Text>
+            <Text style={{ color: 'black' }}>    :   </Text>
+            <Picker
+                style={{ flex: 0.4 }}
+                selectedValue={time.seconds}
+                onValueChange={handleSecondChange}
+            >
+                {seconds.map((second) => <Picker.Item key={second} label={second} value={second} />)}
+            </Picker>
+            <Text style={{ color: 'black' }}>초</Text>
+        </View>
+    );
+
+};
+
+
+
 
 
 const TimeLimit = ({ route }) => {
     const navigation = useNavigation();
     const [dropdownValue, setDropdownValue] = useRecoilState(dropdownValueState);
-    const [initialSets, setInitialSets] = useState("3");
-    const [initialPrepareTime, setInitialPrepareTime] = useState("10");
-    const [initialReps, setInitialReps] = useState("25");
-    const [initialRestTime, setInitialRestTime] = useState("10");
-    const [initialExerciseTime, setInitialExerciseTime] = useState("70");
+    const prevDropdownValue = useRef(dropdownValue);
     const [sets, setSets] = useRecoilState(setsState);
     const [reps, setReps] = useRecoilState(repsState);
     const [prepareTime, setPrepareTime] = useRecoilState(prepareTimeState);
@@ -135,9 +172,16 @@ const TimeLimit = ({ route }) => {
     const [exerciseOrder, setExerciseOrder] = useState([]);
     const [exerciseLikes, setExerciseLikes] = useRecoilState(exerciseLikesState);
     const [selectedExercises, setSelectedExercises] = useRecoilState(selectedExercisesState);
+    const time = "0초";
+    const [initialSets, setInitialSets] = useState("3");
+    const [initialReps, setInitialReps] = useState("25");
 
-    const prevDropdownValue = useRef(dropdownValue);
-    const time = "0분";
+
+
+
+
+
+
 
 
     useEffect(() => {
@@ -153,22 +197,13 @@ const TimeLimit = ({ route }) => {
         setIsTimeLimitOn((prevIsTimeLimitOn) => !prevIsTimeLimitOn);
 
     };
-
     useEffect(() => {
         setExerciseOrder(selectedExercises || []);
-    }, [selectedExercises]);
-
-
-
-    useEffect(() => {
-
-        setSets((prevSets) => selectedExercises.reduce((acc, exercise) => ({ ...acc, [exercise]: prevSets[exercise] || initialSets }), {}));
-        setReps((prevReps) => selectedExercises.reduce((acc, exercise) => ({ ...acc, [exercise]: prevReps[exercise] || initialReps }), {}));
-        setPrepareTime((prevPrepareTime) => selectedExercises.reduce((acc, exercise) => ({ ...acc, [exercise]: prevPrepareTime[exercise] || initialPrepareTime }), {}));
-        setRestTime((prevRestTime) => selectedExercises.reduce((acc, exercise) => ({ ...acc, [exercise]: prevRestTime[exercise] || initialRestTime }), {}));
-        setExerciseTime((prevExerciseTime) => selectedExercises.reduce((acc, exercise) => ({ ...acc, [exercise]: prevExerciseTime[exercise] || initialExerciseTime }), {}));
         setDropdownValue(dropdownValue);
-    }, [dropdownValue, initialSets, initialReps, selectedExercises, setSets, setReps, setRestTime, setPrepareTime]);
+    }, [selectedExercises, dropdownValue]);
+
+
+
 
 
 
@@ -177,37 +212,41 @@ const TimeLimit = ({ route }) => {
             Alert.alert('오류', '장소를 선택하세요.');
             return;
         }
-        if (selectedExercises.length === 0) { // 운동이 선택되지 않았을 때
+
+        if (selectedExercises.length === 0) {
             Alert.alert('오류', '운동을 선택하세요.');
             return;
         }
-        const missingInputs = selectedExercises.filter(exercise => {
-            return (
-                !sets[exercise] ||
-                !reps[exercise] ||
-                !prepareTime[exercise] ||
-                !exerciseTime[exercise] ||
-                !restTime[exercise]
-            );
-        });
-
-        if (missingInputs.length > 0) {
-            Alert.alert('오류', '입력하세요.');
-            return;
-        }
-
         const exerciseInfoOn = selectedExercises.map(exercise => {
+            const prepareMinutes = parseInt(prepareTime[exercise].minutes);
+            const prepareSeconds = parseInt(prepareTime[exercise].seconds);
+            const exerciseMinutes = parseInt(exerciseTime[exercise].minutes);
+            const exerciseSeconds = parseInt(exerciseTime[exercise].seconds);
+            const restMinutes = parseInt(restTime[exercise].minutes);
+            const restSeconds = parseInt(restTime[exercise].seconds);
+            const prepareTimeInSeconds = prepareMinutes * 60 + prepareSeconds;
+            const exerciseTimeInSeconds = exerciseMinutes * 60 + exerciseSeconds;
+            const restTimeInSeconds = restMinutes * 60 + restSeconds;
             return {
                 name: exercise,
                 sets: sets[exercise],
                 reps: reps[exercise],
-                prepareTime: prepareTime[exercise],
-                exerciseTime: exerciseTime[exercise],
-                restTime: restTime[exercise],
+                prepareTime: { minutes: prepareMinutes, seconds: prepareSeconds },
+                exerciseTime: { minutes: exerciseMinutes, seconds: exerciseSeconds },
+                restTime: { minutes: restMinutes, seconds: restSeconds },
+                prepareTimeInSeconds: `${prepareTimeInSeconds}`,
+                exerciseTimeInSeconds: `${exerciseTimeInSeconds}`,
+                restTimeInSeconds: `${restTimeInSeconds}`,
+
             };
         });
+
+
+        console.log('운동 정보:', exerciseInfoOn);
         navigation.navigate('StopWatch', { exerciseInfoOn });
     };
+
+
 
     const navigateToNextNonstopWatch = () => {
         if (!dropdownValue || (dropdownValue !== '1' && dropdownValue !== '2')) {
@@ -233,6 +272,7 @@ const TimeLimit = ({ route }) => {
             time: time,
         }));
 
+        console.log('운동 정보:', exerciseInfoOff);
         navigation.navigate('NonstopWatch', { exerciseInfoOff });
     };
 
@@ -294,18 +334,11 @@ const TimeLimit = ({ route }) => {
         }
     };
 
-
-
-
-
-
     const navigateToFlatList = () => {
         if (!dropdownValue || (dropdownValue !== '1' && dropdownValue !== '2')) {
             alert('장소를 선택하세요.');
             return;
         }
-
-
         navigation.navigate('FlatList', {
             dropdownValue: dropdownValue,
 
@@ -317,34 +350,99 @@ const TimeLimit = ({ route }) => {
 
 
 
-
     const handleSetsChange = (exercise, value) => {
+        console.log(`세트 변경: 운동 ${exercise}, 세트 ${value}`);
         setSets((prevSets) => ({ ...prevSets, [exercise]: value }));
-        console.log(`세트: ${value}`);
+        setInitialSets(value);
     };
 
     const handleRepsChange = (exercise, value) => {
+        console.log(`횟수 변경: 운동 ${exercise}, 횟수 ${value}`);
         setReps((prevReps) => ({ ...prevReps, [exercise]: value }));
-        console.log(`횟수: ${value}`);
+        setInitialReps(value);
     };
 
-    const handlePrepareTimeChange = (exercise, value) => {
-        setPrepareTime((prevPrepareTime) => ({ ...prevPrepareTime, [exercise]: value }));
-        console.log(`준비 시간: ${value} `);
+    const handlePrepareTimeChange = (exercise, field, value) => {
+        console.log(`준비시간 변경: 운동 ${exercise}, ${field} ${value}`);
+        setPrepareTime((prevPrepareTime) => ({
+            ...prevPrepareTime,
+            [exercise]: {
+                ...prevPrepareTime[exercise],
+                [field]: value,
+            },
+        }));
     };
 
-    const handleRestTimeChange = (exercise, value) => {
-        setRestTime((prevRestTime) => ({ ...prevRestTime, [exercise]: value }));
-        console.log(`휴식 시간: ${value}`);
+    const handleExerciseTimeChange = (exercise, field, value) => {
+        console.log(`운동시간 변경: 운동 ${exercise}, ${field} ${value}`);
+        setExerciseTime((prevExerciseTime) => ({
+            ...prevExerciseTime,
+            [exercise]: {
+                ...prevExerciseTime[exercise],
+                [field]: value,
+            },
+        }));
     };
 
-    const handleExerciseTimeChange = (exercise, value) => {
-        setExerciseTime((prevExerciseTime) => ({ ...prevExerciseTime, [exercise]: value }));
-        console.log(`운동 시간: ${value}`);
+    const handleRestTimeChange = (exercise, field, value) => {
+        console.log(`휴식시간 변경: 운동 ${exercise}, ${field} ${value}`);
+        setRestTime((prevRestTime) => ({
+            ...prevRestTime,
+            [exercise]: {
+                ...prevRestTime[exercise],
+                [field]: value,
+            },
+        }));
     };
 
 
 
+
+
+    const initialSetsValue = "3";
+    const initialRepsValue = "25";
+    const initialPrepareTime = { minutes: "00", seconds: "10" };
+    const initialExerciseTime = { minutes: "01", seconds: "00" };
+    const initialRestTime = { minutes: "00", seconds: "10" };
+    useEffect(() => {
+        setSets((prevSets) => {
+            const newSets = {};
+            exerciseOrder.forEach((exercise) => {
+                newSets[exercise] = initialSetsValue;
+            });
+            return { ...prevSets, ...newSets };
+        });
+
+        setReps((prevReps) => {
+            const newReps = {};
+            exerciseOrder.forEach((exercise) => {
+                newReps[exercise] = initialRepsValue;
+            });
+            return { ...prevReps, ...newReps };
+        });
+        setPrepareTime((prevPrepareTime) => {
+            const newPrepareTime = {};
+            exerciseOrder.forEach((exercise) => {
+                newPrepareTime[exercise] = initialPrepareTime;
+            });
+            return { ...prevPrepareTime, ...newPrepareTime };
+        });
+        setExerciseTime((prevExerciseTime) => {
+            const newExerciseTime = {};
+            exerciseOrder.forEach((exercise) => {
+                newExerciseTime[exercise] = initialExerciseTime;
+            });
+            return { ...prevExerciseTime, ...newExerciseTime };
+        });
+        setRestTime((prevRestTime) => {
+            const newRestTime = {};
+            exerciseOrder.forEach((exercise) => {
+                newRestTime[exercise] = initialRestTime;
+            });
+            return { ...prevRestTime, ...newRestTime };
+        });
+
+    }, [selectedExercises, exerciseOrder, setSets, setReps, setExerciseTime, setPrepareTime, setRestTime]);
 
 
     return (
@@ -381,40 +479,53 @@ const TimeLimit = ({ route }) => {
                                         </TouchableOpacity>
                                     </SettingContainer>
                                 </IntegreatedContainer>
+                                <View style={styles.combine}>
+                                    <Text style={styles.information}>  세트 :</Text>
+
+                                    <Picker
+                                        selectedValue={sets[exercise]}
+                                        onValueChange={(value) => handleSetsChange(exercise, value)}
+                                        style={{ flex: 0.4 }}
+                                    >
+                                        {Array.from({ length: 99 }, (_, index) => index + 1).map((value) => (
+                                            <Picker.Item key={value} label={value.toString()} value={value.toString()} />
+                                        ))}
+                                    </Picker>
+                                    <Text style={styles.information}> 횟수 :  </Text>
+                                    <Picker
+                                        selectedValue={reps[exercise]}
+                                        onValueChange={(value) => handleRepsChange(exercise, value)}
+                                        style={{ flex: 0.4 }}
+                                    >
+                                        {Array.from({ length: 99 }, (_, index) => index + 1).map((value) => (
+                                            <Picker.Item key={value} label={value.toString()} value={value.toString()} />
+                                        ))}
+                                    </Picker>
+                                </View>
+
                                 <View style={styles.srcombine}>
-                                    <Text style={styles.information}>세트: </Text>
-                                    <TextInput
-                                        keyboardType="numeric"
-                                        value={sets[exercise]}
-                                        onChangeText={(value) => handleSetsChange(exercise, value)}
+                                    <Text style={styles.information}>준비시간:</Text>
+                                    <TimePicker
+                                        time={prepareTime[exercise] || initialPrepareTime}
+                                        onTimeChange={(field, value) => handlePrepareTimeChange(exercise, field, value)}
                                     />
-                                    <Text style={styles.information}>횟수: </Text>
-                                    <TextInput
-                                        keyboardType="numeric"
-                                        value={reps[exercise]}
-                                        onChangeText={(value) => handleRepsChange(exercise, value)}
+
+                                </View>
+                                <View style={styles.srcombine}>
+                                    <Text style={styles.information}>운동시간:</Text>
+                                    <TimePicker
+                                        time={exerciseTime[exercise] || initialExerciseTime}
+                                        onTimeChange={(field, value) => handleExerciseTimeChange(exercise, field, value)}
                                     />
                                 </View>
-                                <View style={styles.percombine}>
-                                    <Text style={styles.information}>준비시간: </Text>
-                                    <TextInput
-                                        keyboardType="numeric"
-                                        value={prepareTime[exercise]}
-                                        onChangeText={(value) => handlePrepareTimeChange(exercise, value)}
-                                    />
-                                    <Text style={styles.information}>운동시간: </Text>
-                                    <TextInput
-                                        keyboardType="numeric"
-                                        value={exerciseTime[exercise]}
-                                        onChangeText={(value) => handleExerciseTimeChange(exercise, value)}
-                                    />
-                                    <Text style={styles.information}>휴식시간:  </Text>
-                                    <TextInput
-                                        keyboardType="numeric"
-                                        value={restTime[exercise]}
-                                        onChangeText={(value) => handleRestTimeChange(exercise, value)}
+                                <View style={styles.srcombine}>
+                                    <Text style={styles.information}>휴식시간:</Text>
+                                    <TimePicker
+                                        time={restTime[exercise] || initialRestTime}
+                                        onTimeChange={(field, value) => handleRestTimeChange(exercise, field, value)}
                                     />
                                 </View>
+
                             </View>
                         ))}
                     </ExerciseInformation>
@@ -436,26 +547,31 @@ const TimeLimit = ({ route }) => {
                                         </TouchableOpacity>
                                     </SettingContainer>
                                 </IntegreatedContainer>
-                                <View style={styles.srcombine}>
-                                    <Text style={styles.information}>세트: </Text>
-                                    <TextInput
-                                        keyboardType="numeric"
-                                        value={sets[exercise]}
-                                        onChangeText={(value) => handleSetsChange(exercise, value)}
-                                    />
-                                    <Text style={styles.information}>횟수: </Text>
-                                    <TextInput
-                                        keyboardType="numeric"
-                                        value={reps[exercise]}
-                                        onChangeText={(value) => handleRepsChange(exercise, value)}
-                                    />
+                                <View style={styles.combine}>
+                                    <Text style={styles.information}>세트:</Text>
+                                    <Picker
+                                        selectedValue={sets[exercise]}
+                                        onValueChange={(value) => handleSetsChange(exercise, value)}
+                                        style={{ flex: 0.5 }}>
+                                        {Array.from({ length: 99 }, (_, index) => index + 1).map((value) => (
+                                            <Picker.Item key={value} label={value.toString()} value={value.toString()} />
+                                        ))}
+                                    </Picker>
+                                    <Text style={styles.information}>횟수:</Text>
+                                    <Picker
+                                        selectedValue={reps[exercise]}
+                                        onValueChange={(value) => handleRepsChange(exercise, value)}
+                                        style={{ flex: 0.5 }}>
+                                        {Array.from({ length: 99 }, (_, index) => index + 1).map((value) => (
+                                            <Picker.Item key={value} label={value.toString()} value={value.toString()} />
+                                        ))}
+                                    </Picker>
                                 </View>
                             </View>
                         ))}
                     </ExerciseInformation>
                 )}
             </ScrollView>
-
             <ExerciseContainer>
                 <ExerciseLine>
                     <TouchableOpacity onPress={navigateToFlatList}>
@@ -482,20 +598,22 @@ const TimeLimit = ({ route }) => {
 
 const styles = StyleSheet.create({
     srcombine: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: 12,
-        marginTop: -20,
+        flexDirection: 'row', alignItems: 'center', marginLeft: 10, marginTop: -25
+    },
+    pcombine: {
+        flexDirection: 'row', alignItems: 'center', marginLeft: 10, marginTop: -25
     },
     information: {
         color: 'black',
 
     },
-    percombine: {
+    combine: {
         flexDirection: 'row',
         alignItems: 'center',
-        padding: 12,
-        marginTop: -45,
+        padding: 10,
+        marginTop: -15,
+        marginBottom: -10,
+
     },
 });
 

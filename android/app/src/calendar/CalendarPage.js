@@ -1,6 +1,6 @@
 // CalendarComponent.js
 
-import React, { useState, useEffect } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 
@@ -9,18 +9,19 @@ import ExerciseGraph from './ExerciseGraph';
 import { TopBar1 } from '../components/TopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
 const CalendarComponent = ({ route }) => {
+
   const [selectedDate, setSelectedDate] = useState('');
   const [exerciseDataOn, setExerciseDataOn] = useState([]);
   const [exerciseDataOff, setExerciseDataOff] = useState([]);
- 
 
   const loadSavedData = async (key, setter) => {
     try {
       const storedData = await AsyncStorage.getItem(`appData${key}`);
       if (storedData) {
         const parsedData = JSON.parse(storedData);
-        console.log(` ${key} 데이터:`, parsedData);
+        //console.log(` ${key} 데이터:`, parsedData);
         setter(parsedData);
       }
     } catch (error) {

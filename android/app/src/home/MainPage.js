@@ -39,8 +39,8 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
     borderWidth: 1,
-    marginLeft: 1,
-    marginRight: 1,
+    marginLeft: 20,
+    marginRight: 20,
   },
   title: {
     color: 'black',
