@@ -36,9 +36,11 @@ const BoardPage = ({ route }) => {
         },
         withCredentials: true,
       });
-
+      const sortedData = response.data.sort((a, b) => {
+        return new Date(b.created_at) - new Date(a.created_at);
+      });
       // 가져온 데이터를 state에 저장
-      setBoardData(response.data);
+      setBoardData(sortedData);
 
       setLoading(false); // 데이터 가져오기 완료 후 로딩 상태 변경
     } catch (error) {
