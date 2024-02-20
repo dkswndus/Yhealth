@@ -7,7 +7,7 @@ import API_URL from './URl';
   
 const LookPage = ({ route, navigation }) => {
   const [selectedItem, setSelectedItem] = useState(route.params.selectedItem);
-  const [user_id, setuser_id] = useState('');
+  const [user_id, setuser_id] = useState(route.params?.initialNickname || '익명');
   const [user_pwd, setuser_pwd] = useState('');
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
@@ -19,18 +19,6 @@ const LookPage = ({ route, navigation }) => {
 
   useEffect(() => {
 
-    const fetchData = async () => {
-      try {
-        // 백엔드에서 게시글과 댓글 데이터를 가져오는 요청
-        const response = await axios.get(API_URL+'/forum/comments');
-        const data = response.data;
-        setSelectedItem(data.selectedItem);
-        setComments(data.comments);
-      } catch (error) {
-        console.error('데이터 가져오기 중 오류 발생:', error);
-      }
-    };
-
     fetchData(); // 함수 호출
 
     // 마운트 해제 시 cleanup 함수
@@ -38,6 +26,24 @@ const LookPage = ({ route, navigation }) => {
       // cleanup 코드 작성
     };
   }, []); // 빈 배열을 전달하여 컴포넌트가 처음 한 번만 마운트될 때만 실행
+
+  const fetchData = async () => {
+    try {
+      const itemId = selectedItem.id; 
+      const response = await axios.get(`${API_URL}/forum/comment/${itemId}`);
+      
+      const commentdata = response.data; // 서버에서 받아온 데이터
+      
+      setComments(commentdata);
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        // 404 오류 처리: 댓글이 없는 경우
+        setComments([]); // 빈 배열로 설정하여 댓글이 없음을 표시
+      } else {
+        console.error('데이터 가져오기 중 오류 발생:', error);
+      }
+    }
+  };
 
   const handleCkPwd = (inputpwd) => {
     setCkPwd(inputpwd);
@@ -47,6 +53,7 @@ const LookPage = ({ route, navigation }) => {
     if (selectedItem.user_pwd !== ckPwd) {
       Alert.alert('비밀번호가 다릅니다.');
     } else {
+      
       handleEditDelete();
     }
   };
@@ -126,17 +133,62 @@ const LookPage = ({ route, navigation }) => {
   };
   
 
-  const handleSend = () => {
-    const newComment = { author: user_id, content: comment };
-    setComments([...comments, newComment]);
-    setuser_id('');
-    setuser_pwd('');
-    setComment('');
-    const updatedSelectedItem = {
-      ...selectedItem,
-      comments: selectedItem.comments + 1,
-    };
+  // const handleSend = () => {
+  //   const newComment = { author: user_id, content: comment };
+  //   setComments([...comments, newComment]);
+  //   setuser_id('');
+  //   setuser_pwd('');
+  //   setComment('');
+  //   const updatedSelectedItem = {
+  //     ...selectedItem,
+  //     comments: selectedItem.comments + 1,
+  //   };
+  // };
+
+  const handleSend = async () => {
+
+    if (user_id.trim() === '') {
+      alert('닉네임을 입력하세요.');
+      return;
+    } else if (user_pwd.length < 4) {
+      alert('비밀번호는 최소 4자리 이상이어야 합니다.');
+      return;
+    }else if(comment.trim() === ''){
+      alert('글을 입력하세요.');
+      return;
+    }else{
+    try {
+      // 댓글 데이터 생성
+      const newCommentData = {
+        user_id: user_id,
+        description: comment,
+        user_pwd: user_pwd,
+        forum_id: selectedItem.id,
+        // 다른 필요한 데이터도 추가할 수 있음
+      };
+  
+      // 서버에 POST 요청 보내기
+      const response = await axios.post(`${API_URL}/forum/comment/`, newCommentData);
+  
+      // 서버로부터 응답 받은 데이터 사용
+      const newComment = response.data;
+  
+      // 기존 댓글 리스트에 새로운 댓글 추가
+      setComments([...comments, newComment]);
+  
+      // 입력 필드 초기화
+      setuser_id('');
+      setComment('');
+      setuser_pwd('');
+      fetchData();
+    } catch (error) {
+      console.error('댓글 보내기 중 오류 발생:', error);
+    }}
   };
+  const clearNickname = () => {
+    setuser_id('');
+  };
+
   const formatDateString = (dateString) => {
     // 날짜 문자열에서 요일 부분 제거
     const dateWithoutDay = new Date(dateString).toLocaleDateString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' });
@@ -181,14 +233,14 @@ const LookPage = ({ route, navigation }) => {
             <View key={index} style={styles.commentContainer}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text style={{ color: 'black', fontWeight: 'bold' }}>
-                  {item.author}
+                  {item.user_id}
                 </Text>
 
                 <TouchableOpacity onPress={() => handleCommentDelete(index)}>
                   <Text style={{ color: 'blue', marginLeft: 10 }}>삭제</Text>
                 </TouchableOpacity>
               </View>
-              <Text style={{ color: 'black' }}>{item.content}</Text>
+              <Text style={{ color: 'black' }}>{item.description}</Text>
             </View>
           ))}
         </View>
@@ -200,6 +252,7 @@ const LookPage = ({ route, navigation }) => {
           <TextInput
             style={[styles.inputcontainer, { flex: 1 }]}
             onChangeText={handleNameChange}
+            onFocus={clearNickname}
             value={user_id}
             placeholder="닉네임"
             placeholderTextColor="gray"

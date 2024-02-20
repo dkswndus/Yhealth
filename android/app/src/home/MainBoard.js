@@ -2,26 +2,44 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios'; // axios 추가
+import API_URL from '../writing/URl';
 const Board = () => {
   const navigation = useNavigation();
   const [limitedBoardData, setLimitedBoardData] = useState([]);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     // AsyncStorage에서 데이터를 가져와서 state 업데이트
-    const fetchBoardData = async () => {
-      try {
-        const storedData = await AsyncStorage.getItem('posts');
-        const parsedData = storedData ? JSON.parse(storedData) : [];
-        // 최신 데이터부터 가져오기 위해 reverse()
-        setLimitedBoardData(parsedData.reverse().slice(0, 5)); // 최신 5개의 글만 가져오도록 수정
-      } catch (error) {
-        console.error('게시판 데이터를 가져오는 중 오류 발생:', error);
-      }
-    };
-
     fetchBoardData();
   }, []); // []를 전달하여 컴포넌트가 처음 렌더링될 때 한 번만 실행되도록 설정
+
+  const fetchBoardData = async () => {
+    try {
+      // 백엔드에서 게시글 데이터를 가져오는 요청
+      setLoading(true);
+      const response = await axios.get(API_URL+'/forum/', {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+      const sortedData = response.data.sort((a, b) => {
+        return new Date(b.created_at) - new Date(a.created_at);
+      });
+      // 가져온 데이터를 state에 저장
+      //setLimitedBoardData(sortedData);
+      setLimitedBoardData(sortedData.slice(0, 5)); // 최신 5개의 글만 가져오도록 수정
+      setLoading(false); // 데이터 가져오기 완료 후 로딩 상태 변경
+    } catch (error) {
+      console.error('데이터 불러오기 중 오류 발생:', error);
+      setLoading(false); // 데이터 가져오기 실패 시 로딩 상태 변경
+    }
+  };
+  const formatDateString = (dateString) => {
+    // 날짜 문자열에서 요일 부분 제거
+    const dateWithoutDay = new Date(dateString).toLocaleDateString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' });
+    return dateWithoutDay;
+  };
 
   const handleMorePress = () => {
     navigation.navigate('BoardPage');
@@ -48,7 +66,7 @@ const Board = () => {
             <Text numberOfLines={1} ellipsizeMode="tail" style={styles.itemText}>
               {item.title}
             </Text>
-            <Text style={styles.itemText}>{item.time}</Text>
+            <Text style={styles.itemText}>{formatDateString(item.created_at)}</Text>
           </View>
         </TouchableOpacity>
       ))}

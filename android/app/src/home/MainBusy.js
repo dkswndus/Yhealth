@@ -42,12 +42,38 @@ const Busy = () => {
 
   //   fetchData();
   // }, []);
+
+  const [tracker, settracker] = useState([]);
+
+  useEffect(() => {
+    fetchData(); // 화면이 focus되면 fetchData 함수 호출
+  }, []);
+
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/forum/tracker/`);
+
+      const tracker = response.data; // 서버에서 받아온 데이터
+
+      settracker(tracker);
+
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        // 404 오류 처리: 댓글이 없는 경우
+        setComments([]); // 빈 배열로 설정하여 댓글이 없음을 표시
+      } else {
+        console.error('데이터 가져오기 중 오류 발생:', error);
+      }
+    }
+  };
+
   const Busydata = {
     labels: ['여유', '보통', '혼잡'],
     datasets: [
       {
         name: ['종체', '무도대'],
-        data: [7, 13], // 여유, 보통, 혼잡에 해당하는 값
+        data: [tracker.gym1_count, tracker.gym2_count], // 여유, 보통, 혼잡에 해당하는 값
       },
     ],
   };
@@ -131,7 +157,7 @@ const Busy = () => {
 
 const styles = StyleSheet.create({
   background: {
-    alignItems:'flex-end',
+    alignItems: 'flex-end',
     flex: 1,
     resizeMode: 'cover',
     width: 90,
@@ -174,7 +200,7 @@ const styles = StyleSheet.create({
     flex: 5,
   },
   numberContainer: {
-    margin:4,
+    margin: 4,
     borderColor: 'black',
     borderRadius: 50,
     width: 20,

@@ -65,8 +65,6 @@ const Writepage = ({ route }) => {
           description,
           user_id,
           user_pwd,
-          // time: new Date().toLocaleString(),
-          // like: 0,
         };
 
         // axios를 사용하여 백엔드에 글 생성 요청 보내기
