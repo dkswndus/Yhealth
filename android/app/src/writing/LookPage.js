@@ -122,6 +122,7 @@ const LookPage = ({ route, navigation }) => {
               });
               console.log('댓글 삭제 성공:', response.data);
               // 삭제 후에 필요한 작업 수행
+              fetchData();
             } catch (error) {
               console.error('댓글 삭제 중 오류 발생:', error);
               // 오류 처리
