@@ -28,22 +28,10 @@ const getColorByText = (value) => {
 };
 
 const Busy = () => {
-  // const [busyData, setBusyData] = useState(null);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get(API_URL);
-  //       setBusyData(response.data);
-  //     } catch (error) {
-  //       console.error('Error fetching data:', error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
 
   const [tracker, settracker] = useState([]);
+  const [gym2_count, setgym2_count] = useState('');
+  const [gym1_count, setgym1_count] = useState('');
 
   useEffect(() => {
     fetchData(); // 화면이 focus되면 fetchData 함수 호출
@@ -51,13 +39,15 @@ const Busy = () => {
 
 
   const fetchData = async () => {
+
     try {
-      const response = await axios.get(`${API_URL}/forum/tracker/`);
+      const response = await axios.get(`${API_URL}/gym_count/`);
 
       const tracker = response.data; // 서버에서 받아온 데이터
 
       settracker(tracker);
-
+      setgym1_count(tracker.gym1_count);
+      setgym2_count(tracker.gym2_count);
     } catch (error) {
       if (error.response && error.response.status === 404) {
         // 404 오류 처리: 댓글이 없는 경우
@@ -66,6 +56,7 @@ const Busy = () => {
         console.error('데이터 가져오기 중 오류 발생:', error);
       }
     }
+    console.log(tracker);
   };
 
   const Busydata = {
@@ -73,7 +64,7 @@ const Busy = () => {
     datasets: [
       {
         name: ['종체', '무도대'],
-        data: [tracker.gym1_count, tracker.gym2_count], // 여유, 보통, 혼잡에 해당하는 값
+        data: [gym2_count, gym1_count], // 여유, 보통, 혼잡에 해당하는 값
       },
     ],
   };
