@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, TouchableOpacity, View, TextInput, Text, Image,
 import { TopBar1 } from '../components/TopBar';
 import axios from 'axios'; // axios 추가
 import API_URL from './URl';
-  
+
 const LookPage = ({ route, navigation }) => {
   const [selectedItem, setSelectedItem] = useState(route.params.selectedItem);
   const [user_id, setuser_id] = useState(route.params?.initialNickname || '익명');
@@ -12,7 +12,9 @@ const LookPage = ({ route, navigation }) => {
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [ckPwd, setCkPwd] = useState('');
+  const [commentId, setCommentId] = useState('');
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isModalVisibleC, setModalVisibleC] = useState(false);
   const paperplane = require("../assets/image/paperplane.png");
   const thumbsup = require("../assets/image/thumbsup.png");
   const messages = require("../assets/image/messages.png");
@@ -29,11 +31,11 @@ const LookPage = ({ route, navigation }) => {
 
   const fetchData = async () => {
     try {
-      const itemId = selectedItem.id; 
+      const itemId = selectedItem.id;
       const response = await axios.get(`${API_URL}/forum/comment/${itemId}`);
-      
+
       const commentdata = response.data; // 서버에서 받아온 데이터
-      
+
       setComments(commentdata);
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -54,7 +56,7 @@ const LookPage = ({ route, navigation }) => {
       Alert.alert('비밀번호가 다릅니다.');
       return
     } else {
-      
+
       handleEditDelete();
     }
   };
@@ -103,8 +105,12 @@ const LookPage = ({ route, navigation }) => {
   //     { cancelable: false }
   //   );
   // };
-  
-  const handleCommentDelete = async (commentId) => {
+
+  const handleCommentDelete = async () => {
+    if (commentId.user_pwd !== ckPwd) {
+      Alert.alert('비밀번호가 다릅니다.');
+      return
+    }
     Alert.alert(
       '댓글 삭제',
       '정말로 삭제하시겠습니까?',
@@ -117,11 +123,13 @@ const LookPage = ({ route, navigation }) => {
           text: '삭제',
           onPress: async () => {
             try {
-              const response = await axios.delete(`${API_URL}/forum/comment/${commentId}`, {
+              const response = await axios.delete(`${API_URL}/forum/comment/${commentId.id}`, {
                 withCredentials: true,
               });
               console.log('댓글 삭제 성공:', response.data);
               // 삭제 후에 필요한 작업 수행
+              setModalVisibleC(false);
+              setCkPwd('');
               fetchData();
             } catch (error) {
               console.error('댓글 삭제 중 오류 발생:', error);
@@ -162,7 +170,7 @@ const LookPage = ({ route, navigation }) => {
       { cancelable: false }
     );
   };
-  
+
 
   // const handleSend = () => {
   //   const newComment = { author: user_id, content: comment };
@@ -184,37 +192,38 @@ const LookPage = ({ route, navigation }) => {
     } else if (user_pwd.length < 4) {
       alert('비밀번호는 최소 4자리 이상이어야 합니다.');
       return;
-    }else if(comment.trim() === ''){
+    } else if (comment.trim() === '') {
       alert('글을 입력하세요.');
       return;
-    }else{
-    try {
-      // 댓글 데이터 생성
-      const newCommentData = {
-        user_id: user_id,
-        description: comment,
-        user_pwd: user_pwd,
-        forum_id: selectedItem.id,
-        // 다른 필요한 데이터도 추가할 수 있음
-      };
-  
-      // 서버에 POST 요청 보내기
-      const response = await axios.post(`${API_URL}/forum/comment/`, newCommentData);
-  
-      // 서버로부터 응답 받은 데이터 사용
-      const newComment = response.data;
-  
-      // 기존 댓글 리스트에 새로운 댓글 추가
-      setComments([...comments, newComment]);
-  
-      // 입력 필드 초기화
-      setuser_id('');
-      setComment('');
-      setuser_pwd('');
-      fetchData();
-    } catch (error) {
-      console.error('댓글 보내기 중 오류 발생:', error);
-    }}
+    } else {
+      try {
+        // 댓글 데이터 생성
+        const newCommentData = {
+          user_id: user_id,
+          description: comment,
+          user_pwd: user_pwd,
+          forum_id: selectedItem.id,
+          // 다른 필요한 데이터도 추가할 수 있음
+        };
+
+        // 서버에 POST 요청 보내기
+        const response = await axios.post(`${API_URL}/forum/comment/`, newCommentData);
+
+        // 서버로부터 응답 받은 데이터 사용
+        const newComment = response.data;
+
+        // 기존 댓글 리스트에 새로운 댓글 추가
+        setComments([...comments, newComment]);
+
+        // 입력 필드 초기화
+        setuser_id('');
+        setComment('');
+        setuser_pwd('');
+        fetchData();
+      } catch (error) {
+        console.error('댓글 보내기 중 오류 발생:', error);
+      }
+    }
   };
   const clearNickname = () => {
     setuser_id('');
@@ -267,7 +276,7 @@ const LookPage = ({ route, navigation }) => {
                   {item.user_id}
                 </Text>
 
-                <TouchableOpacity onPress={() => handleCommentDelete(item.id)}>
+                <TouchableOpacity onPress={() => {setCommentId(item);setModalVisibleC(true);}}>
                   <Text style={{ color: 'blue', marginLeft: 10 }}>삭제</Text>
                 </TouchableOpacity>
               </View>
@@ -315,7 +324,7 @@ const LookPage = ({ route, navigation }) => {
 
       </View>
 
-      {/* 모달 */}
+      {/*글 모달 */}
       <Modal visible={isModalVisible} animationType="slide" transparent={true}>
         <TouchableWithoutFeedback onPress={toggleModal}>
           <View style={styles.modalContainer}>
@@ -330,12 +339,41 @@ const LookPage = ({ route, navigation }) => {
                     placeholderTextColor="gray"
                   />
                 </View>
-
                 <View style={{ padding: 10, flexDirection: 'row' }}>
                   <TouchableOpacity style={styles.buttonStyle} onPress={cancelModal}>
                     <Text style={{ color: 'white', textAlign: 'center' }}>취소</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.buttonStyle} onPress={toggleModal}>
+                    <Text style={{ color: 'white', textAlign: 'center' }}>확인</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+
+      {/*댓글 모달 */}
+      <Modal visible={isModalVisibleC} animationType="slide" transparent={true}>
+        <TouchableWithoutFeedback onPress={handleCommentDelete}>
+          <View style={styles.modalContainer}>
+            <TouchableWithoutFeedback onPress={() => { }}>
+              <View style={styles.modalContent}>
+                <View>
+                  <TextInput
+                    style={styles.inputcontainer}
+                    onChangeText={handleCkPwd}
+                    value={ckPwd}
+                    placeholder="댓글 비밀번호"
+                    placeholderTextColor="gray"
+                  />
+                </View>
+
+                <View style={{ padding: 10, flexDirection: 'row' }}>
+                  <TouchableOpacity style={styles.buttonStyle} onPress={() => {setModalVisibleC(false);}}>
+                    <Text style={{ color: 'white', textAlign: 'center' }}>취소</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.buttonStyle} onPress={handleCommentDelete}>
                     <Text style={{ color: 'white', textAlign: 'center' }}>확인</Text>
                   </TouchableOpacity>
                 </View>
