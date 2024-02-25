@@ -36,16 +36,14 @@ const SpeakerContainer = styled.View`
 `;
 
 
-const formatTime = (seconds) => {
+const formatTime = (seconds,sets) => {
+  
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
   const formattedMinutes = String(minutes).padStart(2, '0');
   const formattedSeconds = String(remainingSeconds).padStart(2, '0');
   return `${formattedMinutes}:${formattedSeconds}`;
 };
-
-
-
 const StopWatch = ({ route }) => {
   const navigation = useNavigation();
   const exerciseInfoOn = route.params?.exerciseInfoOn || [];
@@ -63,10 +61,7 @@ const StopWatch = ({ route }) => {
   const [restTimeInSeconds, setrestTimeInSeconds] = useState(exerciseInfoOn.length > 0 ? exerciseInfoOn[0].restTimeInSeconds : 0);
   const initialExerciseTimeInSeconds = exerciseInfoOn.length > 0 ? exerciseInfoOn[0].exerciseTimeInSeconds : 0;
   const initialRestTimeInSeconds = exerciseInfoOn.length > 0 ? exerciseInfoOn[0].restTimeInSeconds : 0;
-
-
-
-  // console.log("stopwatch", exerciseInfoOn);
+   //console.log("stopwatch", exerciseInfoOn);
   useEffect(() => {
 
     const saveDataToStorage = async (data, key) => {
@@ -77,10 +72,10 @@ const StopWatch = ({ route }) => {
           const parsedExistingData = existingData ? JSON.parse(existingData) : [];
 
           const transformedData = exerciseInfoOn.map(item => {
-            const { name, reps, sets, exerciseTime } = item;
+            const { name, reps, sets, totalExerciseTime } = item;
             const currentDate = new Date();
             const formattedDate = currentDate.toISOString().split('T')[0];
-            const formattedTime = `${parseInt(exerciseTime.minutes)}분 ${parseInt(exerciseTime.seconds)}초`;
+            const formattedTime = `${parseInt(totalExerciseTime.minutes)}분 ${parseInt(totalExerciseTime.seconds)}초`;
 
 
             return {
@@ -89,8 +84,10 @@ const StopWatch = ({ route }) => {
               sets: sets,
               reps: reps,
               time: formattedTime,
+              
             };
           });
+      
 
           // 10년 전의 날짜 계산
           const currentDate = new Date();
@@ -106,7 +103,7 @@ const StopWatch = ({ route }) => {
 
           // 이전 데이터와 새로운 데이터 합치기
           const combinedData = [...filteredExistingData, ...transformedData];
-          //console.log("stopwatch: ", combinedData)
+          //console.log("dkdkdk: ", combinedData)
           // 데이터 저장
           await AsyncStorage.setItem(`appData${key}`, JSON.stringify(combinedData));
         }
@@ -120,7 +117,7 @@ const StopWatch = ({ route }) => {
   }, [exerciseInfoOn, completion]);
 
 
-
+ 
 
   useEffect(() => {
     let intervalId;
@@ -138,7 +135,6 @@ const StopWatch = ({ route }) => {
 
 
     if (prepareTimeInSeconds === 0 && exerciseTimeInSeconds === 0 && restTimeInSeconds === 0 && !isPaused) {
-      BoxingBellSound.play();
       if (currentSet < sets) {
         setCurrentSet((prevSet) => prevSet + 1);
         setexerciseTimeInSeconds(initialExerciseTimeInSeconds);
@@ -164,8 +160,6 @@ const StopWatch = ({ route }) => {
         }
       }
     }
-
-
     if ((prepareTimeInSeconds === 1 || exerciseTimeInSeconds === 1 || restTimeInSeconds === 1) && !isPaused) {
       BoxingBellSound.play();
     }
@@ -174,16 +168,6 @@ const StopWatch = ({ route }) => {
     };
 
   }, [prepareTimeInSeconds, exerciseTimeInSeconds, restTimeInSeconds, isPaused]);
-
-
-
-
-
-
-
-
-
-
 
   const handleNext = () => {
     if (currentIndex < exerciseInfoOn.length - 1) {
@@ -218,8 +202,6 @@ const StopWatch = ({ route }) => {
       }
     }
   };
-
-
   const toggleStart = () => {
     if (isPaused && (prepareTimeInSeconds <= 1 || exerciseTimeInSeconds <= 1 || restTimeInSeconds <= 1)) {
       // 일시정지 상태에서 버튼을 눌러서 재생할 때
@@ -232,11 +214,7 @@ const StopWatch = ({ route }) => {
   };
   const toggleSpeaker = () => {
     setIsSoundOn(!isSoundOn);
-
-
     setSpeakerImage(isSoundOn ? speakerunfilled : speakerfilled);
-
-    // 소리를 켜거나 끔
     if (isSoundOn) {
       BoxingBellSound.setVolume(0); // 소리를 끔
     } else {
@@ -260,7 +238,7 @@ const StopWatch = ({ route }) => {
                 {currentSet} / {exercise.sets}
               </Text>
               <Text style={styles.exerciseText}>{exercise.name} </Text>
-              <Text style={styles.numberText}>횟수: {exercise.re}</Text>
+              <Text style={styles.numberText}>횟수: {exercise.reps}</Text>
               <Text style={styles.exercisedurationText}>운동시간: {formatTime(exerciseTimeInSeconds)} </Text>
               <View style={styles.timeContainer}>
                 <View style={styles.prepareContainer}>

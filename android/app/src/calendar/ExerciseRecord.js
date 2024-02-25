@@ -18,7 +18,7 @@ const ExerciseRecord = ({ exerciseDataOff,exerciseDataOn ,selectedDate }) => {
       <View style={styles.table}>
         <View style={styles.row}>
           <Text style={styles.cell}>운동 이름</Text>
-          <Text style={styles.cell}>운동 시간</Text>
+          <Text style={styles.cell}>총 운동시간</Text>
           <Text style={styles.cell}>세트</Text>
           <Text style={styles.cell}>횟수</Text>
         </View>

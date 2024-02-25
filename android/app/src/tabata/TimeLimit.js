@@ -121,14 +121,27 @@ const TimePicker = ({ time, onTimeChange, type }) => {
     const seconds = Array.from({ length: 60 }, (_, index) => index.toString().padStart(2, '0'));
 
     const handleMinuteChange = (itemValue) => {
+        const selectedMinutes = parseInt(itemValue);
+        const selectedSeconds = parseInt(time.seconds);
+        if (selectedMinutes === 0 && selectedSeconds < 10) {
+            Alert.alert('경고', '10초 이상으로 선택해주세요.');
+            return;
+        }
         console.log('Selected Minute:', itemValue);
         onTimeChange('minutes', itemValue, type);
     };
-
+    
     const handleSecondChange = (itemValue) => {
+        const selectedMinutes = parseInt(time.minutes);
+        const selectedSeconds = parseInt(itemValue);
+        if (selectedMinutes === 0 && selectedSeconds < 10) {
+            Alert.alert('경고', '10초 이상으로 선택해주세요.');
+            return;
+        }
         console.log('Selected Second:', itemValue);
         onTimeChange('seconds', itemValue, type);
     };
+    
 
     return (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -212,7 +225,7 @@ const TimeLimit = ({ route }) => {
             Alert.alert('오류', '장소를 선택하세요.');
             return;
         }
-
+    
         if (selectedExercises.length === 0) {
             Alert.alert('오류', '운동을 선택하세요.');
             return;
@@ -224,22 +237,30 @@ const TimeLimit = ({ route }) => {
             const exerciseSeconds = parseInt(exerciseTime[exercise].seconds);
             const restMinutes = parseInt(restTime[exercise].minutes);
             const restSeconds = parseInt(restTime[exercise].seconds);
+
             const prepareTimeInSeconds = prepareMinutes * 60 + prepareSeconds;
             const exerciseTimeInSeconds = exerciseMinutes * 60 + exerciseSeconds;
             const restTimeInSeconds = restMinutes * 60 + restSeconds;
+
+            const totalExerciseSeconds = (exerciseMinutes * 60 + exerciseSeconds) * sets[exercise];
+            const totalExerciseMinutes = Math.floor(totalExerciseSeconds / 60);
+            const totalExerciseRemainingSeconds = totalExerciseSeconds % 60;
+    
             return {
                 name: exercise,
                 sets: sets[exercise],
                 reps: reps[exercise],
                 prepareTime: { minutes: prepareMinutes, seconds: prepareSeconds },
                 exerciseTime: { minutes: exerciseMinutes, seconds: exerciseSeconds },
+                totalExerciseTime: { minutes: totalExerciseMinutes, seconds: totalExerciseRemainingSeconds },                                  
                 restTime: { minutes: restMinutes, seconds: restSeconds },
                 prepareTimeInSeconds: `${prepareTimeInSeconds}`,
                 exerciseTimeInSeconds: `${exerciseTimeInSeconds}`,
                 restTimeInSeconds: `${restTimeInSeconds}`,
-
             };
         });
+    
+    
 
 
         console.log('운동 정보:', exerciseInfoOn);
@@ -333,6 +354,10 @@ const TimeLimit = ({ route }) => {
             setExerciseOrder(newOrder);
         }
     };
+
+
+
+
 
     const navigateToFlatList = () => {
         if (!dropdownValue || (dropdownValue !== '1' && dropdownValue !== '2')) {

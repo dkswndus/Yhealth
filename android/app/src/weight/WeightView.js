@@ -52,11 +52,11 @@ const WeightView = ({ route }) => {
           <View key={index} style={styles.row}>
             <View style={styles.textRow2}>
               <Text style={styles.textTitle}>날짜:</Text>
-              <Text style={styles.textcontent}>{data.date}</Text>
+              <Text style={styles.textcontent}> {data.date}</Text>
             </View>
             <View style={styles.textRow2}>
               <Text style={styles.textTitle}>체중:</Text>
-              <Text style={styles.textcontent}>{data.weight}</Text>
+              <Text style={styles.textcontent}> {data.weight}</Text>
             </View>
             <TouchableOpacity onPress={() => handleDelete(index)} style={styles.deleteButton}>
               <Text style={styles.deleteButtonText}>삭제</Text>
