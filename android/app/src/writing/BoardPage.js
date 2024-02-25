@@ -30,7 +30,7 @@ const BoardPage = ({ route }) => {
     try {
       // 백엔드에서 게시글 데이터를 가져오는 요청
       setLoading(true);
-      const response = await axios.get(API_URL+'/forum/', {
+      const response = await axios.get(API_URL + '/forum/', {
         headers: {
           "Content-Type": "application/json",
         },
@@ -81,18 +81,20 @@ const BoardPage = ({ route }) => {
           {loading ? (
             <ActivityIndicator size="large" color="blue" style={{ marginTop: 20 }} />
           ) : (
-            <View style={{ paddingLeft: 5, paddingRight: 5 }}>
+            <View style={{ paddingLeft: 10, paddingRight: 10 }}>
               {boardData.map((item, index) => (
                 <TouchableOpacity key={index} onPress={() => handleItemPress(item)}>
-                  <View key={index}>
+                  <View key={index} style={{ paddingTop: 10, paddingBottom: 10, borderBottomWidth: 1, borderColor: 'black' }}>
                     <View>
-                      <Text style={styles.textTitle}>{item.title}</Text>
-                      <Text style={styles.textcontent}>{item.description}</Text>
+                      <Text numberOfLines={1} style={styles.textTitle}>{item.title.length > 15 ? `${item.title.substring(0, 10)}...` : item.title}</Text>
                       <View style={styles.textRow2}>
+                        <Text numberOfLines={2} style={styles.textcontent}>{item.description}</Text>
                         <View style={styles.textRow}>
-                          <Text style={styles.textcontent2}>{item.user_id}</Text>
-                          <Text style={styles.textcontent2}> | </Text>
+
                           <Text style={styles.textcontent2}>{formatDateString(item.created_at)}</Text>
+                          <Text style={styles.textcontent2}> | </Text>
+                          <Text style={styles.textcontent2}>{item.user_id}</Text>
+
                         </View>
                         {/* <View style={styles.textRow}>
                           <Image source={thumbsup} style={{ width: 25, height: 25, marginRight: 15 }} />
@@ -137,7 +139,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   textRow2: {
-    flexDirection: 'row',
+
     justifyContent: 'space-between',
   },
   textTitle: {

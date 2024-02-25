@@ -64,7 +64,7 @@ const Board = () => {
         <TouchableOpacity key={index} onPress={() => handleItemPress(item)}>
           <View key={index} style={styles.boardItem}>
             <Text numberOfLines={1} ellipsizeMode="tail" style={styles.itemText}>
-              {item.title}
+            {item.title.length > 10 ? `${item.title.substring(0, 10)}...` : item.title}
             </Text>
             <Text style={styles.itemText}>{formatDateString(item.created_at)}</Text>
           </View>

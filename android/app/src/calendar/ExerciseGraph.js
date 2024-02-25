@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';
@@ -93,7 +95,8 @@ const ExerciseGraph = () => {
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
   const filteredExerciseData = exerciseData.filter(item => new Date(item.date) >= oneWeekAgo);
   const uniqueDates = Array.from(new Set(filteredExerciseData.map(item => item.date)));
-
+  uniqueDates.sort((a, b) => new Date(a) - new Date(b));
+ console.log(uniqueDates);
 
   const data = {
     labels: uniqueDates.map((date) => date.substring(5, 10)),
@@ -149,4 +152,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ExerciseGraph;
+export default ExerciseGraph; 

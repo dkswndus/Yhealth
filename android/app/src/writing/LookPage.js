@@ -32,7 +32,7 @@ const LookPage = ({ route, navigation }) => {
   const fetchData = async () => {
     try {
       const itemId = selectedItem.id;
-      const response = await axios.get(`${API_URL}/forum/comment/${itemId}`);
+      const response = await axios.get(`${API_URL}/comment/${itemId}`);
 
       const commentdata = response.data; // 서버에서 받아온 데이터
 
@@ -123,7 +123,7 @@ const LookPage = ({ route, navigation }) => {
           text: '삭제',
           onPress: async () => {
             try {
-              const response = await axios.delete(`${API_URL}/forum/comment/${commentId.id}`, {
+              const response = await axios.delete(`${API_URL}/comment/${commentId.id}`, {
                 withCredentials: true,
               });
               console.log('댓글 삭제 성공:', response.data);
@@ -207,7 +207,7 @@ const LookPage = ({ route, navigation }) => {
         };
 
         // 서버에 POST 요청 보내기
-        const response = await axios.post(`${API_URL}/forum/comment/`, newCommentData);
+        const response = await axios.post(`${API_URL}/comment/`, newCommentData);
 
         // 서버로부터 응답 받은 데이터 사용
         const newComment = response.data;
@@ -225,6 +225,7 @@ const LookPage = ({ route, navigation }) => {
       }
     }
   };
+
   const clearNickname = () => {
     setuser_id('');
   };
@@ -244,8 +245,8 @@ const LookPage = ({ route, navigation }) => {
         </View>
 
         <View style={[styles.viewcontainer, styles.editdeletecontainer]}>
-          <Text style={{ color: 'black', fontWeight: 'bold' }}>{selectedItem.title}</Text>
-          <Text style={{ color: 'black' }}>{selectedItem.description}</Text>
+          <Text style={{fontSize:20 , color: 'black', fontWeight: 'bold' }}>{selectedItem.title}</Text>
+          <Text style={{fontSize:17 , color: 'black' }}>{selectedItem.description}</Text>
           <View style={{ flexDirection: 'row', marginTop: 10, justifyContent: 'space-between' }}>
             <View style={{ flexDirection: 'row' }}>
               {/* <TouchableOpacity onPress={handleThumbsUp}>
@@ -272,7 +273,7 @@ const LookPage = ({ route, navigation }) => {
           {comments.map((item, index) => (
             <View key={index} style={styles.commentContainer}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text style={{ color: 'black', fontWeight: 'bold' }}>
+                <Text style={{fontSize:17 ,color: 'black', fontWeight: 'bold' }}>
                   {item.user_id}
                 </Text>
 
@@ -280,7 +281,7 @@ const LookPage = ({ route, navigation }) => {
                   <Text style={{ color: 'blue', marginLeft: 10 }}>삭제</Text>
                 </TouchableOpacity>
               </View>
-              <Text style={{ color: 'black' }}>{item.description}</Text>
+              <Text style={{fontSize:15 , color: 'black' }}>{item.description}</Text>
             </View>
           ))}
         </View>
