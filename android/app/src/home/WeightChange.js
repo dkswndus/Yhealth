@@ -38,15 +38,16 @@ const Weight = () => {
     { date: '2024-02-13', weight: '12' },
   ];*/
 
-  const limitedWeightData = weightData.slice(-7);
+  const limitedWeightData = weightData.slice(-7).sort((a, b) => new Date(a.date) - new Date(b.date));
   const data = {
-    labels: limitedWeightData.map(dataPoint => dataPoint.date.substring(5,10)),
+    labels: limitedWeightData.map(dataPoint => dataPoint.date.substring(5, 10)),
     datasets: [
       {
-        data: limitedWeightData.map(dataPoint => parseFloat(dataPoint.weight)), // 문자열을 숫자로 변환 >>>>>>>추가 
+        data: limitedWeightData.map(dataPoint => parseFloat(dataPoint.weight)),
       },
     ],
   };
+  
   
   const handleMorePress = () => {
     navigation.navigate('체중 기록');
@@ -113,4 +114,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default Weight;
+export default Weight; 
