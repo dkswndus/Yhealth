@@ -297,64 +297,69 @@ const TimeLimit = ({ route }) => {
         navigation.navigate('NonstopWatch', { exerciseInfoOff });
     };
 
+    
+    const removeExercise = (indexa) => {
+        const updatedRecords = selectedExercises.filter((_, index) => index !== indexa);
+        // 새로운 배열로 상태를 업데이트합니다.
+        setSelectedExercises(updatedRecords);
 
-    const removeExercise = (index) => {
-        // 선택한 운동에서 운동을 삭제한 후, 업데이트된 상태를 반영
-        const updatedExercises = [...selectedExercises];
-        updatedExercises.splice(index, 1);
-        setSelectedExercises(updatedExercises);
+        // // 선택한 운동에서 운동을 삭제한 후, 업데이트된 상태를 반영
+        // const updatedExercises = [...selectedExercises];
+        // updatedExercises.splice(index, 1);
+        // setSelectedExercises(updatedExercises);
 
-        // 운동 삭제 시 해당 운동의 세트, 횟수 등 초기화
-        setSets((prevSets) => {
-            const newSets = { ...prevSets };
-            delete newSets[selectedExercises[index]];
-            return newSets;
-        });
+        // // 운동 삭제 시 해당 운동의 세트, 횟수 등 초기화
+        // setSets((prevSets) => {
+        //     const newSets = { ...prevSets };
+        //     delete newSets[selectedExercises[index]];
+        //     return newSets;
+        // });
 
-        setReps((prevReps) => {
-            const newReps = { ...prevReps };
-            delete newReps[selectedExercises[index]];
-            return newReps;
-        });
+        // setReps((prevReps) => {
+        //     const newReps = { ...prevReps };
+        //     delete newReps[selectedExercises[index]];
+        //     return newReps;
+        // });
 
-        setPrepareTime((prevPrepareTime) => {
-            const newPrepareTime = { ...prevPrepareTime };
-            delete newPrepareTime[selectedExercises[index]];
-            return newPrepareTime;
-        });
+        // setPrepareTime((prevPrepareTime) => {
+        //     const newPrepareTime = { ...prevPrepareTime };
+        //     delete newPrepareTime[selectedExercises[index]];
+        //     return newPrepareTime;
+        // });
 
-        setExerciseTime((prevExerciseTime) => {
-            const newExerciseTime = { ...prevExerciseTime };
-            delete newExerciseTime[selectedExercises[index]];
-            return newExerciseTime;
-        });
+        // setExerciseTime((prevExerciseTime) => {
+        //     const newExerciseTime = { ...prevExerciseTime };
+        //     delete newExerciseTime[selectedExercises[index]];
+        //     return newExerciseTime;
+        // });
 
-        setRestTime((prevRestTime) => {
-            const newRestTime = { ...prevRestTime };
-            delete newRestTime[selectedExercises[index]];
-            return newRestTime;
-        });
+        // setRestTime((prevRestTime) => {
+        //     const newRestTime = { ...prevRestTime };
+        //     delete newRestTime[selectedExercises[index]];
+        //     return newRestTime;
+        // });
     };
-
-
-
-
+    
+    
+    
     const moveExerciseUp = (index) => {
-        if (index > 0) {
-            const newOrder = [...exerciseOrder];
-            [newOrder[index], newOrder[index - 1]] = [newOrder[index - 1], newOrder[index]];
-            setExerciseOrder(newOrder);
-        }
+        if (index === 0) return; // 운동이 첫 번째 항목이면 위로 이동할 수 없음
+        const updatedExerciseOrder = [...exerciseOrder];
+        const tempExercise = updatedExerciseOrder[index]; // 선택한 운동을 저장
+        updatedExerciseOrder[index] = updatedExerciseOrder[index - 1]; // 선택한 운동을 한 칸 위로 이동
+        updatedExerciseOrder[index - 1] = tempExercise; // 이전 운동 위치에 저장된 운동을 넣음
+        setExerciseOrder(updatedExerciseOrder);
     };
-
+    
     const moveExerciseDown = (index) => {
-        if (index < exerciseOrder.length - 1) {
-            const newOrder = [...exerciseOrder];
-            [newOrder[index], newOrder[index + 1]] = [newOrder[index + 1], newOrder[index]];
-            setExerciseOrder(newOrder);
-        }
+        if (index === exerciseOrder.length - 1) return; // 운동이 마지막 항목이면 아래로 이동할 수 없음
+        const updatedExerciseOrder = [...exerciseOrder];
+        const tempExercise = updatedExerciseOrder[index]; // 선택한 운동을 저장
+        updatedExerciseOrder[index] = updatedExerciseOrder[index + 1]; // 선택한 운동을 한 칸 아래로 이동
+        updatedExerciseOrder[index + 1] = tempExercise; // 다음 운동 위치에 저장된 운동을 넣음
+        setExerciseOrder(updatedExerciseOrder);
     };
-
+    
 
 
 
@@ -432,43 +437,42 @@ const TimeLimit = ({ route }) => {
     useEffect(() => {
         setSets((prevSets) => {
             const newSets = {};
-            exerciseOrder.forEach((exercise) => {
+            selectedExercises.forEach((exercise) => {
                 newSets[exercise] = initialSetsValue;
             });
             return { ...prevSets, ...newSets };
         });
-
+    
         setReps((prevReps) => {
             const newReps = {};
-            exerciseOrder.forEach((exercise) => {
+            selectedExercises.forEach((exercise) => {
                 newReps[exercise] = initialRepsValue;
             });
             return { ...prevReps, ...newReps };
         });
         setPrepareTime((prevPrepareTime) => {
             const newPrepareTime = {};
-            exerciseOrder.forEach((exercise) => {
+            selectedExercises.forEach((exercise) => {
                 newPrepareTime[exercise] = initialPrepareTime;
             });
             return { ...prevPrepareTime, ...newPrepareTime };
         });
         setExerciseTime((prevExerciseTime) => {
             const newExerciseTime = {};
-            exerciseOrder.forEach((exercise) => {
+            selectedExercises.forEach((exercise) => {
                 newExerciseTime[exercise] = initialExerciseTime;
             });
             return { ...prevExerciseTime, ...newExerciseTime };
         });
         setRestTime((prevRestTime) => {
             const newRestTime = {};
-            exerciseOrder.forEach((exercise) => {
+            selectedExercises.forEach((exercise) => {
                 newRestTime[exercise] = initialRestTime;
             });
             return { ...prevRestTime, ...newRestTime };
         });
-
-    }, [selectedExercises, exerciseOrder, setSets, setReps, setExerciseTime, setPrepareTime, setRestTime]);
-
+    }, [selectedExercises, setSets, setReps, setExerciseTime, setPrepareTime, setRestTime]);
+    
 
     return (
 

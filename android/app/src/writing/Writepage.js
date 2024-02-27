@@ -102,6 +102,7 @@ const Writepage = ({ route }) => {
             style={[styles.inputcontainer, { flex: 1 }]}
             onChangeText={handledescriptionChange}
             value={description}
+            multiline={true}
             placeholder="내용을 입력하세요"
             placeholderTextColor="gray"
           />

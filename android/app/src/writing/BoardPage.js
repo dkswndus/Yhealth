@@ -23,9 +23,11 @@ const BoardPage = ({ route }) => {
   );
   const formatDateString = (dateString) => {
     // 날짜 문자열에서 요일 부분 제거
-    const dateWithoutDay = new Date(dateString).toLocaleDateString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' });
-    return dateWithoutDay;
+    const dateWithoutDay = new Date(dateString).toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const [month, day, year] = dateWithoutDay.split('/');
+    return `${year}/${month}/${day}`;
   };
+  
   const fetchData = async () => {
     try {
       // 백엔드에서 게시글 데이터를 가져오는 요청
@@ -86,7 +88,7 @@ const BoardPage = ({ route }) => {
                 <TouchableOpacity key={index} onPress={() => handleItemPress(item)}>
                   <View key={index} style={{ paddingTop: 10, paddingBottom: 10, borderBottomWidth: 1, borderColor: 'black' }}>
                     <View>
-                      <Text numberOfLines={1} style={styles.textTitle}>{item.title.length > 15 ? `${item.title.substring(0, 10)}...` : item.title}</Text>
+                      <Text numberOfLines={1} style={styles.textTitle}>{item.title.length > 20 ? `${item.title.substring(0, 10)}...` : item.title}</Text>
                       <View style={styles.textRow2}>
                         <Text numberOfLines={2} style={styles.textcontent}>{item.description}</Text>
                         <View style={styles.textRow}>

@@ -205,7 +205,6 @@ const StopWatch = ({ route }) => {
   const toggleStart = () => {
     if (isPaused && (prepareTimeInSeconds <= 1 || exerciseTimeInSeconds <= 1 || restTimeInSeconds <= 1)) {
       // 일시정지 상태에서 버튼을 눌러서 재생할 때
-      BoxingBellSound.play();
     } else {
       // 재생 중일 때 버튼을 눌러서 일시정지할 때
       BoxingBellSound.pause();

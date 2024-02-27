@@ -37,9 +37,11 @@ const Board = () => {
   };
   const formatDateString = (dateString) => {
     // 날짜 문자열에서 요일 부분 제거
-    const dateWithoutDay = new Date(dateString).toLocaleDateString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' });
-    return dateWithoutDay;
+    const dateWithoutDay = new Date(dateString).toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const [month, day, year] = dateWithoutDay.split('/');
+    return `${year}/${month}/${day}`;
   };
+  
 
   const handleMorePress = () => {
     navigation.navigate('BoardPage');
@@ -64,7 +66,7 @@ const Board = () => {
         <TouchableOpacity key={index} onPress={() => handleItemPress(item)}>
           <View key={index} style={styles.boardItem}>
             <Text numberOfLines={1} ellipsizeMode="tail" style={styles.itemText}>
-            {item.title.length > 10 ? `${item.title.substring(0, 10)}...` : item.title}
+            {item.title.length > 20 ? `${item.title.substring(0, 10)}...` : item.title}
             </Text>
             <Text style={styles.itemText}>{formatDateString(item.created_at)}</Text>
           </View>
