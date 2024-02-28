@@ -122,7 +122,7 @@ const ExerciseGraph = () => {
             decimalPlaces: 0,
             barPercentage: 0.8,
             group: false,
-            color: (opacity = 1) => `rgba(0, 41, 255, 0)`,// 파란색 설정
+            color: (opacity = 1) => `#0077B6`,// 파란색 설정
             labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, 
           }}
           style={{
@@ -130,6 +130,7 @@ const ExerciseGraph = () => {
             borderRadius: 16,
             paddingRight: 50,
           }}
+         // withInnerLines={false}
         />
       ) : (<Text style={{ color: 'black', fontSize: 15 }}> 운동기록이 없습니다. </Text>)}
 

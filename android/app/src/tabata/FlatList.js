@@ -5,8 +5,8 @@ import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
-  cardioExercisesData, coreExercisesData,
-  forearmExercisesData, generalGymbackExercisesData,
+
+  generalGymbackExercisesData,
   generalGymbicepsExercisesData, generalGymchestExercisesData,
   generalGymlowerBodyExercisesData, generalGymshoulderExercisesData,
   generalGymtricepsExercisesData, martialArtsgymbackExercisesData,
@@ -41,7 +41,7 @@ const FlatList = ({ route }) => {
       const dataToSave = {
         likedExercises: likedExercises,
       };
-      // JSON 형태로 직렬화하여 AsyncStorage에 저장
+
       await AsyncStorage.setItem(`appData_${dropdownValue}`, JSON.stringify(dataToSave));
     } catch (error) {
       console.error('오류', error);
@@ -70,9 +70,6 @@ const FlatList = ({ route }) => {
   useEffect(() => {
     saveDataToStorage();
   }, [likedExercises]);
-
-
-
 
 
   useEffect(() => {
@@ -116,12 +113,7 @@ const FlatList = ({ route }) => {
           case '이두':
             setCurrentData(generalGymbicepsExercisesData);
             break;
-          case '코어':
-            setCurrentData(coreExercisesData);
-            break;
-          case '유산소':
-            setCurrentData(cardioExercisesData);
-            break;
+
         }
         break;
       case '2':
@@ -147,20 +139,12 @@ const FlatList = ({ route }) => {
           case '이두':
             setCurrentData(martialArtsgymbicepsExercisesData);
             break;
-          case '코어':
-            setCurrentData(coreExercisesData);
-            break;
-          case '유산소':
-            setCurrentData(cardioExercisesData);
-            break;
         }
         break;
       default:
         setCurrentData([]);
     }
   };
-
-
 
   const navigateTimeLimit = () => {
     if (isTimeLimitOn) {
@@ -173,8 +157,6 @@ const FlatList = ({ route }) => {
     }
   }
 
-
-
   const toggleLike = (exerciseTitle) => {
     setLikedExercises((prevLikedExercises) =>
       prevLikedExercises.includes(exerciseTitle)
@@ -182,7 +164,6 @@ const FlatList = ({ route }) => {
         : [...prevLikedExercises, exerciseTitle]
     );
   };
-
 
   const showLikedExercises = () => {
     let allExercises = [];
@@ -197,8 +178,7 @@ const FlatList = ({ route }) => {
           ...generalGymshoulderExercisesData,
           ...generalGymtricepsExercisesData,
           ...generalGymbicepsExercisesData,
-          ...coreExercisesData,
-          ...cardioExercisesData,
+
         ];
         break;
       case '2':
@@ -210,8 +190,7 @@ const FlatList = ({ route }) => {
           ...martialArtsgymshoulderExercisesData,
           ...martialArtsgymtricepsExercisesData,
           ...martialArtsgymbicepsExercisesData,
-          ...coreExercisesData,
-          ...cardioExercisesData,
+
         ];
         break;
       default:
@@ -266,7 +245,7 @@ const FlatList = ({ route }) => {
       <View style={styles.addButtonContainer}>
         <Text style={styles.addButtonText}>운동 추가하기</Text>
         <TouchableOpacity onPress={navigateTimeLimit} >
-          <Image source={x} style={{ width: 20, height: 20, marginRight: 10 }} />
+          <Image source={x} style={styles.Ximage} />
         </TouchableOpacity>
       </View>
       <ScrollView horizontal={true} style={styles.horizontaaScrollView}>
@@ -274,7 +253,6 @@ const FlatList = ({ route }) => {
           <TouchableOpacity onPress={() => showLikedExercises("즐겨찾기")}>
             <Part title={"즐겨찾기"} />
           </TouchableOpacity>
-
           <TouchableOpacity onPress={() => showSelectedExercise("가슴")}>
             <Part title={"가슴"} />
           </TouchableOpacity>
@@ -293,15 +271,8 @@ const FlatList = ({ route }) => {
           <TouchableOpacity onPress={() => showSelectedExercise("이두")}>
             <Part title={"이두"} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => showSelectedExercise("코어")}>
-            <Part title={"코어"} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => showSelectedExercise("유산소")}>
-            <Part title={"유산소"} />
-          </TouchableOpacity>
         </View>
       </ScrollView>
-
       <ScrollView style={styles.scrollView}>
         {currentData.map((exercise, index) => (
           <TouchableOpacity
@@ -312,61 +283,57 @@ const FlatList = ({ route }) => {
               paddingHorizontal: 20,
             }}>
             <View style={styles.GeneralGymData}>
-              <View style={styles.todoText}>
-                <Text>{exercise.title}</Text>
-              </View>
+              <Text>{exercise.title}</Text>
               <TouchableOpacity onPress={() => toggleLike(exercise.title)}>
                 <Image
                   source={likedExercises.includes(exercise.title) ? redheart : emptyheart}
-                  style={{ width: 25, height: 25 }}
+                  style={styles.Heartimage}
                 />
               </TouchableOpacity>
             </View>
           </TouchableOpacity>
         ))}
       </ScrollView>
-
-
-
       <AdditionDone title={"추가 완료"} onPress={navigateTimeLimit} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  Heartimage: {
+    width: 25, height: 25
+  },
+  Ximage: {
+    width: 20, height: 20, marginRight: 10
+  },
   container: {
-    flex: 1,
+
     marginTop: 20,
-    paddingTop: 20,
     padding: 20,
     backgroundColor: 'rgba(252, 253, 255, 0.49)',
     borderRadius: 30,
-
   },
   scrollView: {
+    marginTop: 25,
     flexDirection: 'column',
-    marginTop: 35,
+    height: 430,
+
   },
   GeneralGymData: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height: 50,
     borderBottomColor: '#bbb',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-
+    borderBottomWidth: 0.5,
+    height: 50,
   },
   todoText: {
     flexDirection: 'row',
     alignItems: 'center',
-
-
   },
   addButtonContainer: {
     flexDirection: 'row',
-
     justifyContent: 'space-between',
-
   },
   addButtonText: {
     fontSize: 25,
@@ -374,16 +341,17 @@ const styles = StyleSheet.create({
     color: 'rgba(0, 0, 0, 0.9)',
     marginTop: -5,
     marginLeft: 100,
-
   },
 
   horizontaaScrollView: {
+    marginTop: 20,
     flexDirection: 'row',
+    height: 50,
+
+
   },
   exerciseContainer: {
     flexDirection: 'row',
-    padding: 15,
-    paddingBottom: 35,
   },
 });
 
@@ -394,9 +362,8 @@ width: 100%;
   border-radius: 10px;
   align-items: center;
   justify-content: center;
-
-
   margin-top: 20px;
+  
 `;
 
 const AdditionDoneTitle = styled(Text)`
