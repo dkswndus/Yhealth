@@ -122,7 +122,8 @@ const ExerciseGraph = () => {
             decimalPlaces: 0,
             barPercentage: 0.8,
             group: false,
-            color: (opacity = 1.0) => `rgba(0, 0, 255, ${opacity})`,
+            color: (opacity = 1) => `rgba(0, 41, 255, 0)`,// 파란색 설정
+            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, 
           }}
           style={{
             marginVertical: 2,

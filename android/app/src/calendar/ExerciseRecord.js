@@ -15,7 +15,7 @@ const ExerciseRecord = ({ exerciseDataOff, exerciseDataOn, selectedDate }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>운동 기록</Text>
-      <View style={styles.table}>
+      <View >
         <View style={styles.row}>
           <Text style={styles.cell}>운동 이름</Text>
           <Text style={styles.cell}>총 운동시간</Text>
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   table: {
     flexDirection: 'column',
     marginTop: 10,
-    borderWidth: 1,
+
     borderColor: 'black',
   },
   row: {
@@ -63,4 +63,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ExerciseRecord;
+export default ExerciseRecord; 
