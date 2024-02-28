@@ -49,7 +49,7 @@ const ExerciseGraph = () => {
       }
     });
 
-   
+
 
     return totalTimeByDate;
   };
@@ -57,8 +57,6 @@ const ExerciseGraph = () => {
   const totalTimeByDate = calculateTotalTime();
 
   useEffect(() => {
-    console.log('Total Time by Date:', totalTimeByDate);
-    console.log('uniqueDate:', uniqueDate);
   }, [uniqueDate, totalTimeByDate]);
 
 
@@ -69,7 +67,6 @@ const ExerciseGraph = () => {
       const storedData = await AsyncStorage.getItem(`appData${key}`);
       if (storedData) {
         const parsedData = JSON.parse(storedData);
-        console.log(` ${key} 데이터:`, parsedData);
         setter(parsedData);
       }
     } catch (error) {
@@ -78,14 +75,14 @@ const ExerciseGraph = () => {
   };
   useEffect(() => {
     let isMounted = true;
-  
+
     const fetchData = async () => {
       await loadSavedData('Off', setExerciseDataOff);
       await loadSavedData('On', setExerciseDataOn);
     };
-  
+
     fetchData();
-  
+
     return () => {
       isMounted = false;
     };
@@ -96,7 +93,6 @@ const ExerciseGraph = () => {
   const filteredExerciseData = exerciseData.filter(item => new Date(item.date) >= oneWeekAgo);
   const uniqueDates = Array.from(new Set(filteredExerciseData.map(item => item.date)));
   uniqueDates.sort((a, b) => new Date(a) - new Date(b));
- console.log(uniqueDates);
 
   const data = {
     labels: uniqueDates.map((date) => date.substring(5, 10)),
@@ -134,7 +130,7 @@ const ExerciseGraph = () => {
             paddingRight: 50,
           }}
         />
-      ) : ( <Text style={{color:'black',fontSize:15}}> 운동기록이 없습니다. </Text>)}
+      ) : (<Text style={{ color: 'black', fontSize: 15 }}> 운동기록이 없습니다. </Text>)}
 
     </View>
   );

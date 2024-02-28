@@ -7,7 +7,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const previousbutton = require("../assets/image/previousbutton.png");
 const nextbutton = require("../assets/image/nextbutton.png");
 
-
 const CompleteContainer = styled.TouchableOpacity`
   border: 1px solid black;
   padding: 10px;
@@ -29,25 +28,13 @@ const ExerciseInformation = styled.View`
   padding-bottom: 5px;
 `;
 
-
-
-const ImageContainer = styled.View`
-
-`;
-
 const NonstopWatch = ({ route }) => {
   const navigation = useNavigation();
   const exerciseInfoOff = route.params?.exerciseInfoOff || [];
   const [currentIndex, setCurrentIndex] = useState(0);
   const [completionStatus, setCompletionStatus] = useState(Array(exerciseInfoOff.length).fill(false));
 
-
   const length = exerciseInfoOff.length;
-
-  useEffect(() => {
-    console.log('exerciseInfoOff 정보:', exerciseInfoOff);
-  }, [exerciseInfoOff]);
-
 
   useEffect(() => {
     const saveDataToStorage = async (data, key) => {
@@ -60,13 +47,13 @@ const NonstopWatch = ({ route }) => {
             // 이전 데이터 불러오기
             const existingData = await AsyncStorage.getItem(`appData${key}`);
             const parsedExistingData = existingData ? JSON.parse(existingData) : [];
-  
+
             // exerciseInfoOff를 기반으로 transformedData 생성
             const transformedData = exerciseInfoOff.map(item => {
               const { name, reps, sets, time } = item;
               const currentDate = new Date();
               const formattedDate = currentDate.toISOString().split('T')[0];
-  
+
               return {
                 name: name,
                 date: formattedDate,
@@ -75,21 +62,20 @@ const NonstopWatch = ({ route }) => {
                 time: time,
               };
             });
-  
+
             // 일주일 이전의 날짜 계산
             const currentDate = new Date();
             const oneWeekAgo = new Date(currentDate);
             oneWeekAgo.setDate(currentDate.getDate() - 7);
-  
+
             // 이전 데이터 중 일주일 이전의 데이터 제거
             const filteredExistingData = parsedExistingData.filter(item => {
               const itemDate = new Date(item.date);
               return itemDate > oneWeekAgo;
             });
-  
+
             // 이전 데이터와 새로운 데이터 합치기
             const combinedData = [...filteredExistingData, ...transformedData];
-            console.log("nonstopwatch: ", combinedData);
             // 데이터 저장
             await AsyncStorage.setItem(`appData${key}`, JSON.stringify(combinedData));
           }
@@ -98,11 +84,11 @@ const NonstopWatch = ({ route }) => {
         console.error('오류', error);
       }
     };
-  
+
     saveDataToStorage([], 'Off'); // 초기 실행 시 빈 배열을 전달
   }, [completionStatus]); // completionStatus만 종속성으로 설정
-  
-  
+
+
 
 
 

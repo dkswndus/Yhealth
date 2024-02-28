@@ -10,33 +10,12 @@ import remove from "../assets/image/remove.png";
 import { useRecoilState, useRecoilValue } from 'recoil';
 import up from "../assets/image/up.png";
 import down from "../assets/image/down.png";
-
-
-
-
-import {
-    setsState,
-    repsState,
-    prepareTimeState,
-    exerciseTimeState,
-    restTimeState,
-    exerciseLikesState,
-    isTimeLimitOnState,
-    selectedExercisesState,
-
-    dropdownValueState,
-    likedExercisesState,
-
-} from './Recoil';
-import { stopUpload } from 'react-native-fs';
+import { setsState, repsState, prepareTimeState, exerciseTimeState, restTimeState, exerciseLikesState, isTimeLimitOnState, selectedExercisesState, dropdownValueState, likedExercisesState, } from './Recoil';
 //드롭다운 
 const Dropdown = styled.View`
 padding-left: 20px;
 padding-right: 20px;
 `;
-
-
-
 
 // 세트, 횟수, 준비시간,운동시간,휴식시간 
 const ExerciseInformation = styled.View`
@@ -44,8 +23,6 @@ padding-left: 20px;
 padding-right: 20px;  
 padding-top:20px;
 `;
-
-
 
 //운동추가하기 
 const ExerciseContainer = styled.View`
@@ -67,11 +44,7 @@ const ExerciseStartContainer = styled.View`
 padding-left: 20px;
 padding-right: 20px; 
 margin-bottom: 30px;
-
-
 `;
-
-
 
 //횟수,
 const TextInput = styled.TextInput`
@@ -102,7 +75,6 @@ const ExerciseText = styled.Text`
 `;
 
 
-
 // 운동이름, 휴지통 통합 
 const IntegreatedContainer = styled.View`
 flex-direction: row;
@@ -111,11 +83,13 @@ border-top-width: 1px;
 border-top-color:' rgba(0,0,0,0.2)';
 padding-top: 7px;
 `;
+
 const SettingContainer = styled.View`
 flex-direction: row;
  padding-top:10px;
 
 `;
+
 const TimePicker = ({ time, onTimeChange, type }) => {
     const minutes = Array.from({ length: 60 }, (_, index) => index.toString().padStart(2, '0'));
     const seconds = Array.from({ length: 60 }, (_, index) => index.toString().padStart(2, '0'));
@@ -127,10 +101,9 @@ const TimePicker = ({ time, onTimeChange, type }) => {
             Alert.alert('경고', '10초 이상으로 선택해주세요.');
             return;
         }
-        console.log('Selected Minute:', itemValue);
         onTimeChange('minutes', itemValue, type);
     };
-    
+
     const handleSecondChange = (itemValue) => {
         const selectedMinutes = parseInt(time.minutes);
         const selectedSeconds = parseInt(itemValue);
@@ -138,10 +111,8 @@ const TimePicker = ({ time, onTimeChange, type }) => {
             Alert.alert('경고', '10초 이상으로 선택해주세요.');
             return;
         }
-        console.log('Selected Second:', itemValue);
         onTimeChange('seconds', itemValue, type);
     };
-    
 
     return (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -167,10 +138,6 @@ const TimePicker = ({ time, onTimeChange, type }) => {
 
 };
 
-
-
-
-
 const TimeLimit = ({ route }) => {
     const navigation = useNavigation();
     const [dropdownValue, setDropdownValue] = useRecoilState(dropdownValueState);
@@ -189,17 +156,8 @@ const TimeLimit = ({ route }) => {
     const [initialSets, setInitialSets] = useState("3");
     const [initialReps, setInitialReps] = useState("25");
 
-
-
-
-
-
-
-
-
     useEffect(() => {
         // 드롭다운 값이 변경되면 실행되는 부분
-        console.log(`dropdownValue가 변경됨: ${prevDropdownValue.current} -> ${dropdownValue}`);
         if (prevDropdownValue.current !== dropdownValue) {
             setSelectedExercises([]);
             setLikedExercises([]);
@@ -216,16 +174,12 @@ const TimeLimit = ({ route }) => {
     }, [selectedExercises, dropdownValue]);
 
 
-
-
-
-
     const navigateToNextStopWatch = () => {
         if (!dropdownValue || (dropdownValue !== '1' && dropdownValue !== '2')) {
             Alert.alert('오류', '장소를 선택하세요.');
             return;
         }
-    
+
         if (selectedExercises.length === 0) {
             Alert.alert('오류', '운동을 선택하세요.');
             return;
@@ -245,29 +199,23 @@ const TimeLimit = ({ route }) => {
             const totalExerciseSeconds = (exerciseMinutes * 60 + exerciseSeconds) * sets[exercise];
             const totalExerciseMinutes = Math.floor(totalExerciseSeconds / 60);
             const totalExerciseRemainingSeconds = totalExerciseSeconds % 60;
-    
+
             return {
                 name: exercise,
                 sets: sets[exercise],
                 reps: reps[exercise],
                 prepareTime: { minutes: prepareMinutes, seconds: prepareSeconds },
                 exerciseTime: { minutes: exerciseMinutes, seconds: exerciseSeconds },
-                totalExerciseTime: { minutes: totalExerciseMinutes, seconds: totalExerciseRemainingSeconds },                                  
+                totalExerciseTime: { minutes: totalExerciseMinutes, seconds: totalExerciseRemainingSeconds },
                 restTime: { minutes: restMinutes, seconds: restSeconds },
                 prepareTimeInSeconds: `${prepareTimeInSeconds}`,
                 exerciseTimeInSeconds: `${exerciseTimeInSeconds}`,
                 restTimeInSeconds: `${restTimeInSeconds}`,
             };
         });
-    
-    
 
-
-        console.log('운동 정보:', exerciseInfoOn);
         navigation.navigate('StopWatch', { exerciseInfoOn });
     };
-
-
 
     const navigateToNextNonstopWatch = () => {
         if (!dropdownValue || (dropdownValue !== '1' && dropdownValue !== '2')) {
@@ -293,20 +241,19 @@ const TimeLimit = ({ route }) => {
             time: time,
         }));
 
-        console.log('운동 정보:', exerciseInfoOff);
         navigation.navigate('NonstopWatch', { exerciseInfoOff });
     };
 
     const removeExercise = (index) => {
         const updatedExerciseOrder = [...exerciseOrder];
         updatedExerciseOrder.splice(index, 1); // 해당 인덱스의 운동을 배열에서 제거
-       
+
         setExerciseOrder(updatedExerciseOrder); // 운동 순서 업데이트
     };
-    
-    
-    
-    
+
+
+
+
 
 
 
@@ -317,23 +264,19 @@ const TimeLimit = ({ route }) => {
         const tempExercise = updatedExerciseOrder[index]; // 선택한 운동을 저장
         updatedExerciseOrder[index] = updatedExerciseOrder[index - 1]; // 선택한 운동을 한 칸 위로 이동
         updatedExerciseOrder[index - 1] = tempExercise; // 이전 운동 위치에 저장된 운동을 넣음
-       
+
         setExerciseOrder(updatedExerciseOrder);
     };
-    
+
     const moveExerciseDown = (index) => {
         if (index === exerciseOrder.length - 1) return; // 운동이 마지막 항목이면 아래로 이동할 수 없음
         const updatedExerciseOrder = [...exerciseOrder];
         const tempExercise = updatedExerciseOrder[index]; // 선택한 운동을 저장
         updatedExerciseOrder[index] = updatedExerciseOrder[index + 1]; // 선택한 운동을 한 칸 아래로 이동
         updatedExerciseOrder[index + 1] = tempExercise; // 다음 운동 위치에 저장된 운동을 넣음
-       
+
         setExerciseOrder(updatedExerciseOrder);
     };
-    
-
-
-
 
     const navigateToFlatList = () => {
         if (!dropdownValue || (dropdownValue !== '1' && dropdownValue !== '2')) {
@@ -346,25 +289,17 @@ const TimeLimit = ({ route }) => {
         });
     };
 
-
-
-
-
-
     const handleSetsChange = (exercise, value) => {
-        console.log(`세트 변경: 운동 ${exercise}, 세트 ${value}`);
         setSets((prevSets) => ({ ...prevSets, [exercise]: value }));
         setInitialSets(value);
     };
 
     const handleRepsChange = (exercise, value) => {
-        console.log(`횟수 변경: 운동 ${exercise}, 횟수 ${value}`);
         setReps((prevReps) => ({ ...prevReps, [exercise]: value }));
         setInitialReps(value);
     };
 
     const handlePrepareTimeChange = (exercise, field, value) => {
-        console.log(`준비시간 변경: 운동 ${exercise}, ${field} ${value}`);
         setPrepareTime((prevPrepareTime) => ({
             ...prevPrepareTime,
             [exercise]: {
@@ -375,7 +310,6 @@ const TimeLimit = ({ route }) => {
     };
 
     const handleExerciseTimeChange = (exercise, field, value) => {
-        console.log(`운동시간 변경: 운동 ${exercise}, ${field} ${value}`);
         setExerciseTime((prevExerciseTime) => ({
             ...prevExerciseTime,
             [exercise]: {
@@ -386,7 +320,6 @@ const TimeLimit = ({ route }) => {
     };
 
     const handleRestTimeChange = (exercise, field, value) => {
-        console.log(`휴식시간 변경: 운동 ${exercise}, ${field} ${value}`);
         setRestTime((prevRestTime) => ({
             ...prevRestTime,
             [exercise]: {
@@ -395,10 +328,6 @@ const TimeLimit = ({ route }) => {
             },
         }));
     };
-
-
-
-
 
     const initialSetsValue = "3";
     const initialRepsValue = "25";
@@ -413,7 +342,7 @@ const TimeLimit = ({ route }) => {
             });
             return { ...prevSets, ...newSets };
         });
-    
+
         setReps((prevReps) => {
             const newReps = {};
             selectedExercises.forEach((exercise) => {
@@ -443,7 +372,7 @@ const TimeLimit = ({ route }) => {
             return { ...prevRestTime, ...newRestTime };
         });
     }, [selectedExercises, setSets, setReps, setExerciseTime, setPrepareTime, setRestTime]);
-    
+
 
     return (
 

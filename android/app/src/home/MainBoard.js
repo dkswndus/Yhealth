@@ -17,7 +17,7 @@ const Board = () => {
     try {
       // 백엔드에서 게시글 데이터를 가져오는 요청
       setLoading(true);
-      const response = await axios.get(API_URL+'/forum/', {
+      const response = await axios.get(API_URL + '/forum/', {
         headers: {
           "Content-Type": "application/json",
         },
@@ -41,7 +41,7 @@ const Board = () => {
     const [month, day, year] = dateWithoutDay.split('/');
     return `${year}/${month}/${day}`;
   };
-  
+
 
   const handleMorePress = () => {
     navigation.navigate('BoardPage');
@@ -66,7 +66,7 @@ const Board = () => {
         <TouchableOpacity key={index} onPress={() => handleItemPress(item)}>
           <View key={index} style={styles.boardItem}>
             <Text numberOfLines={1} ellipsizeMode="tail" style={styles.itemText}>
-            {item.title.length > 20 ? `${item.title.substring(0, 10)}...` : item.title}
+              {item.title.length > 20 ? `${item.title.substring(0, 10)}...` : item.title}
             </Text>
             <Text style={styles.itemText}>{formatDateString(item.created_at)}</Text>
           </View>

@@ -126,7 +126,6 @@ const LookPage = ({ route, navigation }) => {
               const response = await axios.delete(`${API_URL}/comment/${commentId.id}`, {
                 withCredentials: true,
               });
-              console.log('댓글 삭제 성공:', response.data);
               // 삭제 후에 필요한 작업 수행
               setModalVisibleC(false);
               setCkPwd('');
@@ -158,7 +157,6 @@ const LookPage = ({ route, navigation }) => {
               const response = await axios.delete(`${API_URL}/forum/${selectedItem.id}`, {
                 withCredentials: true,
               });
-              console.log('글 삭제 성공:', response.data);
               navigation.navigate('BoardPage');
             } catch (error) {
               console.error('글 삭제 중 오류 발생:', error);
@@ -170,19 +168,6 @@ const LookPage = ({ route, navigation }) => {
       { cancelable: false }
     );
   };
-
-
-  // const handleSend = () => {
-  //   const newComment = { author: user_id, content: comment };
-  //   setComments([...comments, newComment]);
-  //   setuser_id('');
-  //   setuser_pwd('');
-  //   setComment('');
-  //   const updatedSelectedItem = {
-  //     ...selectedItem,
-  //     comments: selectedItem.comments + 1,
-  //   };
-  // };
 
   const handleSend = async () => {
 
@@ -236,7 +221,7 @@ const LookPage = ({ route, navigation }) => {
     const [month, day, year] = dateWithoutDay.split('/');
     return `${year}/${month}/${day}`;
   };
-  
+
   return (
     <View style={{ backgroundColor: 'rgba(255, 255, 255, 1)', flex: 1 }}>
       <TopBar1 />
@@ -247,8 +232,8 @@ const LookPage = ({ route, navigation }) => {
         </View>
 
         <View style={[styles.viewcontainer, styles.editdeletecontainer]}>
-          <Text style={{fontSize:20 , color: 'black', fontWeight: 'bold' }}>{selectedItem.title}</Text>
-          <Text style={{fontSize:17 , color: 'black' }}>{selectedItem.description}</Text>
+          <Text style={{ fontSize: 20, color: 'black', fontWeight: 'bold' }}>{selectedItem.title}</Text>
+          <Text style={{ fontSize: 17, color: 'black' }}>{selectedItem.description}</Text>
           <View style={{ flexDirection: 'row', marginTop: 10, justifyContent: 'space-between' }}>
             <View style={{ flexDirection: 'row' }}>
               {/* <TouchableOpacity onPress={handleThumbsUp}>
@@ -275,15 +260,15 @@ const LookPage = ({ route, navigation }) => {
           {comments.map((item, index) => (
             <View key={index} style={styles.commentContainer}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text style={{fontSize:17 ,color: 'black', fontWeight: 'bold' }}>
+                <Text style={{ fontSize: 17, color: 'black', fontWeight: 'bold' }}>
                   {item.user_id}
                 </Text>
 
-                <TouchableOpacity onPress={() => {setCommentId(item);setModalVisibleC(true);}}>
+                <TouchableOpacity onPress={() => { setCommentId(item); setModalVisibleC(true); }}>
                   <Text style={{ color: 'blue', marginLeft: 10 }}>삭제</Text>
                 </TouchableOpacity>
               </View>
-              <Text style={{fontSize:15 , color: 'black' }}>{item.description}</Text>
+              <Text style={{ fontSize: 15, color: 'black' }}>{item.description}</Text>
             </View>
           ))}
         </View>
@@ -373,7 +358,7 @@ const LookPage = ({ route, navigation }) => {
                 </View>
 
                 <View style={{ padding: 10, flexDirection: 'row' }}>
-                  <TouchableOpacity style={styles.buttonStyle} onPress={() => {setModalVisibleC(false);}}>
+                  <TouchableOpacity style={styles.buttonStyle} onPress={() => { setModalVisibleC(false); }}>
                     <Text style={{ color: 'white', textAlign: 'center' }}>취소</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.buttonStyle} onPress={handleCommentDelete}>

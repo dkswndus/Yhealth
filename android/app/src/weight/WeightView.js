@@ -19,7 +19,6 @@ const WeightView = ({ route }) => {
       if (storedData) {
         const parsedData = JSON.parse(storedData);
         setWeightData(parsedData);
-        console.log('체중 데이터:', parsedData);
       }
     } catch (error) {
       console.error('데이터 불러오기 중 오류 발생:', error);
@@ -28,7 +27,6 @@ const WeightView = ({ route }) => {
 
   const handleMorePress = () => {
     navigation.navigate('체중 등록');
-    console.log(weightData);
   };
 
   const handleDelete = async (index) => {

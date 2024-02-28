@@ -121,16 +121,13 @@ const TimePicker = ({ time, onTimeChange }) => {
     const seconds = Array.from({ length: 60 }, (_, index) => index.toString().padStart(2, '0'));
 
 
-const handleMinuteChange = (itemValue, timeType) => {
-    console.log(`Selected ${timeType} Minute:`, itemValue);
-    onTimeChange(timeType, 'minutes', itemValue);
-};
+    const handleMinuteChange = (itemValue, timeType) => {
+        onTimeChange(timeType, 'minutes', itemValue);
+    };
 
-const handleSecondChange = (itemValue, timeType) => {
-    console.log(`Selected ${timeType} Second:`, itemValue);
-    onTimeChange(timeType, 'seconds', itemValue);
-};
-
+    const handleSecondChange = (itemValue, timeType) => {
+        onTimeChange(timeType, 'seconds', itemValue);
+    };
 
     return (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -181,7 +178,6 @@ const TimeLimit = ({ route }) => {
 
     useEffect(() => {
         // 드롭다운 값이 변경되면 실행되는 부분
-        console.log(`dropdownValue가 변경됨: ${prevDropdownValue.current} -> ${dropdownValue}`);
         if (prevDropdownValue.current !== dropdownValue) {
             setSelectedExercises([]);
             setLikedExercises([]);
@@ -222,12 +218,8 @@ const TimeLimit = ({ route }) => {
             exerciseTime: exerciseTime[exercise],
             restTime: restTime[exercise],
         }));
-
-        console.log('dddd:', exerciseInfoOn);
         navigation.navigate('StopWatch', { exerciseInfoOn });
     };
-
-
 
     const navigateToNextNonstopWatch = () => {
         if (!dropdownValue || (dropdownValue !== '1' && dropdownValue !== '2')) {
@@ -360,7 +352,7 @@ const TimeLimit = ({ route }) => {
             },
         }));
     };
-    
+
     const handleExerciseTimeChange = (exercise, field, value) => {
         setExerciseTime((prevExerciseTime) => ({
             ...prevExerciseTime,
@@ -370,7 +362,7 @@ const TimeLimit = ({ route }) => {
             },
         }));
     };
-    
+
     const handleRestTimeChange = (exercise, field, value) => {
         setRestTime((prevRestTime) => ({
             ...prevRestTime,

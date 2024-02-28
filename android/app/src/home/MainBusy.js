@@ -56,7 +56,6 @@ const Busy = () => {
         console.error('데이터 가져오기 중 오류 발생:', error);
       }
     }
-    console.log(tracker);
   };
 
   const Busydata = {

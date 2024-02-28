@@ -21,22 +21,11 @@ const Weight = () => {
       if (storedData) {
         const parsedData = JSON.parse(storedData);
         setWeightData(parsedData);
-        console.log('체중 데이터:', parsedData);
       }
     } catch (error) {
       console.error('데이터 불러오기 중 오류 발생:', error);
     }
   };
-/*
-  const exampleWeightData = [
-    { date: '2024-02-07', weight: '80' },
-    { date: '2024-02-08', weight: '49' },
-    { date: '2024-02-09', weight: '78' },
-    { date: '2024-02-10', weight: '45' },
-    { date: '2024-02-11', weight: '76' },
-    { date: '2024-02-12', weight: '75' },
-    { date: '2024-02-13', weight: '12' },
-  ];*/
 
   const limitedWeightData = weightData.slice(-7).sort((a, b) => new Date(a.date) - new Date(b.date));
   const data = {
@@ -47,8 +36,8 @@ const Weight = () => {
       },
     ],
   };
-  
-  
+
+
   const handleMorePress = () => {
     navigation.navigate('체중 기록');
   };
@@ -73,16 +62,18 @@ const Weight = () => {
             backgroundGradientFrom: '#ffffff',
             backgroundGradientTo: '#ffffff',
             decimalPlaces: 2, // 소수점 자리수
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // 선 색상 설정
+            color: (opacity = 1) => `rgba(0,0, 200, ${opacity})`, // 선 색상
+            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // 라벨 색상
             style: {
               borderRadius: 16,
             },
           }}
           bezier={false}
-          style={{ borderRadius: 16,     paddingRight: 50,}}
+          style={{ borderRadius: 16, paddingRight: 50, }}
+          withShadow={false}
         />
       ) : (
-        <Text style={{color:'black',fontSize:15}}>체중을 입력하세요.</Text>
+        <Text style={{ color: 'black', fontSize: 15 }}>체중을 입력하세요.</Text>
       )}
     </View>
   );

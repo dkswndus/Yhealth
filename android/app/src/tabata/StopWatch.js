@@ -36,8 +36,8 @@ const SpeakerContainer = styled.View`
 `;
 
 
-const formatTime = (seconds,sets) => {
-  
+const formatTime = (seconds, sets) => {
+
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
   const formattedMinutes = String(minutes).padStart(2, '0');
@@ -61,7 +61,7 @@ const StopWatch = ({ route }) => {
   const [restTimeInSeconds, setrestTimeInSeconds] = useState(exerciseInfoOn.length > 0 ? exerciseInfoOn[0].restTimeInSeconds : 0);
   const initialExerciseTimeInSeconds = exerciseInfoOn.length > 0 ? exerciseInfoOn[0].exerciseTimeInSeconds : 0;
   const initialRestTimeInSeconds = exerciseInfoOn.length > 0 ? exerciseInfoOn[0].restTimeInSeconds : 0;
-   //console.log("stopwatch", exerciseInfoOn);
+
   useEffect(() => {
 
     const saveDataToStorage = async (data, key) => {
@@ -77,17 +77,15 @@ const StopWatch = ({ route }) => {
             const formattedDate = currentDate.toISOString().split('T')[0];
             const formattedTime = `${parseInt(totalExerciseTime.minutes)}분 ${parseInt(totalExerciseTime.seconds)}초`;
 
-
             return {
               name: name,
               date: formattedDate,
               sets: sets,
               reps: reps,
               time: formattedTime,
-              
+
             };
           });
-      
 
           // 10년 전의 날짜 계산
           const currentDate = new Date();
@@ -100,10 +98,8 @@ const StopWatch = ({ route }) => {
             return itemDate > tenYearsAgo;
           });
 
-
           // 이전 데이터와 새로운 데이터 합치기
           const combinedData = [...filteredExistingData, ...transformedData];
-          //console.log("dkdkdk: ", combinedData)
           // 데이터 저장
           await AsyncStorage.setItem(`appData${key}`, JSON.stringify(combinedData));
         }
@@ -117,7 +113,7 @@ const StopWatch = ({ route }) => {
   }, [exerciseInfoOn, completion]);
 
 
- 
+
 
   useEffect(() => {
     let intervalId;

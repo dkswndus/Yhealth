@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const ExerciseRecord = ({ exerciseDataOff,exerciseDataOn ,selectedDate }) => {
-  
+const ExerciseRecord = ({ exerciseDataOff, exerciseDataOn, selectedDate }) => {
+
   // 선택된 날짜를 기반으로 운동 데이터 필터링
   const filteredExerciseDataOff = exerciseDataOff.filter(
     (data) => data.date === selectedDate

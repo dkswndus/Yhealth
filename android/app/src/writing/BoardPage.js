@@ -27,7 +27,7 @@ const BoardPage = ({ route }) => {
     const [month, day, year] = dateWithoutDay.split('/');
     return `${year}/${month}/${day}`;
   };
-  
+
   const fetchData = async () => {
     try {
       // 백엔드에서 게시글 데이터를 가져오는 요청
