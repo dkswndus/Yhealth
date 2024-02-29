@@ -45,8 +45,18 @@ const Writepage = ({ route }) => {
   }
 
   const toggleModal = async () => {
-    setModalVisible(!isModalVisible);
 
+
+
+
+    setModalVisible(!isModalVisible);
+    if (title.trim() === '') {
+      alert('제목을 입력하세요.');
+      return;
+    } else if (description.trim() === '') {
+      alert('내용을 입력하세요.');
+      return;
+    }
     if (!isModalVisible) {
       // 모달이 꺼져있을 때
 
