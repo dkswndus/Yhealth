@@ -45,11 +45,7 @@ const Writepage = ({ route }) => {
   }
 
   const toggleModal = async () => {
-
-
-
-
-    setModalVisible(!isModalVisible);
+    
     if (title.trim() === '') {
       alert('제목을 입력하세요.');
       return;
@@ -57,6 +53,9 @@ const Writepage = ({ route }) => {
       alert('내용을 입력하세요.');
       return;
     }
+
+    setModalVisible(!isModalVisible);
+
     if (!isModalVisible) {
       // 모달이 꺼져있을 때
 
