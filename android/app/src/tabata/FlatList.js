@@ -294,7 +294,9 @@ const FlatList = ({ route }) => {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <AdditionDone title={"추가 완료"} onPress={navigateTimeLimit} />
+      <View style={{paddingBottom:10}}>
+        <AdditionDone title={"추가 완료"} onPress={navigateTimeLimit} />
+      </View>
     </View>
   );
 };
@@ -307,7 +309,7 @@ const styles = StyleSheet.create({
     width: 20, height: 20, marginRight: 10
   },
   container: {
-
+    height: '100%',
     marginTop: 20,
     padding: 20,
     backgroundColor: 'rgba(252, 253, 255, 0.49)',
@@ -316,8 +318,6 @@ const styles = StyleSheet.create({
   scrollView: {
     marginTop: 25,
     flexDirection: 'column',
-    height: 430,
-
   },
   GeneralGymData: {
     flexDirection: 'row',

@@ -256,23 +256,23 @@ const TimeLimit = ({ route }) => {
 
         });
     };
-    
+
     const removeExercise = (index) => {
         // 선택된 운동 목록에서 해당 인덱스의 운동을 제거한 새로운 배열 생성
         const updatedSelectedExercises = selectedExercises.filter((_, i) => i !== index);
         setSelectedExercises(updatedSelectedExercises);
-    
+
         // exerciseOrder 배열에서 해당 인덱스의 운동을 제외한 새로운 배열 생성
         const updatedExerciseOrder = exerciseOrder.filter((_, i) => i !== index);
         setExerciseOrder(updatedExerciseOrder);
-    
+
         // 선택된 운동 목록과 운동 순서를 기반으로, 다른 운동에 대한 정보는 변경하지 않도록 함
         const updatedSets = {};
         const updatedReps = {};
         const updatedPrepareTime = {};
         const updatedExerciseTime = {};
         const updatedRestTime = {};
-    
+
         updatedExerciseOrder.forEach((exercise) => {
             updatedSets[exercise] = sets[exercise];
             updatedReps[exercise] = reps[exercise];
@@ -280,16 +280,16 @@ const TimeLimit = ({ route }) => {
             updatedExerciseTime[exercise] = exerciseTime[exercise];
             updatedRestTime[exercise] = restTime[exercise];
         });
-    
+
         setSets(updatedSets);
         setReps(updatedReps);
         setPrepareTime(updatedPrepareTime);
         setExerciseTime(updatedExerciseTime);
         setRestTime(updatedRestTime);
     };
-    
-    
-    
+
+
+
 
 
 
@@ -316,7 +316,7 @@ const TimeLimit = ({ route }) => {
         setExerciseOrder(updatedExerciseOrder);
     };
 
- 
+
 
     const handleSetsChange = (exercise, value) => {
         setSets((prevSets) => ({ ...prevSets, [exercise]: value }));
@@ -377,7 +377,7 @@ const TimeLimit = ({ route }) => {
             });
             return { ...prevSets, ...newSets };
         });
-    
+
         setReps((prevReps) => {
             const newReps = {};
             selectedExercises.forEach((exercise) => {
@@ -388,7 +388,7 @@ const TimeLimit = ({ route }) => {
             });
             return { ...prevReps, ...newReps };
         });
-    
+
         setPrepareTime((prevPrepareTime) => {
             const newPrepareTime = {};
             selectedExercises.forEach((exercise) => {
@@ -399,7 +399,7 @@ const TimeLimit = ({ route }) => {
             });
             return { ...prevPrepareTime, ...newPrepareTime };
         });
-    
+
         setExerciseTime((prevExerciseTime) => {
             const newExerciseTime = {};
             selectedExercises.forEach((exercise) => {
@@ -410,7 +410,7 @@ const TimeLimit = ({ route }) => {
             });
             return { ...prevExerciseTime, ...newExerciseTime };
         });
-    
+
         setRestTime((prevRestTime) => {
             const newRestTime = {};
             selectedExercises.forEach((exercise) => {
@@ -422,7 +422,7 @@ const TimeLimit = ({ route }) => {
             return { ...prevRestTime, ...newRestTime };
         });
     }, [selectedExercises, setSets, setReps, setExerciseTime, setPrepareTime, setRestTime]);
-    
+
     return (
 
         <View style={{ flex: 1, backgroundColor: 'rgba(255, 255, 255, 1)' }}>
@@ -459,7 +459,6 @@ const TimeLimit = ({ route }) => {
                                 </IntegreatedContainer>
                                 <View style={styles.combine}>
                                     <Text style={styles.information}>세트 :</Text>
-
                                     <Picker
                                         selectedValue={sets[exercise]}
                                         onValueChange={(value) => handleSetsChange(exercise, value)}
@@ -576,7 +575,10 @@ const TimeLimit = ({ route }) => {
 
 const styles = StyleSheet.create({
     srcombine: {
-        flexDirection: 'row', alignItems: 'center', marginLeft: 10, marginTop: -20
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginLeft: 10,
+        marginTop: -20
     },
     pcombine: {
         flexDirection: 'row', alignItems: 'center', marginLeft: 10, marginTop: -25
