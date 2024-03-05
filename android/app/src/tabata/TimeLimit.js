@@ -479,7 +479,6 @@ const TimeLimit = ({ route }) => {
                                         ))}
                                     </Picker>
                                 </View>
-
                                 <View style={styles.srcombine}>
                                     <Text style={styles.information}>준비시간 :</Text>
                                     <TimePicker
@@ -581,7 +580,10 @@ const styles = StyleSheet.create({
         marginTop: -20
     },
     pcombine: {
-        flexDirection: 'row', alignItems: 'center', marginLeft: 10, marginTop: -25
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginLeft: 10,
+        marginTop: -25
     },
     information: {
         color: 'black',
