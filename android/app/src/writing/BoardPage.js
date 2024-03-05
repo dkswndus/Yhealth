@@ -112,7 +112,7 @@ const BoardPage = ({ route }) => {
         </View>
       </ScrollView>
       <TouchableOpacity style={styles.addButton} onPress={handleMorePress}>
-        <Text style={styles.addButtonText}>글 작성하기</Text>
+        <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>
     </View>
   );
@@ -171,11 +171,16 @@ const styles = StyleSheet.create({
   },
   addButton: {
     position: 'absolute',
+    right:20,
     bottom: 20,
     alignSelf: 'center',
     backgroundColor: 'blue',
     padding: 10,
-    borderRadius: 38,
+    width: 60,
+    height: 60, 
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   addButtonText: {
     color: 'white',
