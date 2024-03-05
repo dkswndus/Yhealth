@@ -37,7 +37,6 @@ const Weight = () => {
     ],
   };
 
-
   const handleMorePress = () => {
     navigation.navigate('체중 기록');
   };

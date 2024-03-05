@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StatusBar, View, Image, Text, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
@@ -7,8 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from "../components/theme";
 import { Alert } from 'react-native';
 
-import Svg, { Circle, Defs, LinearGradient, Stop, Filter, Blur } from 'react-native-svg';
-import { BlurView } from '@react-native-community/blur';
+import { ProgressCircle } from 'react-native-svg-charts';
 
 
 const speakerfilled = require("../assets/image/speakerfilled.png");
@@ -36,6 +35,7 @@ const ExerciseInformation = styled.View`
 const SpeakerContainer = styled.View`
   padding-left: 30px;
   padding-top: 25px;
+  padding-right:400px;
 `;
 
 
@@ -63,6 +63,11 @@ const StopWatch = ({ route }) => {
   const [restTimeInSeconds, setrestTimeInSeconds] = useState(exerciseInfoOn.length > 0 ? exerciseInfoOn[0].restTimeInSeconds : 0);
   const initialExerciseTimeInSeconds = exerciseInfoOn.length > 0 ? exerciseInfoOn[0].exerciseTimeInSeconds : 0;
   const initialRestTimeInSeconds = exerciseInfoOn.length > 0 ? exerciseInfoOn[0].restTimeInSeconds : 0;
+  const [progress, setProgress] = useState(0);
+  const [currentColor, setCurrentColor] = useState('rgba(80, 196, 237,1)');
+  const [exerciseTime, setExerciseTime] = useState(exerciseTimeInSeconds);
+  const [prepareTime, setPrepareTime] = useState(prepareTimeInSeconds);
+  const [restTime, setRestTime] = useState(restTimeInSeconds);
 
   useEffect(() => {
 
@@ -119,28 +124,46 @@ const StopWatch = ({ route }) => {
 
   useEffect(() => {
     let intervalId;
+
+    let duration;
+
+    // 타이머 및 색상 업데이트 로직
     if ((prepareTimeInSeconds > 0 || exerciseTimeInSeconds > 0 || restTimeInSeconds > 0) && !isPaused) {
       intervalId = setInterval(() => {
         if (prepareTimeInSeconds > 0) {
-          setprepareTimeInSeconds((prevTime) => prevTime - 1);
-        } else if (exerciseTimeInSeconds > 0) {
-          setexerciseTimeInSeconds((prevTime) => prevTime - 1);
-        } else if (restTimeInSeconds > 0) {
-          setrestTimeInSeconds((prevTime) => prevTime - 1);
+          duration = prepareTime;
+          setprepareTimeInSeconds(prevTime => prevTime - 1);
+          setCurrentColor('rgb(255, 181, 52)'); // 준비 시간 색상
+          setProgress(prevProgress => prevProgress + (1 / duration));
+        } else if (prepareTimeInSeconds === 0 && exerciseTimeInSeconds > 0) {
+          duration = exerciseTime;
+          setexerciseTimeInSeconds(prevTime => prevTime - 1);
+          setCurrentColor('rgb(54, 82, 173)'); // 운동 시간 색상
+          setProgress(1);
+        } else if (prepareTimeInSeconds === 0 && exerciseTimeInSeconds === 0 && restTimeInSeconds > 0) {
+          duration = restTime;
+          setrestTimeInSeconds(prevTime => prevTime - 1);
+          setCurrentColor('rgb(230, 126, 126)'); // 휴식 시간 색상
+
+          setProgress((duration - restTimeInSeconds) / duration);
         }
+
       }, 1000);
     }
-
+    // 운동 종료 및 색상 변경 로직
 
     if (prepareTimeInSeconds === 0 && exerciseTimeInSeconds === 0 && restTimeInSeconds === 0 && !isPaused) {
+      // 운동 종료 처리
       if (currentSet < sets) {
-        setCurrentSet((prevSet) => prevSet + 1);
+        setCurrentSet(prevSet => prevSet + 1);
+        setProgress(0);
         setexerciseTimeInSeconds(initialExerciseTimeInSeconds);
         setrestTimeInSeconds(initialRestTimeInSeconds);
       } else {
-        // 모든 세트가 완료되면 다음 운동으로 전환
+
         if (currentIndex < exerciseInfoOn.length - 1) {
-          setCurrentIndex((prevIndex) => prevIndex + 1);
+          setCurrentIndex(prevIndex => prevIndex + 1);
+          setProgress(0);
           setprepareTimeInSeconds(exerciseInfoOn[currentIndex + 1].prepareTimeInSeconds);
           setName(exerciseInfoOn[currentIndex + 1].name);
           setSets(exerciseInfoOn[currentIndex + 1].sets);
@@ -171,6 +194,7 @@ const StopWatch = ({ route }) => {
     if (currentIndex < exerciseInfoOn.length - 1) {
       setCurrentIndex(currentIndex + 1);
       const nextExercise = exerciseInfoOn[currentIndex + 1];
+      setProgress(0);
       setName(nextExercise.name);
       setSets(nextExercise.sets);
       setReps(nextExercise.reps);
@@ -178,6 +202,7 @@ const StopWatch = ({ route }) => {
       setexerciseTimeInSeconds(nextExercise.exerciseTimeInSeconds);
       setrestTimeInSeconds(nextExercise.restTimeInSeconds);
       setCurrentSet(1);
+
       if (!isPaused) {
         setIsPaused(true);
       }
@@ -188,6 +213,7 @@ const StopWatch = ({ route }) => {
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
       const previousExercise = exerciseInfoOn[currentIndex - 1];
+      setProgress(0);
       setName(previousExercise.name);
       setSets(previousExercise.sets);
       setReps(previousExercise.reps);
@@ -228,65 +254,54 @@ const StopWatch = ({ route }) => {
           <Image source={isSoundOn ? speakerfilled : speakerunfilled} style={styles.speakerIcon} />
         </TouchableOpacity>
       </SpeakerContainer>
-      <View >
-        {route.params?.exerciseInfoOn?.slice(currentIndex, currentIndex + 1).map((exercise, index) => (
-          <View key={index}>
-            <ExerciseInformation>
-              <Svg height={700} width={400} viewBox="0 0 100 100" style={{
-                position: 'absolute'
-              }}>
-                <Defs>
-                  <LinearGradient id="prepareGrad" x1="0" y1="0" x2="0" y2="1">
-                    <Stop offset="0" stopColor="rgb(223, 182, 102)" stopOpacity="0.38" />
-                    <Stop offset="1" stopColor="rgb(255, 255, 255)" stopOpacity="0.38" />
-                  </LinearGradient>
-                  <LinearGradient id="exerciseGrad" x1="0" y1="0" x2="0" y2="1">
-                    <Stop offset="0" stopColor="rgba(171, 255, 195, 0.28)" stopOpacity="0.38" />
-                    <Stop offset="1" stopColor="rgba(255, 255, 255, 0.28)" stopOpacity="0.38" />
-                  </LinearGradient>
-                  <LinearGradient id="restGrad" x1="0" y1="0" x2="0" y2="1">
-                    <Stop offset="0" stopColor="rgba(230, 126, 126, 0.28)" stopOpacity="0.28" />
-                    <Stop offset="1" stopColor="rgba(255, 255, 255, 0.28)" stopOpacity="0.38" />
-                  </LinearGradient>
-                </Defs>
+      <ProgressCircle
+          style={{
+            marginTop:30,
+            height: 380,
+            justifyContent: 'center',
+            alignItems: 'center',
+            strokeColor: 'red',
+            labelColor:'red',
+            color: 'red',
+          }}
+          progress={progress > 1 ? 1 : progress} // 최대값을 1로 제한
+          progressColor={currentColor} // 색상 적용
+
+        >
+          {route.params?.exerciseInfoOn?.slice(currentIndex, currentIndex + 1).map((exercise, index) => (
+            <View key={index}>
+              <ExerciseInformation>
+                <Text style={styles.setText}>
+                  {currentSet} / {exercise.sets}
+                </Text>
+                <Text style={styles.exerciseText}>{exercise.name} </Text>
+                <Text style={styles.numberText}>횟수: {exercise.reps}</Text>
                 {prepareTimeInSeconds > 0 && (
-                  <Circle cx="50" cy="80" r="50" fill="url(#prepareGrad)" />
+                   <Text style={styles.durationText}>{formatTime(prepareTimeInSeconds)}</Text>
                 )}
                 {prepareTimeInSeconds === 0 && exerciseTimeInSeconds > 0 && (
-                  <Circle cx="50" cy="80" r="50" fill="url(#exerciseGrad)" />
+                  <Text style={styles.durationText}>{formatTime(exerciseTimeInSeconds)}</Text>
                 )}
-                {prepareTimeInSeconds === 0 && exerciseTimeInSeconds === 0 && (
-                  <Circle cx="50" cy="80" r="50" fill="url(#restGrad)" />
+                 {exerciseTimeInSeconds === 0 && restTimeInSeconds > 0 && (
+                  <Text style={styles.durationText}>{formatTime(restTimeInSeconds)}</Text>
                 )}
-              </Svg>
-              <Text style={styles.setText}>
-                {currentSet} / {exercise.sets}
-              </Text>
-              <Text style={styles.exerciseText}>{exercise.name} </Text>
-              <Text style={styles.numberText}>횟수: {exercise.reps}</Text>
-              {prepareTimeInSeconds > 0 && (
-                <Text style={styles.prepareText}>{formatTime(prepareTimeInSeconds)}</Text>
-              )}
-              {prepareTimeInSeconds === 0 && exerciseTimeInSeconds > 0 && (
-                <Text style={styles.exercisedurationText}>{formatTime(exerciseTimeInSeconds)}</Text>
-              )}
-              {exerciseTimeInSeconds === 0 && restTimeInSeconds > 0 && (
-                <Text style={styles.restText}>{formatTime(restTimeInSeconds)}</Text>
-              )}
-            </ExerciseInformation>
-          </View>
-        ))}
+               </ExerciseInformation>
+            </View>
+          ))}
+        </ProgressCircle>
+
+
+
         <View style={styles.musicContainer}>
-          <TouchableOpacity onPress={handlePrevious}>
-            <Image source={previousbutton} style={styles.previousbutton} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={toggleStart}>
-            <Image source={isPaused ? stop : play} style={styles.isPaused} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleNext}>
-            <Image source={nextbutton} style={styles.nextButton} />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={handlePrevious}>
+          <Image source={previousbutton} style={styles.previousbutton} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={toggleStart}>
+          <Image source={isPaused ? stop : play} style={styles.isPaused} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleNext}>
+          <Image source={nextbutton} style={styles.nextButton} />
+        </TouchableOpacity>
       </View>
       <StatusBar backgroundColor="black" />
     </View>
@@ -294,13 +309,16 @@ const StopWatch = ({ route }) => {
 };
 
 const styles = {
-  entire: {
-    backgroundColor: 'rgba(255, 255, 255, 1)',
+  circular: {
     flex: 1,
   },
+  entire: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 1)',
+  },
   speakerIcon: {
-    width: 30,
-    height: 30,
+    width: 33,
+    height: 33,
   },
   eiContainer: {
 
@@ -311,7 +329,7 @@ const styles = {
     fontSize: 20,
     fontWeight: '400',
     color: theme.main,
-
+    paddingTop: 30,
   },
   //현재 운동 이름 
   exerciseText: {
@@ -325,49 +343,32 @@ const styles = {
     fontWeight: '500',
     color: theme.main,
   },
-  //운동시간
-  exercisedurationText: {
+   //운동시간,준비시간,휴식시간 t
+   durationText: {
     fontSize: 100,
     fontWeight: 'bold',
     color: theme.main,
-    paddingTop: 50,
-  },
-  //준비시간t
-  prepareText: {
-    fontSize: 100,
-    fontWeight: 'bold',
-    color: theme.main,
-    paddingTop: 50,
-
-  },
-  //휴식시간t
-  restText: {
-    fontSize: 100,
-    fontWeight: 'bold',
-    color: theme.main,
-    paddingTop: 50,
-
   },
   musicContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 60,
-    paddingTop: 140,
+    paddingTop: 60,
 
   },
   previousbutton: {
-    width: 30,
-    height: 30,
+    width: 33,
+    height: 33,
 
   },
   isPaused: {
-    width: 30,
-    height: 30,
+    width: 33,
+    height: 33,
 
   },
   nextButton: {
-    width: 30,
-    height: 30,
+    width: 33,
+    height: 33,
   },
 };
 

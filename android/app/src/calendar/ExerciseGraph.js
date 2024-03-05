@@ -89,7 +89,8 @@ const ExerciseGraph = () => {
   }, []);
 
 
-  const extractionDate = uniqueDate.slice(-7).sort((a, b) => new Date(a.date) - new Date(b.date));
+  const sortedUniqueDate = uniqueDate.sort((a, b) => new Date(a) - new Date(b));
+  const extractionDate = sortedUniqueDate.slice(-7);
   //console.log(extractionDate);
 
   const data = {

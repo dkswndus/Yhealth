@@ -54,7 +54,7 @@ const TabNavigation = () => {
       <Tab.Navigator
 
         tabBarOptions={{
-          style: { height: 70 },
+          style: { height: 70, borderTopColor: ' rgba(0,0,0,0.2)', borderTopWidth: 1 },
           labelStyle: { fontSize: 14 },
 
         }}
