@@ -120,8 +120,6 @@ const StopWatch = ({ route }) => {
   }, [exerciseInfoOn, completion]);
 
 
-
-
   useEffect(() => {
     let intervalId;
 
@@ -135,16 +133,21 @@ const StopWatch = ({ route }) => {
           setprepareTimeInSeconds(prevTime => prevTime - 1);
           setCurrentColor('rgb(255, 181, 52)'); // 준비 시간 색상
           setProgress(prevProgress => prevProgress + (1 / duration));
+          setCurrentColor('rgb(255, 181, 52)'); // 준비 시간 색상
+          if (prepareTimeInSeconds <= 1) {
+            setCurrentColor('rgb(54, 82, 173)');
+            setProgress(0);
+          }
         } else if (prepareTimeInSeconds === 0 && exerciseTimeInSeconds > 0) {
           duration = exerciseTime;
           setexerciseTimeInSeconds(prevTime => prevTime - 1);
           setCurrentColor('rgb(54, 82, 173)'); // 운동 시간 색상
-          setProgress(1);
-        } else if (prepareTimeInSeconds === 0 && exerciseTimeInSeconds === 0 && restTimeInSeconds > 0) {
+          setProgress(prevProgress => prevProgress + (1 / duration));
+          setCurrentColor('rgb(54, 82, 173)'); // 운동 시간 색상
+        } else if ( exerciseTimeInSeconds === 0 && restTimeInSeconds > 0) {
           duration = restTime;
           setrestTimeInSeconds(prevTime => prevTime - 1);
           setCurrentColor('rgb(230, 126, 126)'); // 휴식 시간 색상
-
           setProgress((duration - restTimeInSeconds) / duration);
         }
 
@@ -184,6 +187,7 @@ const StopWatch = ({ route }) => {
     if ((prepareTimeInSeconds === 1 || exerciseTimeInSeconds === 1 || restTimeInSeconds === 1) && !isPaused) {
       BoxingBellSound.play();
     }
+
     return () => {
       clearInterval(intervalId);
     };
@@ -255,44 +259,44 @@ const StopWatch = ({ route }) => {
         </TouchableOpacity>
       </SpeakerContainer>
       <ProgressCircle
-          style={{
-            marginTop:30,
-            height: 380,
-            justifyContent: 'center',
-            alignItems: 'center',
-            strokeColor: 'red',
-            labelColor:'red',
-            color: 'red',
-          }}
-          progress={progress > 1 ? 1 : progress} // 최대값을 1로 제한
-          progressColor={currentColor} // 색상 적용
+        style={{
+          marginTop: 30,
+          height: 380,
+          justifyContent: 'center',
+          alignItems: 'center',
+          strokeColor: 'red',
+          labelColor: 'red',
+          color: 'red',
+        }}
+        progress={progress > 1 ? 1 : progress} // 최대값을 1로 제한
+        progressColor={currentColor} // 색상 적용
 
-        >
-          {route.params?.exerciseInfoOn?.slice(currentIndex, currentIndex + 1).map((exercise, index) => (
-            <View key={index}>
-              <ExerciseInformation>
-                <Text style={styles.setText}>
-                  {currentSet} / {exercise.sets}
-                </Text>
-                <Text style={styles.exerciseText}>{exercise.name} </Text>
-                <Text style={styles.numberText}>횟수: {exercise.reps}</Text>
-                {prepareTimeInSeconds > 0 && (
-                   <Text style={styles.durationText}>{formatTime(prepareTimeInSeconds)}</Text>
-                )}
-                {prepareTimeInSeconds === 0 && exerciseTimeInSeconds > 0 && (
-                  <Text style={styles.durationText}>{formatTime(exerciseTimeInSeconds)}</Text>
-                )}
-                 {exerciseTimeInSeconds === 0 && restTimeInSeconds > 0 && (
-                  <Text style={styles.durationText}>{formatTime(restTimeInSeconds)}</Text>
-                )}
-               </ExerciseInformation>
-            </View>
-          ))}
-        </ProgressCircle>
+      >
+        {route.params?.exerciseInfoOn?.slice(currentIndex, currentIndex + 1).map((exercise, index) => (
+          <View key={index}>
+            <ExerciseInformation>
+              <Text style={styles.setText}>
+                {currentSet} / {exercise.sets}
+              </Text>
+              <Text style={styles.exerciseText}>{exercise.name} </Text>
+              <Text style={styles.numberText}>횟수: {exercise.reps}</Text>
+              {prepareTimeInSeconds > 0 && (
+                <Text style={styles.durationText}>{formatTime(prepareTimeInSeconds)}</Text>
+              )}
+              {prepareTimeInSeconds === 0 && exerciseTimeInSeconds > 0 && (
+                <Text style={styles.durationText}>{formatTime(exerciseTimeInSeconds)}</Text>
+              )}
+              {exerciseTimeInSeconds === 0 && restTimeInSeconds > 0 && (
+                <Text style={styles.durationText}>{formatTime(restTimeInSeconds)}</Text>
+              )}
+            </ExerciseInformation>
+          </View>
+        ))}
+      </ProgressCircle>
 
 
 
-        <View style={styles.musicContainer}>
+      <View style={styles.musicContainer}>
         <TouchableOpacity onPress={handlePrevious}>
           <Image source={previousbutton} style={styles.previousbutton} />
         </TouchableOpacity>
@@ -343,8 +347,8 @@ const styles = {
     fontWeight: '500',
     color: theme.main,
   },
-   //운동시간,준비시간,휴식시간 t
-   durationText: {
+  //운동시간,준비시간,휴식시간 t
+  durationText: {
     fontSize: 100,
     fontWeight: 'bold',
     color: theme.main,

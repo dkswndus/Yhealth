@@ -107,12 +107,12 @@ const FlatList = ({ route }) => {
           case '어께':
             setCurrentData(generalGymshoulderExercisesData);
             break;
-          case '삼두':
-            setCurrentData(generalGymtricepsExercisesData);
-            break;
-          case '이두':
-            setCurrentData(generalGymbicepsExercisesData);
-            break;
+          // case '삼두':
+          //   setCurrentData(generalGymtricepsExercisesData);
+          //   break;
+          // case '이두':
+          //   setCurrentData(generalGymbicepsExercisesData);
+          //   break;
 
         }
         break;
@@ -133,12 +133,12 @@ const FlatList = ({ route }) => {
           case '어께':
             setCurrentData(martialArtsgymshoulderExercisesData);
             break;
-          case '삼두':
-            setCurrentData(martialArtsgymtricepsExercisesData);
-            break;
-          case '이두':
-            setCurrentData(martialArtsgymbicepsExercisesData);
-            break;
+          // case '삼두':
+          //   setCurrentData(martialArtsgymtricepsExercisesData);
+          //   break;
+          // case '이두':
+          //   setCurrentData(martialArtsgymbicepsExercisesData);
+          //   break;
         }
         break;
       default:
@@ -265,12 +265,12 @@ const FlatList = ({ route }) => {
           <TouchableOpacity onPress={() => showSelectedExercise("어께")}>
             <Part title={"어께"} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => showSelectedExercise("삼두")}>
+          {/* <TouchableOpacity onPress={() => showSelectedExercise("삼두")}>
             <Part title={"삼두"} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => showSelectedExercise("이두")}>
             <Part title={"이두"} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </ScrollView>
       <ScrollView style={styles.scrollView}>

@@ -288,16 +288,6 @@ const TimeLimit = ({ route }) => {
         setRestTime(updatedRestTime);
     };
 
-
-
-
-
-
-
-
-
-
-
     const moveExerciseUp = (index) => {
         if (index === 0) return; // 운동이 첫 번째 항목이면 위로 이동할 수 없음
         const updatedExerciseOrder = [...exerciseOrder];
@@ -305,8 +295,14 @@ const TimeLimit = ({ route }) => {
         updatedExerciseOrder[index] = updatedExerciseOrder[index - 1]; // 선택한 운동을 한 칸 위로 이동
         updatedExerciseOrder[index - 1] = tempExercise; // 이전 운동 위치에 저장된 운동을 넣음
         setExerciseOrder(updatedExerciseOrder);
+    
+        // 선택된 운동 목록 업데이트
+        const updatedSelectedExercises = updatedExerciseOrder.map(exercise => selectedExercises.find(selectedExercise => selectedExercise === exercise)).filter(Boolean);
+        setSelectedExercises(updatedSelectedExercises);
+    
+        console.log("up", updatedExerciseOrder);
     };
-
+    
     const moveExerciseDown = (index) => {
         if (index === exerciseOrder.length - 1) return; // 운동이 마지막 항목이면 아래로 이동할 수 없음
         const updatedExerciseOrder = [...exerciseOrder];
@@ -314,9 +310,13 @@ const TimeLimit = ({ route }) => {
         updatedExerciseOrder[index] = updatedExerciseOrder[index + 1]; // 선택한 운동을 한 칸 아래로 이동
         updatedExerciseOrder[index + 1] = tempExercise; // 다음 운동 위치에 저장된 운동을 넣음
         setExerciseOrder(updatedExerciseOrder);
+    
+        // 선택된 운동 목록 업데이트
+        const updatedSelectedExercises = updatedExerciseOrder.map(exercise => selectedExercises.find(selectedExercise => selectedExercise === exercise)).filter(Boolean);
+        setSelectedExercises(updatedSelectedExercises);
+    
+        console.log("down", updatedExerciseOrder);
     };
-
-
 
     const handleSetsChange = (exercise, value) => {
         setSets((prevSets) => ({ ...prevSets, [exercise]: value }));
