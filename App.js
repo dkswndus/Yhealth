@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Image, Text } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import { RecoilRoot } from 'recoil';
 import exercise from './android/app/src/assets/image/exercise.png';
 import home from './android/app/src/assets/image/home.png';
@@ -46,73 +46,73 @@ const HomeScreen = ({ route }) => {
 
 const TabNavigation = () => {
   return (
-  <KeyboardAvoidingView
+    <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={-200} // 키보드가 나타날 때 UI를 위로 200만큼 올립니다.
       style={{ flex: 1 }}
     >
-    <Tab.Navigator
+      <Tab.Navigator
 
-      tabBarOptions={{
-        style: { height: 70 },
-        labelStyle: { fontSize: 14 },
-
-      }}
-    >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          unmountOnBlur: true,
-          tabBarIcon: ({ focused }) => (
-            <Image
-              source={home}
-              style={{ width: 30, height: 30, tintColor: focused ? '#1A6DFF' : 'gray' }}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Calendar"
-        component={CalendarScreen}
-        options={{
-          unmountOnBlur: true,
-          tabBarIcon: ({ focused }) => (
-            <Image
-              source={calendar}
-              style={{ width: 30, height: 30, tintColor: focused ? '#1A6DFF' : 'gray' }}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="TimeLimit"
-        component={TimeLimitScreen}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Image
-              source={exercise}
-              style={{ width: 35, height: 35, tintColor: focused ? '#1A6DFF' : 'gray' }}
-            />
-          ),
+        tabBarOptions={{
+          style: { height: 70 },
+          labelStyle: { fontSize: 14 },
 
         }}
-      />
-      
-      <Tab.Screen
-        name="BoardPage"
-        component={WritingScreen}
-        options={{
-          unmountOnBlur: true,
-          tabBarIcon: ({ focused }) => (
-            <Image
-              source={writing}
-              style={{ width: 30, height: 30, tintColor: focused ? '#1A6DFF' : 'gray' }}
-            />
-          ),
-        }}
-      />
-    </Tab.Navigator>
+      >
+        <Tab.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            unmountOnBlur: true,
+            tabBarIcon: ({ focused }) => (
+              <Image
+                source={home}
+                style={{ width: 30, height: 30, tintColor: focused ? '#1A6DFF' : 'gray' }}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Calendar"
+          component={CalendarScreen}
+          options={{
+            unmountOnBlur: true,
+            tabBarIcon: ({ focused }) => (
+              <Image
+                source={calendar}
+                style={{ width: 30, height: 30, tintColor: focused ? '#1A6DFF' : 'gray' }}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="TimeLimit"
+          component={TimeLimitScreen}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <Image
+                source={exercise}
+                style={{ width: 35, height: 35, tintColor: focused ? '#1A6DFF' : 'gray' }}
+              />
+            ),
+
+          }}
+        />
+
+        <Tab.Screen
+          name="BoardPage"
+          component={WritingScreen}
+          options={{
+            unmountOnBlur: true,
+            tabBarIcon: ({ focused }) => (
+              <Image
+                source={writing}
+                style={{ width: 30, height: 30, tintColor: focused ? '#1A6DFF' : 'gray' }}
+              />
+            ),
+          }}
+        />
+      </Tab.Navigator>
     </KeyboardAvoidingView>
   );
 };
@@ -121,18 +121,18 @@ const App = () => {
   return (
     <RecoilRoot>
       <NavigationContainer>
-   
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Main" component={TabNavigation} />
-            <Stack.Screen name="FlatList" component={FlatList} options={{ headerShown: false }} />
-            <Stack.Screen name="StopWatch" component={StopWatch} options={{ headerShown: true }} />
-            <Stack.Screen name="NonstopWatch" component={NonstopWatch} options={{ headerShown: true }} />
-            <Stack.Screen name="Writepage" component={Writepage} options={{ headerShown: false }} />
-            <Stack.Screen name="QRCodeScanner" component={QRCodeScanner} options={{ headerShown: true }} />
-            <Stack.Screen name="LookPage" component={LookPage} options={{ headerShown:true }} />
-            <Stack.Screen name="체중 기록" component={WeightView} options={{ headerShown: true }} />
-            <Stack.Screen name="체중 등록" component={WeightSetPage} options={{ headerShown: true }} />
-          </Stack.Navigator>
+
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Main" component={TabNavigation} />
+          <Stack.Screen name="FlatList" component={FlatList} options={{ headerShown: false }} />
+          <Stack.Screen name="StopWatch" component={StopWatch} options={{ headerShown: true }} />
+          <Stack.Screen name="NonstopWatch" component={NonstopWatch} options={{ headerShown: true }} />
+          <Stack.Screen name="Writepage" component={Writepage} options={{ headerShown: false }} />
+          <Stack.Screen name="QRCodeScanner" component={QRCodeScanner} options={{ headerShown: true }} />
+          <Stack.Screen name="LookPage" component={LookPage} options={{ headerShown: true }} />
+          <Stack.Screen name="체중 기록" component={WeightView} options={{ headerShown: true, headerTitle: ({ children }) => (<View></View>), }} />
+          <Stack.Screen name="체중 등록" component={WeightSetPage} options={{ headerShown: true, headerTitle: ({ children }) => (<View></View>), }} />
+        </Stack.Navigator>
 
       </NavigationContainer>
     </RecoilRoot>

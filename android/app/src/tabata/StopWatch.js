@@ -7,6 +7,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from "../components/theme";
 import { Alert } from 'react-native';
 
+import Svg, { Circle, Defs, LinearGradient, Stop, Filter, Blur } from 'react-native-svg';
+import { BlurView } from '@react-native-community/blur';
+
 
 const speakerfilled = require("../assets/image/speakerfilled.png");
 const speakerunfilled = require("../assets/image/speakerunfilled.png");
@@ -23,7 +26,7 @@ const BoxingBellSound = new Sound(soundFilePath, Sound.MAIN_BUNDLE, (error) => {
 
 //횟수,운동시간,준비,휴식
 const ExerciseInformation = styled.View`
-  padding-top: 60px;
+  padding-top: 40px;
   justify-content: center;
   align-items: center;
   padding-bottom: 5px;
@@ -37,12 +40,11 @@ const SpeakerContainer = styled.View`
 
 
 const formatTime = (seconds, sets) => {
-
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
   const formattedMinutes = String(minutes).padStart(2, '0');
   const formattedSeconds = String(remainingSeconds).padStart(2, '0');
-  return `${formattedMinutes}:${formattedSeconds}`;
+  return `${formattedMinutes}' ${formattedSeconds}'`;
 };
 const StopWatch = ({ route }) => {
   const navigation = useNavigation();
@@ -208,6 +210,7 @@ const StopWatch = ({ route }) => {
     setIsPaused(!isPaused);
   };
   const toggleSpeaker = () => {
+
     setIsSoundOn(!isSoundOn);
     setSpeakerImage(isSoundOn ? speakerunfilled : speakerfilled);
     if (isSoundOn) {
@@ -225,24 +228,51 @@ const StopWatch = ({ route }) => {
           <Image source={isSoundOn ? speakerfilled : speakerunfilled} style={styles.speakerIcon} />
         </TouchableOpacity>
       </SpeakerContainer>
-      <View style={styles.eiContainer}>
+      <View >
         {route.params?.exerciseInfoOn?.slice(currentIndex, currentIndex + 1).map((exercise, index) => (
           <View key={index}>
             <ExerciseInformation>
+              <Svg height={700} width={400} viewBox="0 0 100 100" style={{
+                position: 'absolute'
+              }}>
+                <Defs>
+                  <LinearGradient id="prepareGrad" x1="0" y1="0" x2="0" y2="1">
+                    <Stop offset="0" stopColor="rgb(223, 182, 102)" stopOpacity="0.38" />
+                    <Stop offset="1" stopColor="rgb(255, 255, 255)" stopOpacity="0.38" />
+                  </LinearGradient>
+                  <LinearGradient id="exerciseGrad" x1="0" y1="0" x2="0" y2="1">
+                    <Stop offset="0" stopColor="rgba(171, 255, 195, 0.28)" stopOpacity="0.38" />
+                    <Stop offset="1" stopColor="rgba(255, 255, 255, 0.28)" stopOpacity="0.38" />
+                  </LinearGradient>
+                  <LinearGradient id="restGrad" x1="0" y1="0" x2="0" y2="1">
+                    <Stop offset="0" stopColor="rgba(230, 126, 126, 0.28)" stopOpacity="0.28" />
+                    <Stop offset="1" stopColor="rgba(255, 255, 255, 0.28)" stopOpacity="0.38" />
+                  </LinearGradient>
+                </Defs>
+                {prepareTimeInSeconds > 0 && (
+                  <Circle cx="50" cy="80" r="50" fill="url(#prepareGrad)" />
+                )}
+                {prepareTimeInSeconds === 0 && exerciseTimeInSeconds > 0 && (
+                  <Circle cx="50" cy="80" r="50" fill="url(#exerciseGrad)" />
+                )}
+                {prepareTimeInSeconds === 0 && exerciseTimeInSeconds === 0 && (
+                  <Circle cx="50" cy="80" r="50" fill="url(#restGrad)" />
+                )}
+              </Svg>
               <Text style={styles.setText}>
                 {currentSet} / {exercise.sets}
               </Text>
               <Text style={styles.exerciseText}>{exercise.name} </Text>
               <Text style={styles.numberText}>횟수: {exercise.reps}</Text>
-              <Text style={styles.exercisedurationText}>운동시간: {formatTime(exerciseTimeInSeconds)} </Text>
-              <View style={styles.timeContainer}>
-                <View style={styles.prepareContainer}>
-                  <Text style={styles.prepareText}>준비 {formatTime(prepareTimeInSeconds)}</Text>
-                </View>
-                <View style={styles.restContainer}>
-                  <Text style={styles.restText}>휴식 {formatTime(restTimeInSeconds)}</Text>
-                </View>
-              </View>
+              {prepareTimeInSeconds > 0 && (
+                <Text style={styles.prepareText}>{formatTime(prepareTimeInSeconds)}</Text>
+              )}
+              {prepareTimeInSeconds === 0 && exerciseTimeInSeconds > 0 && (
+                <Text style={styles.exercisedurationText}>{formatTime(exerciseTimeInSeconds)}</Text>
+              )}
+              {exerciseTimeInSeconds === 0 && restTimeInSeconds > 0 && (
+                <Text style={styles.restText}>{formatTime(restTimeInSeconds)}</Text>
+              )}
             </ExerciseInformation>
           </View>
         ))}
@@ -273,76 +303,67 @@ const styles = {
     height: 30,
   },
   eiContainer: {
-    flex: 1,
+
     alignSelf: 'center',
   },
   //현재,전체 세트 
   setText: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: '400',
     color: theme.main,
-    paddingTop: 50,
+
   },
   //현재 운동 이름 
   exerciseText: {
-    fontSize: 25,
+    fontSize: 30,
     fontWeight: 'bold',
     color: theme.main,
   },
   //횟수
   numberText: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: '500',
     color: theme.main,
   },
   //운동시간
   exercisedurationText: {
-    fontSize: 35,
+    fontSize: 100,
     fontWeight: 'bold',
     color: theme.main,
     paddingTop: 50,
   },
-  //준비시간, 휴식시간 통합 
-  timeContainer: {
-    flexDirection: 'row',
-
-  },
   //준비시간t
   prepareText: {
-    fontSize: 25,
-    color: 'white',
-  },
-  //준비시간c
-  prepareContainer: {
-    backgroundColor: 'red',
-    padding: 5,
-    marginVertical: 10,
-    marginRight: 30,
+    fontSize: 100,
+    fontWeight: 'bold',
+    color: theme.main,
+    paddingTop: 50,
+
   },
   //휴식시간t
   restText: {
-    fontSize: 25,
-    color: 'white',
-  },
-  //휴식시간c
-  restContainer: {
-    backgroundColor: 'green',
-    padding: 5,
-    marginVertical: 10,
+    fontSize: 100,
+    fontWeight: 'bold',
+    color: theme.main,
+    paddingTop: 50,
+
   },
   musicContainer: {
     flexDirection: 'row',
-    flex: 1,
-    justifyContent: 'space-around',
-    paddingTop: 70,
+    justifyContent: 'space-between',
+    padding: 60,
+    paddingTop: 140,
+
   },
   previousbutton: {
     width: 30,
     height: 30,
+
   },
   isPaused: {
     width: 30,
     height: 30,
+
   },
   nextButton: {
     width: 30,

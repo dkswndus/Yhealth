@@ -88,17 +88,15 @@ const ExerciseGraph = () => {
     };
   }, []);
 
-  const oneWeekAgo = new Date();
-  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  const filteredExerciseData = exerciseData.filter(item => new Date(item.date) >= oneWeekAgo);
-  const uniqueDates = Array.from(new Set(filteredExerciseData.map(item => item.date)));
-  uniqueDates.sort((a, b) => new Date(a) - new Date(b));
+
+  const extractionDate = uniqueDate.slice(-7).sort((a, b) => new Date(a.date) - new Date(b.date));
+  //console.log(extractionDate);
 
   const data = {
-    labels: uniqueDates.map((date) => date.substring(5, 10)),
+    labels: extractionDate.map((date) => date.substring(5, 10)),
     datasets: [
       {
-        data: uniqueDates.map((date) => totalTimeByDate[date].minutes),
+        data: extractionDate.map((date) => totalTimeByDate[date].minutes),
       },
     ],
   };
@@ -122,15 +120,15 @@ const ExerciseGraph = () => {
             decimalPlaces: 0,
             barPercentage: 0.8,
             group: false,
-            color: (opacity = 1) => `#0077B6`,// 파란색 설정
-            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, 
+            color: (opacity = 1) => `rgba(0,0, 200, ${opacity})`, // 선 색상
+            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // 라벨 색상
           }}
           style={{
             marginVertical: 2,
             borderRadius: 16,
             paddingRight: 50,
           }}
-         // withInnerLines={false}
+        // withInnerLines={false}
         />
       ) : (<Text style={{ color: 'black', fontSize: 15 }}> 운동기록이 없습니다. </Text>)}
 

@@ -26,6 +26,9 @@ const LookPage = ({ route, navigation }) => {
     // 마운트 해제 시 cleanup 함수
     return () => {
       // cleanup 코드 작성
+      //setCkPwd('');
+
+
     };
   }, []); // 빈 배열을 전달하여 컴포넌트가 처음 한 번만 마운트될 때만 실행
 
@@ -83,6 +86,8 @@ const LookPage = ({ route, navigation }) => {
 
   const cancelModal = () => {
     setModalVisible(!isModalVisible);
+    setCkPwd(''); // 비밀번호 확인 초기화
+    setuser_id(route.params?.initialNickname || '익명'); // 닉네임 초기화
   };
 
   // const handleCommentDelete = (index) => {
