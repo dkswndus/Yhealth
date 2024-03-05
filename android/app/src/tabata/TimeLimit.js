@@ -118,7 +118,7 @@ const TimePicker = ({ time, onTimeChange, type }) => {
     return (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Picker
-                style={{ flex: 0.4 }}
+                style={{ flex: 0.45 }}
                 selectedValue={time.minutes}
                 onValueChange={handleMinuteChange}
             >
