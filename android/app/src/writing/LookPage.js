@@ -221,10 +221,16 @@ const LookPage = ({ route, navigation }) => {
   };
 
   const formatDateString = (dateString) => {
-    // 날짜 문자열에서 요일 부분 제거
-    const dateWithoutDay = new Date(dateString).toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' });
-    const [month, day, year] = dateWithoutDay.split('/');
-    return `${year}/${month}/${day}`;
+    const date = new Date(dateString); // 날짜 문자열을 JavaScript Date 객체로 변환합니다.
+
+    // 각각의 구성 요소를 가져와서 문자열로 변환합니다.
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // 월
+    const day = date.getDate().toString().padStart(2, '0'); // 일
+    const hours = date.getHours().toString().padStart(2, '0'); // 시간
+    const minutes = date.getMinutes().toString().padStart(2, '0'); // 분
+
+    // "월/일 시간:분" 형식으로 날짜를 반환합니다.
+    return `${month}/${day} ${hours}:${minutes}`;
   };
 
   return (
@@ -270,10 +276,15 @@ const LookPage = ({ route, navigation }) => {
                 </Text>
 
                 <TouchableOpacity onPress={() => { setCommentId(item); setModalVisibleC(true); }}>
-                  <Text style={{ color: 'blue', marginLeft: 10 }}>삭제</Text>
+                  <Text style={{ color: 'green', marginLeft: 10 }}>삭제</Text>
                 </TouchableOpacity>
               </View>
-              <Text style={{ fontSize: 15, color: 'black' }}>{item.description}</Text>
+              <View>
+                <Text style={{ fontSize: 15, color: 'black' }}>{item.description}</Text>
+              </View>
+              <View>
+                <Text style={{ fontSize: 15, color: 'rgba(0, 0, 0, 0.7)' }}>{formatDateString(item.created_at)}</Text>
+              </View>
             </View>
           ))}
         </View>
@@ -290,7 +301,7 @@ const LookPage = ({ route, navigation }) => {
             placeholder="닉네임"
             placeholderTextColor="gray"
           />
-
+          <View style={{paddingLeft:20}} />
           <TextInput
             style={[styles.inputcontainer, { flex: 1 }]}
             onChangeText={handlePwdChange}

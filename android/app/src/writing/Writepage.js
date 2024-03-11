@@ -148,10 +148,11 @@ const Writepage = ({ route }) => {
                     />
                   </View>
 
-                  <View style={{ padding: 10, flexDirection: 'row' }}>
+                  <View style={{ padding: 10, flexDirection: 'row', }}>
                     <TouchableOpacity style={styles.buttonStyle} onPress={cancelModal}>
                       <Text style={{ color: 'white', textAlign: 'center' }}>취소</Text>
                     </TouchableOpacity>
+                    <View style={{ paddingLeft: 20 }} />
                     <TouchableOpacity style={styles.buttonStyle} onPress={toggleModal}>
                       <Text style={{ color: 'white', textAlign: 'center' }}>확인</Text>
                     </TouchableOpacity>

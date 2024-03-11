@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 5,
     borderBottomWidth: 1,
-    borderColor: 'black',
+    borderColor: 'rgba(0,0,0,0.2)',
     justifyContent: 'space-between',
   },
   textRow2: {

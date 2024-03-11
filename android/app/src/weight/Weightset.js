@@ -55,37 +55,37 @@ const WeightSetPage = ({ route }) => {
     }
   }
 
-
-
   return (
     <View style={{ backgroundColor: 'white', flex: 1, justifyContent: 'center' }}>
-      <View style={{ width: '100%', alignItems: 'center', marginBottom: 10 }}>
-        <Text style={styles.title}>체중 등록</Text>
-      </View>
-      <View style={{ alignSelf: 'center', width: '80%' }}>
-        <View style={{ width: '100%' }}>
-          <Text style={styles.title1}>날짜</Text>
-          <TextInput
-            style={styles.inputcontainer}
-            onChangeText={handleDateChange}
-            value={dateData}
-            placeholder="날짜를 입력하세요"
-            placeholderTextColor="gray"
-            editable={false} // 수정 불가능하게 설정
-          />
-          <Text style={styles.title1}>체중</Text>
-          <TextInput
-            style={styles.inputcontainer}
-            onChangeText={handleWeightChange}
-            value={weightData}
-            placeholder="체중을 입력하세요"
-            placeholderTextColor="gray"
-            keyboardType="numeric"
-          />
+      <View style={{ paddingBottom: 100 }}>
+        <View style={{ width: '100%', alignItems: 'center', marginBottom: 10 }}>
+          <Text style={styles.title}>체중 등록</Text>
         </View>
-        <TouchableOpacity style={styles.addButton} onPress={saveWeightData}>
-          <Text style={styles.addButtonText}>체중 설정</Text>
-        </TouchableOpacity>
+        <View style={{ alignSelf: 'center', width: '80%' }}>
+          <View style={{ width: '100%' }}>
+            <Text style={styles.title1}>날짜</Text>
+            <TextInput
+              style={styles.inputcontainer}
+              onChangeText={handleDateChange}
+              value={dateData}
+              placeholder="날짜를 입력하세요"
+              placeholderTextColor="gray"
+              editable={false} // 수정 불가능하게 설정
+            />
+            <Text style={styles.title1}>체중</Text>
+            <TextInput
+              style={styles.inputcontainer}
+              onChangeText={handleWeightChange}
+              value={weightData}
+              placeholder="체중을 입력하세요"
+              placeholderTextColor="gray"
+              keyboardType="numeric"
+            />
+          </View>
+          <TouchableOpacity style={styles.addButton} onPress={saveWeightData}>
+            <Text style={styles.addButtonText}>체중 설정</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

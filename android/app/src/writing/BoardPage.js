@@ -86,7 +86,7 @@ const BoardPage = ({ route }) => {
             <View style={{ paddingLeft: 10, paddingRight: 10 }}>
               {boardData.map((item, index) => (
                 <TouchableOpacity key={index} onPress={() => handleItemPress(item)}>
-                  <View key={index} style={{ paddingTop: 10, paddingBottom: 10, borderBottomWidth: 1, borderColor: 'black' }}>
+                  <View key={index} style={{ paddingTop: 10, paddingBottom: 10, borderBottomWidth: 1, borderColor: 'rgba(0,0,0,0.2)' }}>
                     <View>
                       <Text numberOfLines={1} style={styles.textTitle}>{item.title.length > 20 ? `${item.title.substring(0, 10)}...` : item.title}</Text>
                       <View style={styles.textRow2}>
@@ -151,13 +151,13 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   textcontent: {
-    color: 'rgba(0,0,0, 0.70)',
+    color: 'rgba(0,0,0, 1)',
     fontSize: 15,
     fontFamily: 'Noto Sans',
     fontWeight: '400',
   },
   textcontent2: {
-    color: '#767676',
+    color: 'rgba(0,0,0, 0.50)',
     fontSize: 15,
     fontFamily: 'Noto Sans',
     fontWeight: '400',
