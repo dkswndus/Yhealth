@@ -16,6 +16,9 @@ const CompleteContainer = styled.TouchableOpacity`
   background-color: ${({ completed }) => (completed ? 'black' : 'transparent')};
 `;
 
+const ImageContainer = styled.View`
+
+`;
 const CompleteText = styled.Text`
   color: ${({ completed }) => (completed ? 'white' : 'black')};
 `;
@@ -80,6 +83,7 @@ const NonstopWatch = ({ route }) => {
             await AsyncStorage.setItem(`appData${key}`, JSON.stringify(combinedData));
           }
         }
+
       } catch (error) {
         console.error('오류', error);
       }
@@ -108,6 +112,10 @@ const NonstopWatch = ({ route }) => {
   const handleNext = () => {
     if (currentIndex < exerciseInfoOff.length - 1) {
       setCurrentIndex(currentIndex + 1);
+    }
+    else {
+      Alert.alert('경고', '모든 운동이 완료되지않았습니다.\n완료버튼을 눌러주세요.');
+
     }
   };
 

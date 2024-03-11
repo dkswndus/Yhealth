@@ -229,7 +229,7 @@ const LookPage = ({ route, navigation }) => {
 
   return (
     <View style={{ backgroundColor: 'rgba(255, 255, 255, 1)', flex: 1 }}>
-      <TopBar1 />
+
       <ScrollView>
         <View style={[styles.viewcontainer, styles.editdeletecontainer]}>
           <Text style={{ color: 'black' }}>작성자 : {selectedItem.user_id}</Text>

@@ -265,12 +265,6 @@ const FlatList = ({ route }) => {
           <TouchableOpacity onPress={() => showSelectedExercise("어께")}>
             <Part title={"어께"} />
           </TouchableOpacity>
-          {/* <TouchableOpacity onPress={() => showSelectedExercise("삼두")}>
-            <Part title={"삼두"} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => showSelectedExercise("이두")}>
-            <Part title={"이두"} />
-          </TouchableOpacity> */}
         </View>
       </ScrollView>
       <ScrollView style={styles.scrollView}>
@@ -294,7 +288,7 @@ const FlatList = ({ route }) => {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <View style={{paddingBottom:10}}>
+      <View style={{ height: '15%' }}>
         <AdditionDone title={"추가 완료"} onPress={navigateTimeLimit} />
       </View>
     </View>
@@ -306,26 +300,26 @@ const styles = StyleSheet.create({
     width: 25, height: 25
   },
   Ximage: {
-    width: 20, height: 20, marginRight: 10
+    width: 20, height: 20, marginLeft: 70,
   },
   container: {
-    height: '100%',
-    marginTop: 20,
-    padding: 20,
-    backgroundColor: 'rgba(252, 253, 255, 0.49)',
-    borderRadius: 30,
+
+    backgroundColor: 'rgba(255, 255, 255, 1)',
+
   },
   scrollView: {
-    marginTop: 25,
     flexDirection: 'column',
+    height: '65%',
   },
   GeneralGymData: {
     flexDirection: 'row',
-    alignItems: 'center',
+
     justifyContent: 'space-between',
     borderBottomColor: '#bbb',
     borderBottomWidth: 0.5,
-    height: 50,
+    paddingTop: 15,
+
+
   },
   todoText: {
     flexDirection: 'row',
@@ -333,36 +327,39 @@ const styles = StyleSheet.create({
   },
   addButtonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+
+    paddingTop: 40,
   },
   addButtonText: {
     fontSize: 25,
     fontWeight: 'bold',
     color: 'rgba(0, 0, 0, 0.9)',
     marginTop: -5,
-    marginLeft: 100,
+    marginLeft: 130,
   },
 
   horizontaaScrollView: {
     marginTop: 20,
-    flexDirection: 'row',
-    height: 50,
+    height: '10%',
 
 
   },
   exerciseContainer: {
     flexDirection: 'row',
+
   },
 });
 
 const AdditionDoneContainer = styled(TouchableOpacity)`
-width: 100%;
+width: 90%;
   height: 42px;
   background-color: #1A6DFF;
   border-radius: 10px;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   margin-top: 20px;
+  marginLeft:20px;
+  mrrginRight:20px;
   
 `;
 
@@ -374,7 +371,7 @@ const AdditionDoneTitle = styled(Text)`
 
 const PartContainer = styled(View)`
   width: 100px;
-  height: 35px;
+
   border-radius: 10px;
   align-items: center;
   justify-content: center;

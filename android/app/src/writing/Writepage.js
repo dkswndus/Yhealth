@@ -45,7 +45,7 @@ const Writepage = ({ route }) => {
   }
 
   const toggleModal = async () => {
-    
+
     if (title.trim() === '') {
       alert('제목을 입력하세요.');
       return;

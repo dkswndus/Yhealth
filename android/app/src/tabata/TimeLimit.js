@@ -98,20 +98,14 @@ const TimePicker = ({ time, onTimeChange, type }) => {
     const handleMinuteChange = (itemValue) => {
         const selectedMinutes = parseInt(itemValue);
         const selectedSeconds = parseInt(time.seconds);
-        if (selectedMinutes === 0 && selectedSeconds < 10) {
-            Alert.alert('경고', '10초 이상으로 선택해주세요.');
-            return;
-        }
+
         onTimeChange('minutes', itemValue, type);
     };
 
     const handleSecondChange = (itemValue) => {
         const selectedMinutes = parseInt(time.minutes);
         const selectedSeconds = parseInt(itemValue);
-        if (selectedMinutes === 0 && selectedSeconds < 10) {
-            Alert.alert('경고', '10초 이상으로 선택해주세요.');
-            return;
-        }
+
         onTimeChange('seconds', itemValue, type);
     };
 
@@ -160,7 +154,7 @@ const TimeLimit = ({ route }) => {
 
 
     useEffect(() => {
-        // 드롭다운 값이 변경되면 실행되는 부분
+
         if (prevDropdownValue.current !== dropdownValue) {
             setSelectedExercises([]);
             setLikedExercises([]);
@@ -226,14 +220,14 @@ const TimeLimit = ({ route }) => {
             return;
         }
 
-        // 횟수와 세트가 입력되지 않았을 때 경고 메시지 표시
+
         const missingInputs = selectedExercises.filter(exercise => !sets[exercise] || !reps[exercise]);
 
         if (missingInputs.length > 0) {
             Alert.alert('오류', '입력하세요.');
             return;
         }
-        if (selectedExercises.length === 0) { // 운동이 선택되지 않았을 때
+        if (selectedExercises.length === 0) {
             Alert.alert('오류', '운동을 선택하세요.');
             return;
         }
@@ -258,15 +252,14 @@ const TimeLimit = ({ route }) => {
     };
 
     const removeExercise = (index) => {
-        // 선택된 운동 목록에서 해당 인덱스의 운동을 제거한 새로운 배열 생성
         const updatedSelectedExercises = selectedExercises.filter((_, i) => i !== index);
         setSelectedExercises(updatedSelectedExercises);
 
-        // exerciseOrder 배열에서 해당 인덱스의 운동을 제외한 새로운 배열 생성
+
         const updatedExerciseOrder = exerciseOrder.filter((_, i) => i !== index);
         setExerciseOrder(updatedExerciseOrder);
 
-        // 선택된 운동 목록과 운동 순서를 기반으로, 다른 운동에 대한 정보는 변경하지 않도록 함
+
         const updatedSets = {};
         const updatedReps = {};
         const updatedPrepareTime = {};
@@ -289,32 +282,32 @@ const TimeLimit = ({ route }) => {
     };
 
     const moveExerciseUp = (index) => {
-        if (index === 0) return; // 운동이 첫 번째 항목이면 위로 이동할 수 없음
+        if (index === 0) return;
         const updatedExerciseOrder = [...exerciseOrder];
-        const tempExercise = updatedExerciseOrder[index]; // 선택한 운동을 저장
-        updatedExerciseOrder[index] = updatedExerciseOrder[index - 1]; // 선택한 운동을 한 칸 위로 이동
-        updatedExerciseOrder[index - 1] = tempExercise; // 이전 운동 위치에 저장된 운동을 넣음
+        const tempExercise = updatedExerciseOrder[index];
+        updatedExerciseOrder[index] = updatedExerciseOrder[index - 1];
+        updatedExerciseOrder[index - 1] = tempExercise;
         setExerciseOrder(updatedExerciseOrder);
-    
-        // 선택된 운동 목록 업데이트
+
+
         const updatedSelectedExercises = updatedExerciseOrder.map(exercise => selectedExercises.find(selectedExercise => selectedExercise === exercise)).filter(Boolean);
         setSelectedExercises(updatedSelectedExercises);
-    
+
         console.log("up", updatedExerciseOrder);
     };
-    
+
     const moveExerciseDown = (index) => {
-        if (index === exerciseOrder.length - 1) return; // 운동이 마지막 항목이면 아래로 이동할 수 없음
+        if (index === exerciseOrder.length - 1) return;
         const updatedExerciseOrder = [...exerciseOrder];
-        const tempExercise = updatedExerciseOrder[index]; // 선택한 운동을 저장
-        updatedExerciseOrder[index] = updatedExerciseOrder[index + 1]; // 선택한 운동을 한 칸 아래로 이동
-        updatedExerciseOrder[index + 1] = tempExercise; // 다음 운동 위치에 저장된 운동을 넣음
+        const tempExercise = updatedExerciseOrder[index];
+        updatedExerciseOrder[index] = updatedExerciseOrder[index + 1];
+        updatedExerciseOrder[index + 1] = tempExercise;
         setExerciseOrder(updatedExerciseOrder);
-    
-        // 선택된 운동 목록 업데이트
+
+
         const updatedSelectedExercises = updatedExerciseOrder.map(exercise => selectedExercises.find(selectedExercise => selectedExercise === exercise)).filter(Boolean);
         setSelectedExercises(updatedSelectedExercises);
-    
+
         console.log("down", updatedExerciseOrder);
     };
 
@@ -361,16 +354,16 @@ const TimeLimit = ({ route }) => {
     //세트,횟수,준비,운동,휴식시간 초기값 설정 
     const initialSetsValue = "3";
     const initialRepsValue = "25";
-    const initialPrepareTime = { minutes: "00", seconds: "10" };
-    const initialExerciseTime = { minutes: "00", seconds: "11" };
-    const initialRestTime = { minutes: "00", seconds: "10" };
+    const initialPrepareTime = { minutes: "00", seconds: "03" };
+    const initialExerciseTime = { minutes: "00", seconds: "04" };
+    const initialRestTime = { minutes: "00", seconds: "03" };
 
     useEffect(() => {
-        // 선택된 운동 목록이 변경될 때마다 초기값을 설정
+
         setSets((prevSets) => {
             const newSets = {};
             selectedExercises.forEach((exercise) => {
-                // 운동이 추가될 때만 초기값 설정
+
                 if (!prevSets.hasOwnProperty(exercise)) {
                     newSets[exercise] = initialSetsValue;
                 }
@@ -381,7 +374,7 @@ const TimeLimit = ({ route }) => {
         setReps((prevReps) => {
             const newReps = {};
             selectedExercises.forEach((exercise) => {
-                // 운동이 추가될 때만 초기값 설정
+
                 if (!prevReps.hasOwnProperty(exercise)) {
                     newReps[exercise] = initialRepsValue;
                 }
@@ -392,7 +385,7 @@ const TimeLimit = ({ route }) => {
         setPrepareTime((prevPrepareTime) => {
             const newPrepareTime = {};
             selectedExercises.forEach((exercise) => {
-                // 운동이 추가될 때만 초기값 설정
+
                 if (!prevPrepareTime.hasOwnProperty(exercise)) {
                     newPrepareTime[exercise] = initialPrepareTime;
                 }
@@ -403,7 +396,7 @@ const TimeLimit = ({ route }) => {
         setExerciseTime((prevExerciseTime) => {
             const newExerciseTime = {};
             selectedExercises.forEach((exercise) => {
-                // 운동이 추가될 때만 초기값 설정
+
                 if (!prevExerciseTime.hasOwnProperty(exercise)) {
                     newExerciseTime[exercise] = initialExerciseTime;
                 }
@@ -414,7 +407,7 @@ const TimeLimit = ({ route }) => {
         setRestTime((prevRestTime) => {
             const newRestTime = {};
             selectedExercises.forEach((exercise) => {
-                // 운동이 추가될 때만 초기값 설정
+
                 if (!prevRestTime.hasOwnProperty(exercise)) {
                     newRestTime[exercise] = initialRestTime;
                 }

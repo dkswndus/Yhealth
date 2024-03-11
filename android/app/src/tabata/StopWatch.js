@@ -56,13 +56,14 @@ const StopWatch = ({ route }) => {
   const [speakerImage, setSpeakerImage] = useState(speakerfilled);
   const [completion, setCompletion] = useState(0);
   const [name, setName] = useState('');
-  const [sets, setSets] = useState(exerciseInfoOn.length > 0 ? exerciseInfoOn[0].sets : 0);
-  const [reps, setReps] = useState(exerciseInfoOn.length > 0 ? exerciseInfoOn[0].reps : 0);
-  const [prepareTimeInSeconds, setprepareTimeInSeconds] = useState(exerciseInfoOn.length > 0 ? exerciseInfoOn[0].prepareTimeInSeconds : 0);
-  const [exerciseTimeInSeconds, setexerciseTimeInSeconds] = useState(exerciseInfoOn.length > 0 ? exerciseInfoOn[0].exerciseTimeInSeconds : 0);
-  const [restTimeInSeconds, setrestTimeInSeconds] = useState(exerciseInfoOn.length > 0 ? exerciseInfoOn[0].restTimeInSeconds : 0);
-  const initialExerciseTimeInSeconds = exerciseInfoOn.length > 0 ? exerciseInfoOn[0].exerciseTimeInSeconds : 0;
-  const initialRestTimeInSeconds = exerciseInfoOn.length > 0 ? exerciseInfoOn[0].restTimeInSeconds : 0;
+  const [sets, setSets] = useState(exerciseInfoOn[0].sets);
+  const [reps, setReps] = useState(exerciseInfoOn[0].reps);
+  const [prepareTimeInSeconds, setprepareTimeInSeconds] = useState(exerciseInfoOn[0].prepareTimeInSeconds);
+  const [exerciseTimeInSeconds, setexerciseTimeInSeconds] = useState(exerciseInfoOn[0].exerciseTimeInSeconds);
+  const [restTimeInSeconds, setrestTimeInSeconds] = useState(exerciseInfoOn[0].restTimeInSeconds);
+  const [initialExerciseTimeInSeconds, setInitialExerciseTimeInSeconds] = useState(exerciseInfoOn[0].exerciseTimeInSeconds);
+  const [initialRestTimeInSeconds, setInitialRestTimeInSeconds] = useState(exerciseInfoOn[0].restTimeInSeconds);
+
   const [progress, setProgress] = useState(0);
   const [currentColor, setCurrentColor] = useState('rgba(80, 196, 237,1)');
   const [exerciseTime, setExerciseTime] = useState(exerciseTimeInSeconds);
@@ -74,7 +75,7 @@ const StopWatch = ({ route }) => {
     const saveDataToStorage = async (data, key) => {
       try {
         if (completion === 1) {
-          // 이전 데이터 불러오기
+
           const existingData = await AsyncStorage.getItem(`appData${key}`);
           const parsedExistingData = existingData ? JSON.parse(existingData) : [];
 
@@ -94,12 +95,12 @@ const StopWatch = ({ route }) => {
             };
           });
 
-          // 10년 전의 날짜 계산
+
           const currentDate = new Date();
           const tenYearsAgo = new Date(currentDate);
           tenYearsAgo.setFullYear(currentDate.getFullYear() - 10);
 
-          // 이전 데이터 중 10년 이전의 데이터 제거
+
           const filteredExistingData = parsedExistingData.filter(item => {
             const itemDate = new Date(item.date);
             return itemDate > tenYearsAgo;
@@ -116,67 +117,65 @@ const StopWatch = ({ route }) => {
       }
     };
 
-    saveDataToStorage([], 'On'); // 초기 실행 시 빈 배열을 전달
+    saveDataToStorage([], 'On');
   }, [exerciseInfoOn, completion]);
+
 
 
   useEffect(() => {
     let intervalId;
-
-    let duration;
-
-    // 타이머 및 색상 업데이트 로직
-    if ((prepareTimeInSeconds > 0 || exerciseTimeInSeconds > 0 || restTimeInSeconds > 0) && !isPaused) {
+    if (!isPaused) {
       intervalId = setInterval(() => {
         if (prepareTimeInSeconds > 0) {
-          duration = prepareTime;
+
           setprepareTimeInSeconds(prevTime => prevTime - 1);
-          setCurrentColor('rgb(255, 181, 52)'); // 준비 시간 색상
-          setProgress(prevProgress => prevProgress + (1 / duration));
+          setProgress(prevProgress => prevProgress + (1 / prepareTime));
           setCurrentColor('rgb(255, 181, 52)'); // 준비 시간 색상
           if (prepareTimeInSeconds <= 1) {
             setCurrentColor('rgb(54, 82, 173)');
+          }
+        } else if (exerciseTimeInSeconds > 0) {
+
+          setexerciseTimeInSeconds(prevTime => prevTime - 1);
+          setProgress(prevProgress => prevProgress + (1 / exerciseTime));
+          setCurrentColor('rgb(54, 82, 173)'); // 운동 시간 색상
+          if (exerciseTimeInSeconds <= 1) {
             setProgress(0);
           }
-        } else if (prepareTimeInSeconds === 0 && exerciseTimeInSeconds > 0) {
-          duration = exerciseTime;
-          setexerciseTimeInSeconds(prevTime => prevTime - 1);
-          setCurrentColor('rgb(54, 82, 173)'); // 운동 시간 색상
-          setProgress(prevProgress => prevProgress + (1 / duration));
-          setCurrentColor('rgb(54, 82, 173)'); // 운동 시간 색상
-        } else if ( exerciseTimeInSeconds === 0 && restTimeInSeconds > 0) {
-          duration = restTime;
-          setrestTimeInSeconds(prevTime => prevTime - 1);
-          setCurrentColor('rgb(230, 126, 126)'); // 휴식 시간 색상
-          setProgress((duration - restTimeInSeconds) / duration);
-        }
+        } else if (restTimeInSeconds > 0) {
 
+          setrestTimeInSeconds(prevTime => prevTime - 1);
+          setProgress(prevProgress => prevProgress + (1 / restTime));
+          setCurrentColor('rgb(230, 126, 126)'); // 휴식 시간 색상
+          if (restTimeInSeconds <= 1) {
+            setCurrentColor('rgb(230, 126, 126)');
+          }
+        }
       }, 1000);
     }
-    // 운동 종료 및 색상 변경 로직
-
-    if (prepareTimeInSeconds === 0 && exerciseTimeInSeconds === 0 && restTimeInSeconds === 0 && !isPaused) {
-      // 운동 종료 처리
+    if ((prepareTimeInSeconds === 0 && exerciseTimeInSeconds === 0 && restTimeInSeconds === 0) && !isPaused) {
       if (currentSet < sets) {
         setCurrentSet(prevSet => prevSet + 1);
-        setProgress(0);
         setexerciseTimeInSeconds(initialExerciseTimeInSeconds);
         setrestTimeInSeconds(initialRestTimeInSeconds);
       } else {
-
         if (currentIndex < exerciseInfoOn.length - 1) {
-          setCurrentIndex(prevIndex => prevIndex + 1);
-          setProgress(0);
-          setprepareTimeInSeconds(exerciseInfoOn[currentIndex + 1].prepareTimeInSeconds);
-          setName(exerciseInfoOn[currentIndex + 1].name);
-          setSets(exerciseInfoOn[currentIndex + 1].sets);
-          setReps(exerciseInfoOn[currentIndex + 1].reps);
+          setCurrentIndex(currentIndex + 1);
+          const nextExercise = exerciseInfoOn[currentIndex + 1];
+          setName(nextExercise.name);
+          setSets(nextExercise.sets);
+          setReps(nextExercise.reps);
+          setprepareTimeInSeconds(nextExercise.prepareTimeInSeconds);
+          setexerciseTimeInSeconds(nextExercise.exerciseTimeInSeconds);
+          setrestTimeInSeconds(nextExercise.restTimeInSeconds);
+          setInitialExerciseTimeInSeconds(nextExercise.exerciseTimeInSeconds);
+          setInitialRestTimeInSeconds(nextExercise.restTimeInSeconds);
+          setExerciseTime(nextExercise.exerciseTimeInSeconds);
+          setPrepareTime(nextExercise.prepareTimeInSeconds);
+          setRestTime(nextExercise.restTimeInSeconds);
           setCurrentSet(1);
-          setexerciseTimeInSeconds(exerciseInfoOn[currentIndex + 1].exerciseTimeInSeconds);
-          setrestTimeInSeconds(exerciseInfoOn[currentIndex + 1].restTimeInSeconds);
-          if (!isPaused) {
-            setIsPaused(true);
-          }
+          setIsPaused(true);
+          setProgress(0);
         } else {
           Alert.alert('종료', '운동이 완료되었습니다.');
           navigation.goBack();
@@ -187,7 +186,6 @@ const StopWatch = ({ route }) => {
     if ((prepareTimeInSeconds === 1 || exerciseTimeInSeconds === 1 || restTimeInSeconds === 1) && !isPaused) {
       BoxingBellSound.play();
     }
-
     return () => {
       clearInterval(intervalId);
     };
@@ -206,7 +204,11 @@ const StopWatch = ({ route }) => {
       setexerciseTimeInSeconds(nextExercise.exerciseTimeInSeconds);
       setrestTimeInSeconds(nextExercise.restTimeInSeconds);
       setCurrentSet(1);
-
+      setExerciseTime(nextExercise.exerciseTimeInSeconds);
+      setPrepareTime(nextExercise.prepareTimeInSeconds);
+      setRestTime(nextExercise.restTimeInSeconds);
+      setInitialExerciseTimeInSeconds(nextExercise.exerciseTimeInSeconds);
+      setInitialRestTimeInSeconds(nextExercise.restTimeInSeconds);
       if (!isPaused) {
         setIsPaused(true);
       }
@@ -224,15 +226,23 @@ const StopWatch = ({ route }) => {
       setprepareTimeInSeconds(previousExercise.prepareTimeInSeconds);
       setexerciseTimeInSeconds(previousExercise.exerciseTimeInSeconds);
       setrestTimeInSeconds(previousExercise.restTimeInSeconds);
+      setPrepareTime(previousExercise.prepareTimeInSeconds);
+      setExerciseTime(previousExercise.exerciseTimeInSeconds);
+      setRestTime(previousExercise.restTimeInSeconds);
+      setInitialExerciseTimeInSeconds(previousExercise.exerciseTimeInSeconds);
+      setInitialRestTimeInSeconds(previousExercise.restTimeInSeconds);
       setCurrentSet(1);
       if (!isPaused) {
         setIsPaused(true);
       }
     }
   };
+
+
   const toggleStart = () => {
     if (isPaused && (prepareTimeInSeconds <= 1 || exerciseTimeInSeconds <= 1 || restTimeInSeconds <= 1)) {
       // 일시정지 상태에서 버튼을 눌러서 재생할 때
+      BoxingBellSound.play();
     } else {
       // 재생 중일 때 버튼을 눌러서 일시정지할 때
       BoxingBellSound.pause();
@@ -244,9 +254,9 @@ const StopWatch = ({ route }) => {
     setIsSoundOn(!isSoundOn);
     setSpeakerImage(isSoundOn ? speakerunfilled : speakerfilled);
     if (isSoundOn) {
-      BoxingBellSound.setVolume(0); // 소리를 끔
+      BoxingBellSound.setVolume(0);
     } else {
-      BoxingBellSound.setVolume(1); // 소리를 켬
+      BoxingBellSound.setVolume(1);
     }
   };
 
@@ -264,13 +274,10 @@ const StopWatch = ({ route }) => {
           height: 380,
           justifyContent: 'center',
           alignItems: 'center',
-          strokeColor: 'red',
-          labelColor: 'red',
-          color: 'red',
+          strokeWidth: 20,
         }}
-        progress={progress > 1 ? 1 : progress} // 최대값을 1로 제한
-        progressColor={currentColor} // 색상 적용
-
+        progress={progress > 1 ? 1 : progress}
+        progressColor={currentColor}
       >
         {route.params?.exerciseInfoOn?.slice(currentIndex, currentIndex + 1).map((exercise, index) => (
           <View key={index}>
@@ -293,9 +300,6 @@ const StopWatch = ({ route }) => {
           </View>
         ))}
       </ProgressCircle>
-
-
-
       <View style={styles.musicContainer}>
         <TouchableOpacity onPress={handlePrevious}>
           <Image source={previousbutton} style={styles.previousbutton} />
@@ -332,7 +336,7 @@ const styles = {
   setText: {
     fontSize: 20,
     fontWeight: '400',
-    color: theme.main,
+    color: 'rgba(0,0,0,0.7)',
     paddingTop: 30,
   },
   //현재 운동 이름 
@@ -345,7 +349,7 @@ const styles = {
   numberText: {
     fontSize: 20,
     fontWeight: '500',
-    color: theme.main,
+    color: 'rgba(0,0,0,0.7)',
   },
   //운동시간,준비시간,휴식시간 t
   durationText: {
