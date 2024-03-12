@@ -92,7 +92,7 @@ const Writepage = ({ route }) => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={canclehandleButtonPress}>
+    <TouchableWithoutFeedback onPress={() => {}}>
       <View style={{ backgroundColor: 'rgba(255, 255, 255, 1)', flex: 1 }}>
         <TopBar1 />
         <View style={styles.viewcontainer}>
@@ -115,10 +115,11 @@ const Writepage = ({ route }) => {
           />
         </View>
 
-        <View style={{ padding: 10, flexDirection: 'row' }}>
+        <View style={{ padding: 10, flexDirection: 'row',alignItems:'center' }}>
           <TouchableOpacity style={styles.buttonStyle} onPress={canclehandleButtonPress}>
             <Text style={{ color: 'white', textAlign: 'center' }}>취소</Text>
           </TouchableOpacity>
+          <View style={{ paddingLeft: 20 }} />
           <TouchableOpacity style={styles.buttonStyle} onPress={toggleModal}>
             <Text style={{ color: 'white', textAlign: 'center' }}>확인</Text>
           </TouchableOpacity>
@@ -185,10 +186,10 @@ const styles = StyleSheet.create({
   },
   buttonStyle: {
     height: 40,
-    width: '50%',
     borderRadius: 10,
     backgroundColor: '#1A6DFF',
     padding: 10,
+    flex:1,
   },
   modalContainer: {
     flex: 1,
